@@ -188,5 +188,5 @@ ol.core li::before{content:counter(c);position:absolute;left:10px;top:8px;width:
 @media print{.topbar,.side,.fab,.bgfx,.progress{display:none!important}main{padding:0}.card,.qa{box-shadow:none;backdrop-filter:none}}
 td:first-child{white-space:nowrap}
 .mermaid{min-height:80px}
-.mermaid svg{min-width:min(100%,680px)}
-@media(max-width:700px){.mermaid svg{min-width:640px!important;max-width:none!important}.mermaid::before{content:"↔ 可左右滑动查看完整流程图";display:block;font-size:12px;color:var(--muted);text-align:left;margin-bottom:6px}}
+@media(max-width:700px){.mermaid::before{content:"↔ 可左右滑动查看完整流程图";display:block;font-size:12px;color:var(--muted);text-align:left;margin-bottom:6px}}
+@media(max-width:700px){.mermaid{text-align:left}}

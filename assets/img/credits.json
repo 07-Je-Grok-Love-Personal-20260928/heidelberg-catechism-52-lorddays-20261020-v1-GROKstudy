@@ -1,0 +1,38 @@
+{
+ "hc1563.jpg": {
+  "title": "File:Heidelberger Katechismus 1563.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Heidelberger_Katechismus_1563.jpg",
+  "license": "Public domain",
+  "artist": ""
+ },
+ "castle.jpg": {
+  "title": "File:Schlossbeleuchtung 10.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Schlossbeleuchtung_10.jpg",
+  "license": "CC BY 4.0",
+  "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Schlurcher\" title=\"User:Schlurcher\">Schlurcher</a> <span class=\"mw-valign-text-top noprint\" typeof=\"mw:File/Frameless\"><a href=\"//commons.wikimedia.org/wiki/"
+ },
+ "ursinus.png": {
+  "title": "File:Zacharias Ursinus.png",
+  "page": "https://commons.wikimedia.org/wiki/File:Zacharias_Ursinus.png",
+  "license": "Public domain",
+  "artist": ""
+ },
+ "olevian.png": {
+  "title": "File:Caspar Olevian.png",
+  "page": "https://commons.wikimedia.org/wiki/File:Caspar_Olevian.png",
+  "license": "Public domain",
+  "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Theodor_de_Bry\" class=\"extiw\" title=\"w:en:Theodor de Bry\"><span title=\"engraver, goldsmith and editor (1528-1598)\">Theodor de Bry</span></a></bdi>"
+ },
+ "frederick.jpg": {
+  "title": "File:Friedrich der Fromme.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Friedrich_der_Fromme.jpg",
+  "license": "Public domain",
+  "artist": ""
+ },
+ "dort.jpg": {
+  "title": "File:Synode van Dordrecht.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Synode_van_Dordrecht.jpg",
+  "license": "Public domain",
+  "artist": "Pouwels Weyts de Jonge (Dordrecht, 01-01-1585 - Delft, 26-05-1629)"
+ }
+}

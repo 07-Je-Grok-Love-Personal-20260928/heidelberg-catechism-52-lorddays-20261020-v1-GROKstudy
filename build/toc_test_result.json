@@ -1,0 +1,102 @@
+[
+ [
+  "drag widens sidebar",
+  true,
+  "300->420"
+ ],
+ [
+  "width persisted to localStorage",
+  true,
+  "420"
+ ],
+ [
+  "max clamp = min(640,70vw)",
+  true,
+  "640"
+ ],
+ [
+  "min clamp = 220",
+  true,
+  "220"
+ ],
+ [
+  "width persists across pages",
+  true,
+  "220"
+ ],
+ [
+  "keyboard arrows resize",
+  true,
+  "268"
+ ],
+ [
+  "double-click resets to 300",
+  true,
+  "300"
+ ],
+ [
+  "3-level numbered TOC (texts/hc)",
+  true,
+  "{\"l1\": 5, \"l2\": 52, \"l3\": 129, \"firstNo\": \"一、\", \"l2No\": \"1.\", \"l3No\": null, \"closed\": 52}"
+ ],
+ [
+  "expand all",
+  true,
+  "0"
+ ],
+ [
+  "collapse all (current path stays open)",
+  true,
+  "[56, 56]"
+ ],
+ [
+  "single twisty toggles",
+  true,
+  ""
+ ],
+ [
+  "TOC jump lands on target despite content-visibility",
+  true,
+  "top=70"
+ ],
+ [
+  "scrollspy highlights current Q and auto-expands parents",
+  true,
+  "{\"href\": \"#q60\", \"open\": true}"
+ ],
+ [
+  "long titles: nowrap + ellipsis + title",
+  true,
+  "{\"ws\": \"nowrap\", \"to\": \"ellipsis\", \"title\": true}"
+ ],
+ [
+  "marks toggle hides marks",
+  true,
+  "[True, 'none']"
+ ],
+ [
+  "marks preference persisted",
+  true,
+  ""
+ ],
+ [
+  "☰ hides sidebar on desktop",
+  true,
+  ""
+ ],
+ [
+  "mobile drawer opens",
+  true,
+  ""
+ ],
+ [
+  "touch drag resizes (pointer events)",
+  true,
+  "300->348"
+ ],
+ [
+  "backdrop tap closes drawer",
+  true,
+  ""
+ ]
+]

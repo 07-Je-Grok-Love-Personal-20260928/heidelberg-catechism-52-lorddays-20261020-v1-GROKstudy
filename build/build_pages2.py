@@ -1,5 +1,4 @@
 from common import *
-def sec(id,ico,title,inner): return f'<section class="sec"><h2 id="{id}"><span class="ico">{ico}</span>{title}</h2>{inner}</section>'
 # ---------------- COMPARE
 cmp_rows=[('📅 年代','1563','1561（多特大会 1619 年修订确认）','1618–1619'),
 ('📍 地点','德国 · 海德堡（选帝侯普法尔茨）','南尼德兰（今比利时）· 图尔奈一带','荷兰共和国 · 多德雷赫特'),
@@ -18,7 +17,16 @@ mt='<div class="tbl"><table><thead><tr><th>教义主题</th><th>海德堡要理�
 creed_rows=[('📅 年代','约公元 400 年定型（源头更早）','325 尼西亚 / 381 君士坦丁堡','约 6 世纪上半叶'),('🌍 地区','西方（罗马）教会','东西方教会共同（西方加“和子”）','西方教会'),('🎯 问题','简要总结使徒的教导，用于洗礼认信','驳斥亚流主义：子“与父同质”，扩充圣灵论','精确表述三位一体与基督神人二性'),('🧱 结构','三段：父、子、圣灵 + 教会与末世','三段：父、子、圣灵 + 教会','两部分：三一论（第3–28点）、基督论（第29–43点）'),('💎 关键词','我信……','受生却非被造，与父同质','一体三位，三位一体；其位格不紊，其本质不分'),('🔗 在海德堡中','主日7–22 逐句讲解（第23问全文引用）','主日8、13（独生子）、20（圣灵）','主日8（三一）、主日6、14、18（二性）')]
 crt='<div class="tbl"><table><thead><tr><th>维度</th><th>🕊️ 使徒信经</th><th>🔥 尼西亚信经</th><th>👑 亚他那修信经</th></tr></thead><tbody>'+''.join(f'<tr><td><b>{a}</b></td><td>{esc(b)}</td><td>{esc(c)}</td><td>{esc(d)}</td></tr>' for a,b,c,d in creed_rows)+'</tbody></table></div>'
 cp=f'''<section class="hero reveal"><span class="chip">⚖️ 深度对比</span><h1>三项联合信条 · 三大普世信经</h1><p class="lead">同一信仰，三种声音：<mark>要理问答教导心</mark>，<mark>信条宣告真理</mark>，<mark>信经守护恩典</mark>。</p></section>'''
+COV=[('圣经与启示',2,6,0),('三位一体',1,4,0),('创造与护理',2,2,1),('人与罪',3,2,4),('拣选',.5,1,18),('基督的位格',4,2,1),('基督的工作/代赎',9,2,9),('信心与称义',3,3,1),('归正/成圣',2,1,2),('坚忍与确据',2,1,15),('教会',2,6,1),('圣礼',6,3,0),('律法与伦理',11,1,1),('政府',.5,1,0),('末世',2,1,0)]
+def covchart():
+    mx=18; out=['<div class="card reveal covc"><div class="legend" style="margin-bottom:10px"><span class="it"><i style="width:14px;height:8px;border-radius:4px;background:var(--deliv);display:inline-block"></i>海德堡（主日数）</span><span class="it"><i style="width:14px;height:8px;border-radius:4px;background:var(--intro);display:inline-block"></i>比利时信条（条数）</span><span class="it"><i style="width:14px;height:8px;border-radius:4px;background:var(--grat);display:inline-block"></i>多特信经（正面条文数）</span></div>']
+    for t,h,b,c in COV:
+        bars=''.join(f'<div style="display:flex;align-items:center;gap:6px;height:12px"><span class="barx" style="display:block;height:9px;border-radius:5px;width:{max(v/mx*86,0.8):.1f}%;background:{col};transition-delay:{i*80}ms"></span><span class="small muted" style="font-size:11px;line-height:1">{("≈" if v==.5 else "")+(str(int(v)) if v>=1 else ("½" if v else "0"))}</span></div>' for i,(v,col) in enumerate([(h,'var(--deliv)'),(b,'var(--intro)'),(c,'var(--grat)')]))
+        out.append(f'<div style="display:grid;grid-template-columns:minmax(80px,8em) 1fr;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--bd)"><b class="small">{t}</b><div>{bars}</div></div>')
+    out.append('<p class="small muted" style="margin:8px 0 0">数据依据下方“教义主题对照矩阵”统计（½ = 仅在个别问答中提及）。一眼可见：<span class="mk-k">海德堡</span>重在基督的工作与感恩生活，<span class="mk-k">比利时信条</span>重在圣经、三一与教会，<span class="mk-k">多特信经</span>集中火力于拣选与坚忍——三者互补而非重复。</p></div>')
+    return ''.join(out)
 cp+=sec('table','📊','一、三项联合信条总对比',ct)
+cp+=sec('coverage','📈','覆盖度图：同一教义，三份文件各用多少篇幅',covchart())
 cp+=sec('why3','❓','二、为什么需要三份，而不是一份？','''<div class="grid g2">
 <div class="card pan core reveal"><h3>① 不同的问题需要不同的文体</h3><p>教导孩童与安慰病人，需要问答体与第一人称（海德堡）；面对君王的指控，需要条理分明的公开宣告（比利时信条）；面对神学争论，需要法庭式的精确裁决与错谬反驳（多特信经）。<b class="key">一种文体无法同时胜任三种任务。</b></p></div>
 <div class="card pan why reveal"><h3>② 历史是逐步展开的</h3><p>信条不是一次写成的“系统”，而是教会在历史中回应真实挑战的见证。1561 与 1563 年面对的是罗马教与重洗派；1610 年代的新问题（阿米念主义）出现在改革宗内部，因此需要第三份文件。</p></div>
@@ -51,6 +59,7 @@ for ld in D['hc']:
 quiz=''.join(f'<div class="card quiz reveal" data-ans="{N[n]["quiz"][2]}" data-id="ld{n}"><div class="small muted">主日{n} · {esc(N[n]["t"])}</div><p><b>{esc(N[n]["quiz"][0])}</b></p>{"".join(f"<button class=\"opt\">{"ABCD"[i]}. {esc(o)}</button>" for i,o in enumerate(N[n]["quiz"][1]))}<p class="res key"></p></div>' for n in range(1,53))
 mrows=''.join(f'<tr><td style="color:{part(n)[2]};font-weight:800">{n}</td><td>{esc(N[n]["t"])}</td><td class="key">{esc(N[n]["k"])}</td><td>{"、".join(esc(k) for k in N[n]["kw"])}</td></tr>' for n in range(1,53))
 mem=f'''<section class="hero reveal"><span class="chip g">🧠 速记中心</span><h1>快速记住 52 主日</h1><p class="lead">口诀 → 结构 → 卡片 → 测验 → 背诵：五步法。快捷键：<b>T</b> 目录 · <b>R</b> 背诵模式 · <b>←/→</b> 上一/下一主日。</p></section>'''
+mem+=sec('marks','🖍️','标记图例：读懂本站的颜色与线条',f'<div class="card reveal">{legend_html(True)}</div>')
 mem+=sec('frame','🏗️','第一步：记住骨架（数字记忆）','''<div class="grid g4"><div class="card reveal" style="border-top:4px solid var(--intro)"><h3>💜 1</h3><p>引言：主日 1（Q1–2）安慰与三件事</p></div><div class="card reveal" style="border-top:4px solid var(--misery)"><h3>💔 2–4</h3><p>罪与愁苦：律法 → 堕落 → 公义（Q3–11）</p></div><div class="card reveal" style="border-top:4px solid var(--deliv)"><h3>✝️ 5–31</h3><p>得救：中保 5–6 · 信心 7 · 信经 8–22 · 称义 23–24 · 圣言圣礼 25–30 · 钥匙 31（Q12–85）</p></div><div class="card reveal" style="border-top:4px solid var(--grat)"><h3>🌿 32–52</h3><p>感恩：归正 32–33 · 十诫 34–44 · 主祷文 45–52（Q86–129）</p></div></div>
 <div class="card reveal" style="margin-top:14px"><p class="mn">🔢 “1·3·27·21”：一安慰、三愁苦、廿七得救、廿一感恩。</p><p class="mn">🔢 信经 8–22 的“三一三段”：父 9–10 · 子 11–19 · 灵 20–22。</p><p class="mn">🔢 十诫 34–44：每主日约一诫（第3诫加“起誓”主日37，第10诫加律法功用）。</p><p class="mn">🔢 主祷文 45–52：45 总论 · 46 称呼 · 47–52 六个祈求（52 含结语与阿们）。</p></div>''')
 mem+=sec('mnemonics','🔑','第二步：52 条口诀表',f'<div class="tbl"><table><thead><tr><th>主日</th><th>主题</th><th>口诀</th><th>关键词</th></tr></thead><tbody>{mrows}</tbody></table></div>')

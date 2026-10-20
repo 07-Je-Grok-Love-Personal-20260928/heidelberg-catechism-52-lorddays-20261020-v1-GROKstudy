@@ -15,7 +15,7 @@
  ],
  "V2": [
   [
-   "GitHub Pages",
+   "GitHub Pages（与 v3 同一地址，现显示 v3）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -27,6 +27,20 @@
    "https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app"
   ]
  ],
+ "V3": [
+  [
+   "GitHub Pages",
+   "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
+  ],
+  [
+   "Surge",
+   "https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh"
+  ],
+  [
+   "Netlify",
+   "https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.netlify.app"
+  ]
+ ],
  "changes": [
   "📱 手机端圣约神学流程图改为竖排“盟约阶梯”，平板与桌面仍显示 Mermaid 流程图；其余流程图在手机上按原始比例横向滑动，文字清晰。",
   "🪔 52 个主日全部新增“深化”板块：一个圣经画面、如何指向基督、一句祷告、两道小组/家庭讨论题（共 208 条新内容）。",
@@ -36,5 +50,15 @@
   "🎨 主题在页面渲染前即应用（无闪烁）；表格首列不折行；打印样式优化。",
   "🏷️ 仓库更名为 heidelberg-catechism-52-lorddays-GROKstudy（保留全部历史），GitHub Pages 地址随之更新；全站只用相对路径。",
   "✅ 原文逐字校验仍为 0 处差异；375 / 768 / 1440 三种宽度的溢出检测重新跑过；截图全部重拍。"
+ ],
+ "changes_v3": [
+  "⚡ 流畅度重构：毛玻璃 backdrop-filter 只保留在顶栏、悬浮按钮与提示条；卡片改为“伪玻璃”渐变；背景改为预模糊的径向渐变云层，只用 transform 漂移（不再对大面积元素做 filter:blur 动画）；各 section 使用 content-visibility:auto；目录高亮改用 IntersectionObserver，进度条使用 CSS scroll-timeline（不支持时用 rAF）；所有监听器 passive；支持 prefers-reduced-motion。",
+  "↔️ 左侧目录可拖动右边缘调整宽度（220px – min(640px, 70vw)），支持鼠标、触屏与键盘方向键，宽度保存在本机；双击把手恢复默认；长标题单行省略并带悬停提示。",
+  "📑 目录改为三级编号树：一级“一、二、三”，二级“1. 2.”，三级“1.1”；每级可折叠，提供“全部展开 / 全部折叠”，滚动时自动展开并高亮当前所在小节。",
+  "🖍️ 新增笔记标记系统：高亮、粗体金、蓝实线（定义）、橙波浪线（难点）、红虚线（对比/错误立场）、红字（警示）、经文标签；五类提示框：核心 · 难点 · 易错 · 金句 · 记忆钩。顶栏 🖍️ 或 M 键一键显示/隐藏。原文只包标签，文字一字不改（校验 0 差异）。",
+  "💎 每个主日新增“精华速览”：五问提要（论题 · 为什么 · 写了什么 · 怎么活 · 圣经与圣约）、逐字金句、易错提醒，以及“关联星图”（各问与关键词、比利时信条、多特信经、威斯敏斯特的连线动画）和 52 主日位置条。",
+  "📊 新增图表：首页 129 问三部分比例条、52 主日问答数柱状图（可点击）；对比页“覆盖度图”；原文中心卡片进度条；动画只用 transform / stroke-dashoffset。",
+  "🧭 结构收紧：顶栏导航精简为 8 项（修复约 1024px 宽度时最后一项被截断），新增“原文中心”汇总四部原文；52 主日总览按 17 个主题分组；主日页重排为 精华 → 原文 → 整体 → 局部 → 对照 → 应用（分页签）→ 记忆 → 延伸。",
+  "✅ 校验：原文逐字比对 0 差异（含金句）；375 / 768 / 1440 全部页面无横向溢出；Playwright 测试目录拖动与折叠；截图全部重拍（v3-*）。"
  ]
 }

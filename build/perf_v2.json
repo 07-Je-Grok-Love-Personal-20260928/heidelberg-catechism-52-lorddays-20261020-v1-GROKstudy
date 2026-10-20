@@ -1,0 +1,82 @@
+{
+ "1440/index.html": {
+  "fps": 49.2,
+  "jank50": 1,
+  "maxframe": 50.1,
+  "lt_load": 595,
+  "lt_scroll": 0,
+  "dom": 635
+ },
+ "1440/ld/01.html": {
+  "fps": 45.3,
+  "jank50": 0,
+  "maxframe": 50.0,
+  "lt_load": 291,
+  "lt_scroll": 0,
+  "dom": 434
+ },
+ "1440/texts/hc.html": {
+  "fps": 36.4,
+  "jank50": 0,
+  "maxframe": 50.0,
+  "lt_load": 392,
+  "lt_scroll": 0,
+  "dom": 2657
+ },
+ "1440/memory.html": {
+  "fps": 36.7,
+  "jank50": 0,
+  "maxframe": 50.0,
+  "lt_load": 358,
+  "lt_scroll": 0,
+  "dom": 2314
+ },
+ "1440/history.html": {
+  "fps": 55.2,
+  "jank50": 0,
+  "maxframe": 50.0,
+  "lt_load": 1725,
+  "lt_scroll": 0,
+  "dom": 483
+ },
+ "375/index.html": {
+  "fps": 60.0,
+  "jank50": 0,
+  "maxframe": 16.8,
+  "lt_load": 382,
+  "lt_scroll": 0,
+  "dom": 635
+ },
+ "375/ld/01.html": {
+  "fps": 60.0,
+  "jank50": 0,
+  "maxframe": 16.8,
+  "lt_load": 226,
+  "lt_scroll": 0,
+  "dom": 434
+ },
+ "375/texts/hc.html": {
+  "fps": 59.7,
+  "jank50": 0,
+  "maxframe": 49.9,
+  "lt_load": 474,
+  "lt_scroll": 63,
+  "dom": 2657
+ },
+ "375/memory.html": {
+  "fps": 60.0,
+  "jank50": 0,
+  "maxframe": 16.8,
+  "lt_load": 369,
+  "lt_scroll": 0,
+  "dom": 2314
+ },
+ "375/history.html": {
+  "fps": 60.0,
+  "jank50": 0,
+  "maxframe": 16.8,
+  "lt_load": 1664,
+  "lt_scroll": 0,
+  "dom": 483
+ }
+}

@@ -47,3 +47,74 @@ def tri():
 <text x="600" y="140" text-anchor="middle" font-size="16" fill="currentColor">拯救 Deliverance · 罗3:21–11:36</text>
 <text x="1120" y="252" text-anchor="middle" font-size="16" fill="currentColor">感恩 Gratitude · 罗12–16</text>
 <text x="340" y="190" text-anchor="middle" font-size="15" fill="currentColor" opacity=".75">律法照出罪 →</text><text x="860" y="190" text-anchor="middle" font-size="15" fill="currentColor" opacity=".75">→ 十诫与祷告</text></svg>'''
+
+COLS={'i':'#a78bfa','m':'#fb7185','d':'#60a5fa','g':'#34d399'}
+def ld_strip(n):
+    w=52*12; out=[f'<svg viewBox="0 0 {w} 34" role="img" aria-label="主日{n}在全书52主日中的位置" style="max-height:44px">']
+    for i in range(1,53):
+        p=part(i)[0]; x=(i-1)*12
+        h=26 if i==n else 14; y=30-h
+        op='1' if i==n else '.45'
+        out.append(f'<rect x="{x+1}" y="{y}" width="10" height="{h}" rx="3" fill="{COLS[p]}" opacity="{op}"><title>主日{i} · {esc(N[i]["t"])}</title></rect>')
+    out.append(f'<polygon points="{(n-1)*12+6-5},0 {(n-1)*12+6+5},0 {(n-1)*12+6},4" fill="#fbbf24"/></svg>')
+    return ''.join(out)
+def ld_constellation(n,ld,no):
+    import math
+    W,H=560,340; cx,cy=W/2,H/2; p=part(n); col=COLS[p[0]]
+    qs=[qnum(q) for q in ld['qas']]
+    outer=[(k,'#facc15','kw') for k in no['kw'][:5]]
+    outer+=[(f'比利时{BC[k]["title"][:4]}','#60a5fa','bc') for k in no['bc'][:3]]
+    for s in no['cd'][:2]:
+        sec_,st_,arts=parse_cd(s)
+        outer.append((('多特'+st_[:3]).replace('第',''),'#34d399','cd'))
+    outer+=[(f'WSC {x}','#fbbf24','wsc') for x in no['wsc'][:2]]
+    g=[f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="主日{n}关联星图" class="const">']
+    g.append(f'<defs><radialGradient id="cg{n}"><stop offset="0" stop-color="{col}" stop-opacity=".95"/><stop offset="1" stop-color="{col}" stop-opacity=".35"/></radialGradient></defs>')
+    # orbits
+    g.append(f'<ellipse cx="{cx}" cy="{cy}" rx="92" ry="70" fill="none" stroke="currentColor" stroke-opacity=".15" stroke-dasharray="4 6"/><ellipse cx="{cx}" cy="{cy}" rx="225" ry="135" fill="none" stroke="currentColor" stroke-opacity=".12" stroke-dasharray="4 6"/>')
+    nodes=[]
+    for i,q in enumerate(qs):
+        a=-math.pi/2+2*math.pi*i/len(qs); x=cx+92*math.cos(a); y=cy+70*math.sin(a)
+        nodes.append(('q',x,y,f'Q{q}',col))
+    for i,(t,c,k) in enumerate(outer):
+        a=-math.pi/2+2*math.pi*(i+.5)/max(len(outer),1); x=cx+225*math.cos(a); y=cy+135*math.sin(a)
+        nodes.append(('o',x,y,t,c))
+    for j,(k,x,y,t,c) in enumerate(nodes):
+        g.append(f'<line class="draw" x1="{cx:.0f}" y1="{cy:.0f}" x2="{x:.0f}" y2="{y:.0f}" stroke="{c}" stroke-opacity=".55" stroke-width="{2 if k=="q" else 1.4}" style="transition-delay:{j*60}ms"/>')
+    g.append(f'<circle cx="{cx}" cy="{cy}" r="44" fill="url(#cg{n})"/><text x="{cx}" y="{cy-6}" text-anchor="middle" font-size="13" fill="#0b1020" font-weight="800">主日</text><text x="{cx}" y="{cy+18}" text-anchor="middle" font-size="26" fill="#0b1020" font-weight="900">{n}</text>')
+    for k,x,y,t,c in nodes:
+        if k=='q':
+            g.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="19" fill="{c}"/><text x="{x:.0f}" y="{y+5:.0f}" text-anchor="middle" font-size="13" font-weight="800" fill="#0b1020">{t}</text>')
+        else:
+            tw=len(t)*15+18
+            g.append(f'<rect x="{x-tw/2:.0f}" y="{y-15:.0f}" width="{tw}" height="30" rx="15" fill="{c}" fill-opacity=".18" stroke="{c}"/><text x="{x:.0f}" y="{y+5:.0f}" text-anchor="middle" font-size="14" fill="currentColor">{esc(t)}</text>')
+    g.append('</svg>')
+    return ''.join(g)
+def q_bars():
+    """52 bars: number of Q&As per Lord's Day, colored by part, animated growth"""
+    W,H=52*16+40,200; out=[f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="每个主日的问答数量">']
+    mx=max(len(ld['qas']) for ld in D['hc'])
+    for y in range(0,mx+1):
+        yy=170-y*150/mx
+        out.append(f'<line x1="30" x2="{W}" y1="{yy:.0f}" y2="{yy:.0f}" stroke="currentColor" stroke-opacity=".08"/><text x="22" y="{yy+4:.0f}" font-size="13" text-anchor="end" fill="currentColor" opacity=".6">{y}</text>')
+    for i,ld in enumerate(D['hc']):
+        n=ld['n']; c=len(ld['qas']); h=c*150/mx; x=34+i*16
+        out.append(f'<a href="ld/{n:02d}.html"><rect class="bar-grow" style="transition-delay:{i*18}ms;transform-box:fill-box" x="{x}" y="{170-h:.0f}" width="12" height="{h:.0f}" rx="3" fill="{COLS[part(n)[0]]}"><title>主日{n} · {esc(N[n]["t"])} · {c}问</title></rect></a>')
+        if n%4==1 or n==52: out.append(f'<text x="{x+6}" y="190" font-size="13" text-anchor="middle" fill="currentColor" opacity=".7">{n}</text>')
+    out.append('</svg>'); return ''.join(out)
+def parts_stack():
+    parts=[('引言',1,1,2,'i'),('罪与愁苦',3,3,11,'m'),('得救',27,12,85,'d'),('感恩',21,86,129,'g')]
+    W=640; out=[f'<svg viewBox="0 0 {W} 150" role="img" aria-label="129问在三部分中的分布">']
+    x=0; small=0
+    for t,lds,a,b,k in parts:
+        cnt=b-a+1; w=cnt/129*W
+        out.append(f'<g class="barx" style="transform-box:fill-box;transition-delay:{small*150}ms"><rect x="{x:.1f}" y="46" width="{w-2:.1f}" height="48" fill="{COLS[k]}" rx="6"/></g>')
+        rng="Q"+str(a)+("–"+str(b) if b!=a else "")
+        if w>120:
+            out.append(f'<text x="{x+w/2:.0f}" y="77" text-anchor="middle" font-size="18" font-weight="800" fill="#0b1020">{t} {cnt}问</text><text x="{x+w/2:.0f}" y="118" text-anchor="middle" font-size="14" fill="currentColor" opacity=".8">{rng} · {lds} 个主日</text>')
+        else:
+            lx=4+small*96
+            out.append(f'<line x1="{x+w/2:.0f}" y1="46" x2="{lx+20}" y2="28" stroke="{COLS[k]}" stroke-width="1.5"/><text x="{lx}" y="22" font-size="14" font-weight="700" fill="{COLS[k]}">{t} {cnt}问</text>')
+            small+=1
+        x+=w
+    out.append('<text x="4" y="142" font-size="13" fill="currentColor" opacity=".7">引言 Q1–2 · 1 个主日　|　罪与愁苦 Q3–11 · 3 个主日</text></svg>'); return ''.join(out)

@@ -10,7 +10,7 @@ for ld in D['hc']:
     if top!=cur:
         cur=top; b.append(f'<h2 id="p{n}" style="margin-top:40px"><span class="ico">{p[3]}</span>{esc(top)}</h2>')
     sub=(' · '+ld['crumbs'][1]) if len(ld['crumbs'])>1 else ''
-    b.append(f'<section class="sec" style="margin:18px 0"><h3 id="ld{n}" data-toc="主日{n}{sub}" style="color:{p[2]}">📅 主日 {n}<span class="muted small">{esc(sub)}</span> <a class="small" href="../ld/{n:02d}.html">→ 深度解析</a></h3>'+''.join(qa_html(q,p[2]) for q in ld['qas'])+'</section>')
+    b.append(f'<section class="sec" style="margin:18px 0"><h3 id="ld{n}" data-toc="主日{n}{sub}" style="color:{p[2]}">📅 主日 {n}<span class="muted small">{esc(sub)}</span> <a class="small" href="../ld/{n:02d}.html">→ 深度解析</a></h3>'+''.join(qa_html(q,p[2],lv=3) for q in ld['qas'])+'</section>')
 page('texts/hc.html','海德堡要理问答 全文阅读版',''.join(b),'海德堡要理问答129问全文 干净阅读背诵版')
 # BC
 b=[f'<section class="hero reveal"><span class="chip d">🛡️ 干净阅读版</span><h1>比利时信条（全文 37 条）</h1><p class="lead">又名《真基督教信条》，1561 年德布利（Guido de Brès）著。全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/the-belgic-confession" target="_blank" rel="noopener">ccifellowship.org</a>。</p>{tools}</section>']
@@ -22,7 +22,7 @@ for gi,(s,e,t) in enumerate(groups):
     b.append(f'<h3 id="g{s}" data-toc="第{s}{"–"+str(e) if e!=s else ""}条 {t}" style="color:{cols[gi]}">🔖 第{s}{"–"+str(e) if e!=s else ""}条 · {t}<span class="small muted">（本站分组）</span></h3>')
     for k in range(s,e+1):
         a=BC[k]; refs=''.join(f'<li>{esc(r)}</li>' for r in a['refs'])
-        b.append(f'<div class="art reveal" id="bc{k}" style="--c:{cols[gi]}"><div class="tools" style="float:right"><button class="btn" data-speak style="padding:2px 8px">🔊</button></div><h3>{esc(a["title"])}</h3>{"".join(f"<p>{x}</p>" for x in a["paras"])}'+(f'<details class="small muted"><summary>📖 经文出处（{len(a["refs"])}）</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
+        b.append(f'<div class="art reveal" id="bc{k}" data-lv="3" data-toc="{esc(a['title'])}" style="--c:{cols[gi]}"><div class="tools" style="float:right"><button class="btn" data-speak style="padding:2px 8px">🔊</button></div><h3>{esc(a["title"])}</h3>{"".join(f"<p>{x}</p>" for x in a["paras"])}'+(f'<details class="small muted"><summary>📖 经文出处（{len(a["refs"])}）</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
 b.append('</div></section>')
 page('texts/bc.html','比利时信条 全文阅读版',''.join(b),'比利时信条37条全文')
 # CD
@@ -35,7 +35,7 @@ for s in D['cd']:
     for a in s['arts']:
         rid=f'{s["sec"]}-{a["n"]}'; refs=''.join(f'<li>{esc(r)}</li>' for r in a['refs'])
         isrej=a['title']=='错谬反驳'
-        b.append(f'<div class="art reveal" id="cd{rid}" style="--c:{"var(--misery)" if isrej else c}{";border-style:dashed" if isrej else ""}">'+(f'<h3 id="rej-{s["sec"]}" data-toc="{esc(s["title"][:6])} · 错谬反驳">❌ 错谬反驳</h3>' if isrej else f'<h3>{esc(a["title"])}</h3>')+''.join(f'<p>{x}</p>' for x in a['paras'])+(f'<details class="small muted"><summary>📖 经文出处</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
+        b.append(f'<div class="art reveal" id="cd{rid}" data-lv="2" data-toc="{esc(a['title'])}" style="--c:{"var(--misery)" if isrej else c}{";border-style:dashed" if isrej else ""}">'+(f'<h3 id="rej-{s["sec"]}">❌ 错谬反驳</h3>' if isrej else f'<h3>{esc(a["title"])}</h3>')+''.join(f'<p>{x}</p>' for x in a['paras'])+(f'<details class="small muted"><summary>📖 经文出处</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
     b.append('</div></section>')
 page('texts/cd.html','多特信经 全文阅读版',''.join(b),'多特信经全文')
 # creeds
@@ -48,4 +48,13 @@ for cr in D['creeds']:
              f'<div class="creed reveal" data-speakbox style="border-color:color-mix(in srgb,{c} 45%,var(--bd))"><div style="float:right"><button class="btn" data-speak style="padding:2px 10px">🔊 朗读</button></div>{"".join(f"<p>{x}</p>" for x in cr["text"])}</div>'
              f'<details class="card" style="margin-top:12px"><summary style="cursor:pointer">ℹ️ 关于{esc(cr["title"])}（ccifellowship.org 简介原文）</summary><div class="reading" style="font-size:16px">{intro(cr["intro"])}</div></details><p class="src">原文：<a href="{cr["url"]}" target="_blank" rel="noopener">{cr["url"]}</a></p></section>')
 page('texts/creeds.html','三大普世信经',''.join(b),'使徒信经 尼西亚信经 亚他那修信经 原文')
+hub=f'''<section class="hero reveal"><span class="chip i">📜 原文中心</span><h1>三项联合信条 + 三大普世信经</h1><p class="lead">全部原文一字不改地引自 <a href="{CCI}/books/book-of-praise" target="_blank" rel="noopener">ccifellowship.org《中国改革宗敬拜手册》</a>。阅读版带背诵模式、朗读、脚注开关；笔记标记可用 🖍️ 按钮或 M 键关闭。</p></section>'''
+cards=[('hc.html','📜','海德堡要理问答','1563 · 52 主日 · 129 问','“安慰”的教理问答：罪 · 恩 · 谢','var(--deliv)',129),
+('bc.html','🛡️','比利时信条','1561 · 37 条','受逼迫教会向君王的公开认信','var(--intro)',37),
+('cd.html','🌷','多特信经','1618–1619 · 四项（五点）','回应抗辩派：恩典的教义','var(--grat)',sum(len(x['arts']) for x in D['cd'])),
+('creeds.html','⛪','三大普世信经','使徒 · 尼西亚 · 亚他那修','与历代众圣徒同一信仰','var(--gold)',3)]
+mx=129
+hub+=sec('forms','📚','原文目录','<div class="grid g2">'+''.join(f'<a class="card lift reveal" href="{h}" style="border-top:4px solid {c}"><h3 id="hub-{h[:-5]}" style="color:{c}">{i} {t}</h3><p class="small muted" style="margin:0">{d}</p><p style="margin:.4em 0">{x}</p><svg viewBox="0 0 300 14" style="width:100%;height:14px"><rect width="300" height="14" rx="7" fill="currentColor" opacity=".08"/><g class="barx" style="transform-box:fill-box"><rect width="{max(n/mx*300,14):.0f}" height="14" rx="7" fill="{c}"/></g></svg><p class="small muted" style="margin:.2em 0 0">{n} 个条目</p></a>' for h,i,t,d,x,c,n in cards)+'</div>')
+hub+=sec('how','🧭','怎样使用阅读版','<div class="card reveal"><ol class="core"><li>先读 <b>海德堡要理问答</b> 的一个主日，再点“→ 深度解析”看解读。</li><li>对照页中的 <b>比利时信条</b> 条文看同一教义的“公开认信”表达。</li><li>遇到拣选、恩典、坚忍等问题，查 <b>多特信经</b> 的正面条文与“错谬反驳”。</li><li>用 <b>背诵模式</b>（R 键）遮住答案自测；用 🔊 朗读辅助记忆。</li></ol></div>')
+page('texts/index.html','原文中心',hub,'三项联合信条与普世信经原文中心')
 print('texts done')

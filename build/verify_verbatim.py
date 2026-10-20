@@ -19,3 +19,13 @@ for f in glob.glob(ROOT+'/site/**/*.html',recursive=True):
         if t not in orig: bad+=1; badl.append((os.path.relpath(f,ROOT),t[:80]))
 print('checked',tot,'verbatim blocks; mismatches',bad)
 for x in badl[:20]: print(x)
+# v3: gold-quote callouts must be exact substrings of an original paragraph
+allorig='\n'.join(orig)
+gt=gb=0;mk=0
+for f in glob.glob(ROOT+'/site/**/*.html',recursive=True):
+    s=BeautifulSoup(open(f).read(),'lxml')
+    mk+=len(s.select('[class^="mk-"]'))
+    for el in s.select('.co-gold:not(.sample)'):
+        m=re.search(r'“(.+?)”',el.get_text()); gt+=1
+        if not m or m.group(1) not in allorig: gb+=1; print('GOLD MISMATCH',f,m and m.group(1))
+print('gold quotes checked',gt,'mismatches',gb,'| mark spans on site',mk)

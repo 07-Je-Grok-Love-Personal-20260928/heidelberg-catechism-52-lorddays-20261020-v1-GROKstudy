@@ -89,7 +89,7 @@ python3 build/toc_test.py URL           # 目录拖动/折叠测试
 python3 build/perf.py URL out.json      # 性能测量
 git subtree push --prefix site origin gh-pages
 surge site heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh
-netlify deploy --prod --dir site --site <v3 site id>
+netlify deploy --prod --dir site --site 22d5c459-5918-4538-83ec-156d777963e0
 ```
 
 ## 🗂️ 版本历史

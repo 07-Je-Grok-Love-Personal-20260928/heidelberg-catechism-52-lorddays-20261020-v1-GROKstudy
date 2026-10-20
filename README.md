@@ -1,4 +1,4 @@
-# heidelberg-catechism-52-lorddays-20261020-v2-CCstudy
+# heidelberg-catechism-52-lorddays-20261020-v2-GROKstudy
 
 > 《海德堡要理问答》52 主日全景深度解析：简体中文深度学习网站，共 129 问，持守欧陆改革宗立场（三项联合信条 + 三大普世信经）。
 
@@ -7,8 +7,8 @@
 | 平台 | 链接 |
 |---|---|
 | GitHub Pages | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
-| Surge | https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.surge.sh |
-| Netlify | https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.netlify.app |
+| Surge | https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh |
+| Netlify | https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app |
 
 📦 源码仓库：https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy
 
@@ -56,8 +56,8 @@ bash build/build_all.sh                          # 生成 site/
 python3 build/verify_verbatim.py                 # 逐字校验
 python3 build/layout_check.py                    # 布局溢出检测（需本地 http://localhost:8765）
 git subtree push --prefix site origin gh-pages   # GitHub Pages
-surge site heidelberg-catechism-52-lorddays-20261020-v2-ccser.surge.sh
-netlify deploy --prod --dir site --site <v2-site-id>
+surge site heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh
+netlify deploy --prod --dir site --site 63dd7379-0a1f-4f0a-aadb-7d6460e10fe0
 ```
 
 ## 🗂️ 版本历史
@@ -66,8 +66,8 @@ netlify deploy --prod --dir site --site <v2-site-id>
 | 平台 | 链接 |
 |---|---|
 | GitHub Pages | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
-| Surge | https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.surge.sh |
-| Netlify | https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.netlify.app |
+| Surge | https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh |
+| Netlify | https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app |
 
 变更：见上方“更新说明”。仓库由 `heidelberg-catechism-52-lorddays-20261020-v1-GROKstudy` 更名为 `heidelberg-catechism-52-lorddays-GROKstudy`（保留全部历史）。
 

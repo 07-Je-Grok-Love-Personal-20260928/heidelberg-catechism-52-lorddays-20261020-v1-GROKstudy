@@ -26,7 +26,7 @@ fetch('assets/data/search.json').then(r=>r.json()).then(j=>{{D=j;['全部','海�
 const u=new URLSearchParams(location.search).get('q');if(u)q.value=u;run()}});q.addEventListener('input',run)}})()</script>'''
 page('search.html','全文搜索',srch,'海德堡要理问答、比利时信条、多特信经、普世信经全文搜索')
 V1=[('GitHub Pages（旧仓库名，仓库更名后已失效）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-20261020-v1-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v1-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v1-grokstudy.netlify.app')]
-V2=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.netlify.app')]
+V2=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app')]
 v2changes=['📱 手机端圣约神学流程图改为竖排“盟约阶梯”，平板与桌面仍显示 Mermaid 流程图；其余流程图在手机上按原始比例横向滑动，文字清晰。',
 '🪔 52 个主日全部新增“深化”板块：一个圣经画面、如何指向基督、一句祷告、两道小组/家庭讨论题（共 208 条新内容）。',
 '🔎 新增全文搜索页：129 问、37 条比利时信条、多特信经全部条文、三大信经与 52 篇解读，可按类别筛选并高亮关键词。',

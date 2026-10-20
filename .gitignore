@@ -2,3 +2,4 @@ src/pages/
 src/*.html
 __pycache__/
 .netlify/
+site/CNAME

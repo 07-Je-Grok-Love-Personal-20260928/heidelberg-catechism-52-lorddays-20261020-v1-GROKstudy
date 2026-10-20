@@ -1,0 +1,40 @@
+{
+ "V1": [
+  [
+   "GitHub Pages（旧仓库名，仓库更名后已失效）",
+   "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-20261020-v1-GROKstudy/"
+  ],
+  [
+   "Surge",
+   "https://heidelberg-catechism-52-lorddays-20261020-v1-grokstudy.surge.sh"
+  ],
+  [
+   "Netlify",
+   "https://heidelberg-catechism-52-lorddays-20261020-v1-grokstudy.netlify.app"
+  ]
+ ],
+ "V2": [
+  [
+   "GitHub Pages",
+   "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
+  ],
+  [
+   "Surge",
+   "https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.surge.sh"
+  ],
+  [
+   "Netlify",
+   "https://heidelberg-catechism-52-lorddays-20261020-v2-ccser.netlify.app"
+  ]
+ ],
+ "changes": [
+  "📱 手机端圣约神学流程图改为竖排“盟约阶梯”，平板与桌面仍显示 Mermaid 流程图；其余流程图在手机上按原始比例横向滑动，文字清晰。",
+  "🪔 52 个主日全部新增“深化”板块：一个圣经画面、如何指向基督、一句祷告、两道小组/家庭讨论题（共 208 条新内容）。",
+  "🔎 新增全文搜索页：129 问、37 条比利时信条、多特信经全部条文、三大信经与 52 篇解读，可按类别筛选并高亮关键词。",
+  "🆕 新增版本徽章（顶栏）与本更新记录页。",
+  "⚡ 性能：脚本 defer；Mermaid 只在图表接近可视区时才加载；地图库 Leaflet 改为按需加载；手机端减少毛玻璃模糊层以提升滚动流畅度；长列表卡片使用 content-visibility；图片标注尺寸并懒加载。",
+  "🎨 主题在页面渲染前即应用（无闪烁）；表格首列不折行；打印样式优化。",
+  "🏷️ 仓库更名为 heidelberg-catechism-52-lorddays-GROKstudy（保留全部历史），GitHub Pages 地址随之更新；全站只用相对路径。",
+  "✅ 原文逐字校验仍为 0 处差异；375 / 768 / 1440 三种宽度的溢出检测重新跑过；截图全部重拍。"
+ ]
+}

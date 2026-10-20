@@ -1,4 +1,5 @@
 from common import *
+from notes4 import X
 def strip_tags(s): return re.sub('<[^>]+>','',s)
 def ld_page(ld):
     n=ld['n']; no=N[n]; p=part(n); c=p[2]; a,b=qrange(ld)
@@ -41,6 +42,12 @@ def ld_page(ld):
             if x in WSC_EN: wsc+=f'<blockquote class="small" style="margin:6px 0;padding:8px 12px;border-left:3px solid var(--gold);background:var(--card2);border-radius:8px" lang="en">{esc(WSC_EN[x])}<br><span class="muted">— Westminster Shorter Catechism, opc.org</span></blockquote>'
     s5=f'<section class="sec"><h2 id="xref"><span class="ico">🧩</span>三项联合信条交叉对照（原文可展开）</h2><div class="card pan xref reveal">{"".join(xs) or "<p class=muted>本主日内容主要在要理问答中独立展开。</p>"}{wsc}</div></section>'
     s6=f'<section class="sec"><h2 id="app"><span class="ico">🌱</span>怎么应用？</h2><div class="card pan app reveal"><ul class="clean">{"".join(f"<li>✅ {esc(x)}</li>" for x in no["app"])}</ul></div></section>'
+    st,ch,pr,dq=X[n]
+    s6b=f'''<section class="sec"><h2 id="deep"><span class="ico">🪔</span>深化：圣经故事 · 基督中心 · 祷告 · 讨论</h2><div class="grid g2">
+<div class="card pan big reveal"><h3>📚 圣经中的一个画面</h3><p>{esc(st)}</p></div>
+<div class="card pan cov reveal"><h3>✝️ 如何指向基督</h3><p>{esc(ch)}</p></div>
+<div class="card pan app reveal"><h3>🙏 一句祷告</h3><p style="font-family:var(--serif)">{esc(pr)}</p></div>
+<div class="card pan why reveal"><h3>💬 小组 / 家庭讨论</h3><ol class="clean">{''.join(f"<li>{esc(x)}</li>" for x in dq)}</ol></div></div></section>'''
     # memory
     cards=''.join(f'<div class="fc reveal" style="--c:{c}"><div class="in"><div class="f"><div class="small muted">点击翻转</div><div class="big">Q{qnum(q)}</div><div>{esc(re.sub(r"^\d+[．.]\s*问：","",q["q"]))}</div></div><div class="b">{"".join(f"<p>{x}</p>" for x in q["a"])}</div></div></div>' for q in ld['qas'])
     qz=no['quiz']; opts=''.join(f'<button class="opt">{"ABCD"[i]}. {esc(o)}</button>' for i,o in enumerate(qz[1]))
@@ -50,7 +57,7 @@ def ld_page(ld):
     s8=f'<section class="sec"><h2 id="more"><span class="ico">🎧</span>延伸阅读：ccifellowship.org 要理问答证道</h2><div class="card reveal"><ul class="clean">{"".join(f"<li>🗣️ <a href=\"{s["url"]}\" target=\"_blank\" rel=\"noopener\">{esc(s["title"])}</a></li>" for s in sers)}</ul><p class="small muted">证道作者 Clarence Stam（加拿大改革宗教会牧师），中文译本由 ccifellowship.org 提供。</p></div></section>'
     prev=f'<a id="prevLd" href="{n-1:02d}.html">⬅ 主日{n-1} · {esc(N[n-1]["t"])}</a>' if n>1 else '<a href="../lorddays.html">⬅ 52主日总览</a>'
     nxt=f'<a id="nextLd" class="r" href="{n+1:02d}.html">主日{n+1} · {esc(N[n+1]["t"])} ➡</a>' if n<52 else '<a class="r" href="../memory.html">🧠 去速记中心 ➡</a>'
-    body=hero+s1+s2+s3+s4+s5+s6+s7+s8+f'<div class="pager">{prev}{nxt}</div>'
+    body=hero+s1+s2+s3+s4+s5+s6+s6b+s7+s8+f'<div class="pager">{prev}{nxt}</div>'
     page(f'ld/{n:02d}.html',f'主日{n} {no["t"]}',body,desc=f'海德堡要理问答主日{n}：{no["t"]}——{no["k"]}')
 for ld in D['hc']: ld_page(ld)
 print('LD pages done')

@@ -6,8 +6,8 @@ D=json.load(open(os.path.join(ROOT,'data.json')))
 SER=json.load(open(os.path.join(ROOT,'sermons.json')))
 from notes1 import N as _a; from notes2 import N as _b; from notes3 import N as _c
 N={**_a,**_b,**_c}
-VERSION='v1'; DATE='2026-10-20'
-REPO='heidelberg-catechism-52-lorddays-20261020-v1-GROKstudy'
+VERSION='v2'; DATE='2026-10-20'
+REPO='heidelberg-catechism-52-lorddays-GROKstudy'
 CCI='https://ccifellowship.org'
 def esc(s): return html.escape(s,quote=True)
 def part(n):
@@ -48,7 +48,7 @@ WSC_EN={1:"Q. 1. What is the chief end of man? A. Man’s chief end is to glorif
 92:"Q. 92. What is a sacrament? A. A sacrament is an holy ordinance instituted by Christ; wherein, by sensible signs, Christ, and the benefits of the new covenant, are represented, sealed, and applied to believers.",
 12:"Q. 12. What special act of providence did God exercise toward man in the estate wherein he was created? A. When God had created man, he entered into a covenant of life with him, upon condition of perfect obedience; forbidding him to eat of the tree of the knowledge of good and evil, upon pain of death."}
 LOGO='<svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset=".5" stop-color="#60a5fa"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="16" fill="url(#lg)"/><path d="M32 13v38M20 25h24" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="32" cy="51" r="0"/></svg>'
-NAV=[('index.html','🏠 首页'),('bible.html','📖 圣经与圣约'),('history.html','🗺️ 历史地理'),('lorddays.html','📅 52主日'),('texts/hc.html','📜 要理问答'),('texts/bc.html','🛡️ 比利时信条'),('texts/cd.html','🌷 多特信经'),('texts/creeds.html','⛪ 普世信经'),('compare.html','⚖️ 信条对比'),('memory.html','🧠 速记'),('sources.html','🔗 资料')]
+NAV=[('index.html','🏠 首页'),('bible.html','📖 圣经与圣约'),('history.html','🗺️ 历史地理'),('lorddays.html','📅 52主日'),('texts/hc.html','📜 要理问答'),('texts/bc.html','🛡️ 比利时信条'),('texts/cd.html','🌷 多特信经'),('texts/creeds.html','⛪ 普世信经'),('compare.html','⚖️ 信条对比'),('memory.html','🧠 速记'),('search.html','🔎 搜索'),('sources.html','🔗 资料'),('changelog.html','🆕 更新')]
 def gnav(pre):
     out=['<h4>🧭 全站导航</h4><div id="gnav" class="toc">']
     for h,t in NAV: out.append(f'<a href="{pre}{h}">{t}</a>')
@@ -61,18 +61,18 @@ def page(path,title,body,desc='',head=''):
     depth=path.count('/'); pre='../'*depth
     navh=''.join(f'<a href="{pre}{h}" class="{"on" if h==path else ""}">{t}</a>' for h,t in NAV)
     doc=f'''<!doctype html><html lang="zh-Hans" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>{esc(title)} | 海德堡要理问答 52 主日深度解析</title><meta name="description" content="{esc(desc or title)}"><meta name="theme-color" content="#0b1020">
+<title>{esc(title)} | 海德堡要理问答 52 主日深度解析</title><meta name="description" content="{esc(desc or title)}"><meta name="theme-color" content="#0b1020"><script>try{{var t=JSON.parse(localStorage.getItem("hc-theme"));if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 <link rel="icon" href="data:image/svg+xml,{esc(LOGO.replace('class="logo" ','').replace('#','%23'))}">
-<link rel="stylesheet" href="{pre}assets/css/style.css">{head}</head><body>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="{pre}assets/css/style.css">{head}</head><body>
 <div class="bgfx"><i></i><i></i><i></i></div>
-<header class="topbar"><button class="ibtn" id="tocBtn" title="显示/隐藏目录 (T)" aria-label="目录">☰</button><a class="brand" href="{pre}index.html">{LOGO}<b>海德堡要理问答 · 52主日</b></a><nav class="nav">{navh}</nav><button class="ibtn" id="themeBtn" title="切换深浅色" aria-label="主题">🌓</button></header>
+<header class="topbar"><button class="ibtn" id="tocBtn" title="显示/隐藏目录 (T)" aria-label="目录">☰</button><a class="brand" href="{pre}index.html">{LOGO}<b>海德堡要理问答 · 52主日</b></a><nav class="nav">{navh}</nav><a class="vbadge" href="{pre}changelog.html" title="版本更新记录">{VERSION} · {DATE}</a><button class="ibtn" id="themeBtn" title="切换深浅色" aria-label="主题">🌓</button></header>
 <div class="progress"></div><div class="backdrop"></div>
 <div class="layout"><aside class="side"><input id="tocSearch" class="tocsearch" placeholder="🔍 过滤目录…"><h4>📑 本页目录</h4><div id="toc" class="toc"></div><hr style="border:none;border-top:1px solid var(--bd);margin:14px 0">{gnav(pre)}</aside>
 <main><div class="wrap">{body}
-<footer class="foot">📚 信条、信经原文一字不改地引自 <a href="{CCI}/books/book-of-praise">基督教华人网络团契 ccifellowship.org《中国改革宗敬拜手册》(2015)</a>，版权归原出版委员会所有，此处仅作学习引用并逐条注明出处。解读部分为本站原创学习笔记，持守欧陆改革宗三项联合信条。· 版本 {VERSION} · {DATE} · <a href="https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}">GitHub 源码</a></footer>
+<footer class="foot">📚 信条、信经原文一字不改地引自 <a href="{CCI}/books/book-of-praise">基督教华人网络团契 ccifellowship.org《中国改革宗敬拜手册》(2015)</a>，版权归原出版委员会所有，此处仅作学习引用并逐条注明出处。解读部分为本站原创学习笔记，持守欧陆改革宗三项联合信条。· <a href="{pre}changelog.html">版本 {VERSION} · {DATE}</a> · <a href="https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}">GitHub 源码</a></footer>
 </div></main></div>
 <div class="fab"><button class="ibtn" id="topBtn" title="回到顶部">⬆</button></div>
-<script src="{pre}assets/js/app.js"></script></body></html>'''
+<script src="{pre}assets/js/app.js" defer></script></body></html>'''
     fp=os.path.join(SITE,path); os.makedirs(os.path.dirname(fp),exist_ok=True)
     open(fp,'w').write(doc)
 def qa_html(q,c,anchor=True,tools=True):

@@ -158,6 +158,34 @@ ready(()=>{
   $$('#tl .ev, #pcards .pcard').forEach(x=>x.style.display=e==='all'||x.dataset.era===e?'':'none');
   $$('.scrub .dot').forEach(d=>d.classList.toggle('dim',e!=='all'&&d.dataset.era!==e));window.hcMapEra&&hcMapEra(e)}));
  document.addEventListener('click',e=>{const f=e.target.closest('[data-fly]');if(!f)return;const i=+f.dataset.fly;jump($('#map'),false);const go=()=>window.hcFly&&hcFly(i);if(window.hcFly)setTimeout(go,500);else document.addEventListener('hcmap',()=>setTimeout(go,300),{once:true})});
+
+ /* ---------- v5: continuous read-aloud player ---------- */
+ (()=>{const items=$$('main .qa:not(.fc .qa), main .art, main .creed').filter(x=>!x.closest('details:not([open])'));
+  if(items.length<2||!('speechSynthesis' in window))return;
+  const host=$('.hero .btns')||$('.hero');if(!host)return;
+  const tb=document.createElement('button');tb.className='btn';tb.id='readAll';tb.innerHTML='🎧 连续朗读';host.appendChild(tb);
+  const bar=document.createElement('div');bar.id='player';bar.setAttribute('role','region');bar.setAttribute('aria-label','朗读播放器');
+  bar.innerHTML='<button data-p="prev" title="上一段" aria-label="上一段">⏮</button><button data-p="play" title="播放/暂停" aria-label="播放/暂停">▶️</button><button data-p="next" title="下一段" aria-label="下一段">⏭</button><span class="pl"></span><select aria-label="语速"><option value=".75">0.75×</option><option value=".95" selected>1×</option><option value="1.2">1.25×</option><option value="1.5">1.5×</option></select><button data-p="stop" title="关闭" aria-label="关闭">✖</button><i class="pbarx"></i>';
+  document.body.appendChild(bar);
+  let i=0,on=false,tok=0;const lab=$('.pl',bar),pb=$('[data-p=play]',bar),sel=$('select',bar),px=$('.pbarx',bar);
+  const name=el=>{const q=$('.qn',el);return q?q.textContent:(el.dataset.toc||el.id||'').slice(0,18)};
+  const ui=()=>{lab.textContent=`${name(items[i])} · ${i+1}/${items.length}`;pb.textContent=on?'⏸':'▶️';px.style.transform=`scaleX(${(i+1)/items.length})`;items.forEach((x,k)=>x.classList.toggle('speaking',k===i&&bar.classList.contains('show')))};
+  const say=()=>{speechSynthesis.cancel();const my=++tok;const el=items[i];ui();
+   const r=el.getBoundingClientRect();if(r.top<70||r.bottom>innerHeight-80)jump(el,false);
+   const u=new SpeechSynthesisUtterance(clean(el));u.lang='zh-CN';u.rate=+sel.value;
+   u.onend=()=>{if(my!==tok||!on)return;if(i<items.length-1){i++;say()}else{on=false;ui();toast('✅ 朗读完毕')}};
+   u.onerror=()=>{if(my===tok){on=false;ui()}};speechSynthesis.speak(u)};
+  const open=()=>{bar.classList.add('show');b.classList.add('hasplayer')};
+  tb.addEventListener('click',()=>{open();const v=items.findIndex(x=>x.getBoundingClientRect().bottom>80);i=Math.max(0,v);on=true;say()});
+  bar.addEventListener('click',e=>{const k=e.target.closest('[data-p]')?.dataset.p;if(!k)return;
+   if(k==='play'){on=!on;if(on)say();else{tok++;speechSynthesis.cancel();ui()}}
+   if(k==='next'&&i<items.length-1){i++;on?say():ui()}
+   if(k==='prev'&&i>0){i--;on?say():ui()}
+   if(k==='stop'){on=false;tok++;speechSynthesis.cancel();bar.classList.remove('show');b.classList.remove('hasplayer');ui()}});
+  sel.addEventListener('change',()=>{if(on)say()});
+  addEventListener('pagehide',()=>speechSynthesis.cancel());
+  window.hcPlayer={items,get i(){return i}};
+ })();
  /* ---------- keyboard ---------- */
  addEventListener('keydown',e=>{if(e.target.matches('input,textarea')||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key;if(k==='t')tocBtn?.click();else if(k==='r')$('#reciteBtn')?.click();else if(k==='m')$('#marksBtn')?.click();else if(k==='ArrowLeft'&&$('#prevLd'))location.href=$('#prevLd').href;else if(k==='ArrowRight'&&$('#nextLd'))location.href=$('#nextLd').href});
  $('#topBtn')?.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));

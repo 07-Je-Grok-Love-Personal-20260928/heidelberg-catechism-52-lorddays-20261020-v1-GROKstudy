@@ -12,7 +12,8 @@ for k,f in P.items():
     for el in c.find_all(['p','h4','li']): orig.add(norm(el.get_text()))
 tot=bad=0; badl=[]
 for f in glob.glob(ROOT+'/site/**/*.html',recursive=True):
-    s=BeautifulSoup(open(f).read(),'lxml')
+    # v6: paginated lists keep their items in <template>; lxml hides template text, so read it as a normal div
+    s=BeautifulSoup(open(f).read().replace('<template>','<div data-tpl>').replace('</template>','</div>'),'lxml')
     sel=s.select('.qa .q span:not(.qn)')+s.select('.qa .a p')+s.select('.qa ol.refs li')+s.select('.reading .art p:not(.src)')+s.select('.creed p')+s.select('.fc .b p')+s.select('details .reading p')+s.select('.card.reading > p')
     for el in sel:
         t=norm(el.get_text()); tot+=1

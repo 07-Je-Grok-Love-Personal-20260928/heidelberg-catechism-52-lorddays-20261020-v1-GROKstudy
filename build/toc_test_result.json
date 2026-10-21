@@ -57,7 +57,7 @@
  [
   "TOC jump lands on target despite content-visibility",
   true,
-  "top=69"
+  "top=72"
  ],
  [
   "scrollspy highlights current Q and auto-expands parents",
@@ -165,9 +165,9 @@
   "{\"n\": 6, \"on\": \"✝️ 救赎\", \"op\": \"1\"}"
  ],
  [
-  "v5 perspective compass opens",
+  "v6 LD distilled: no compass, core list once in essence + KPI card",
   true,
-  "1"
+  "{\"pv\": 0, \"core\": 3, \"kpi\": 4, \"dupcore\": 1}"
  ],
  [
   "v5 read-aloud player opens, highlights, next",
@@ -183,5 +183,65 @@
   "v5 bible matrix has all 52 LDs",
   true,
   "52"
+ ],
+ [
+  "v6 backdrop-filter only on topbar (if any)",
+  true,
+  "[\"topbar\"]"
+ ],
+ [
+  "v6 picker lists 5 themes",
+  true,
+  "5"
+ ],
+ [
+  "v6 theme switch applies + persists + syncs strip",
+  true,
+  "[\"forest\", \"\\\"forest\\\"\", \"#08160f\", \"true\"]"
+ ],
+ [
+  "v6 theme strip changes colors",
+  true,
+  "rgb(8, 22, 15) -> rgb(20, 12, 34)"
+ ],
+ [
+  "v6 theme applied before paint on next page",
+  true,
+  "grape"
+ ],
+ [
+  "v6 LD svgs themed via CSS vars (no hard-coded hex attrs except logo)",
+  true,
+  "0"
+ ],
+ [
+  "v6 marks toggle (M) still works",
+  true,
+  "[true, \"none\"]"
+ ],
+ [
+  "v6 memory deck paginated (12/page, next, part filter, jump)",
+  true,
+  "{\"cards\": 12, \"first\": \"1\", \"lab\": \" 1 / 11 页 · 129 项 \", \"dom\": 969, \"lg\": 8} next=13 g=True jump=True"
+ ],
+ [
+  "v6 three-level marks legend (8 rows)",
+  true,
+  "8"
+ ],
+ [
+  "v6 mermaid prerendered, library not loaded",
+  true,
+  "{\"st\": 1, \"lib\": false, \"err\": false}"
+ ],
+ [
+  "v6 cross-reference heatmap 52x4",
+  true,
+  "208"
+ ],
+ [
+  "v6 era gantt 5 bars",
+  true,
+  "5"
  ]
 ]

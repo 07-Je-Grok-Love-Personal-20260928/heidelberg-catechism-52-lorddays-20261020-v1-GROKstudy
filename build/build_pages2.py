@@ -36,6 +36,10 @@ cp+=sec('why3','❓','二、为什么需要三份，而不是一份？','''<div 
 <div class="card pan big reveal"><h3>④ “联合”的意义：跨地域、跨语言的合一</h3><p>一部来自德国、一部来自南尼德兰、一部由国际大会制定，被荷兰改革宗教会共同签署，成为“联合”信条——表明改革宗信仰不是某地的私见，而是大公教会的圣经信仰。</p></div>
 <div class="card pan hard reveal"><h3>⚠️ 难点：它们有没有矛盾？</h3><p>没有。多特大会正是以比利时信条与海德堡为准绳审查抗辩派，并确认二者。多特信经并没有增加新教义，而是把前两份已有的恩典教义（如第1、21、54问、比利时信条第14–16条）展开、捍卫。</p></div>
 <div class="card pan app reveal"><h3>🌱 应用：怎样一起读？</h3><p>先读海德堡（心）→ 再读比利时信条（骨架）→ 再读多特信经（防线）。每个主日页面都附有交叉对照，方便“一问一条一项”联读。</p></div></div>''')
+from compare_v5 import problems, venn, remon
+cp+=sec('problems','🧯','三个处境 → 三份文件：各自要解决什么问题',problems())
+cp+=sec('venn','⭕','维恩图：独有重点与共同核心（点击区域跳到原文）','<div class="card reveal" style="max-width:640px;margin:auto">'+venn()+'</div>')
+cp+=sec('remon','🌪️','抗辩派五条 vs 多特 vs 海德堡 vs 比利时',remon())
 cp+=sec('same','🔁','三、相同点与不同点','''<div class="grid g2"><div class="card pan core reveal"><h3>✅ 相同点</h3><ul class="clean"><li>唯独圣经为最高权威（比利时信条第7条）。</li><li>接受三大普世信经（比利时信条第9条；海德堡第23问引用使徒信经）。</li><li>全然败坏、唯独恩典、唯独基督、唯独信心。</li><li>以安慰与确据为教牧目标（海德堡第1问；多特信经第五项）。</li><li>与圣经引证紧密结合（每条附经文）。</li></ul></div>
 <div class="card pan err reveal"><h3>↔️ 不同点</h3><ul class="clean"><li>人称：“我”（HC）／“我们”（BC）／会议宣告（CD）。</li><li>范围：HC 与 BC 是全面的；CD 是针对五点的专题性文件。</li><li>语气：HC 温和教牧；BC 庄严护教；CD 精确论辩。</li><li>形式：CD 独有“错谬反驳”部分。</li><li>用途：HC 用于主日讲道与教理班；BC 用于公开认信；CD 用于教义裁定与圣职签署。</li></ul></div></div>''')
 cp+=sec('flow','🧩','四、三份信条如何互相支撑（流程图）','''<div class="mermaid">flowchart TB

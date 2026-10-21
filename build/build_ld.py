@@ -11,6 +11,7 @@ def kwmark(s,kws):
     return s
 def ld_page(ld):
     n=ld['n']; no=N[n]; p=part(n); c=p[2]; a,b=qrange(ld); th,trap,gold=T[n]
+    st,ch,pr,dq=X[n]
     goldq=next(qnum(q) for q in ld['qas'] if any(gold in x for x in q['a']))
     K=lambda s:kwmark(esc(s),no['kw'])
     crumbs=' › '.join(ld['crumbs']) or '引言'
@@ -38,8 +39,15 @@ def ld_page(ld):
         chain.append(f'<div class="node" style="--c:{c}"><b>Q{qnum(q)}</b> {esc(qt)}</div>')
     s1=sec('text','📜','原文：中文《海德堡要理问答》',f'<p class="src">以下问答一字不改地引自 <a href="{ld["url"]}" target="_blank" rel="noopener">ccifellowship.org · 主日{n}</a>（上标数字对应经文出处；彩色标记仅为样式，可按 M 关闭）。</p><div class="card reveal nolv" style="margin-bottom:12px"><b class="small muted">🔗 问题推进</b><div class="chain" style="margin-top:6px">{"".join(chain)}</div></div>'+''.join(qa_html(q,c,lv=2) for q in ld['qas']))
     # 3. whole
-    st,ch,pr,dq=X[n]
-    s2=sec('whole','🌍','整体：圣经神学 · 圣约神学 · 基督中心',f'''<div class="grid g2">
+    act=ld_act(n)
+    acts=''.join(f'<span class="act{" on" if k==act else ""}">{i} {t}</span>' for k,i,t in ACTS)
+    qchips=''.join(f'<a class="chip" href="#q{qnum(q)}">Q{qnum(q)}</a>' for q in ld['qas'])
+    rungs=[('🌍 圣经大戏',f'<div class="acts">{acts}</div>'),('🤝 圣约阶段',esc(ld_cov(n))),('🏛️ 教义主题',esc(ld_locus(n))),('📘 要理问答',f'{p[3]} {esc(p[1])}'+''.join(f' › {esc(x)}' for x in ld['crumbs'] if not x.startswith('第') or '部' not in x[:4])),('📅 本主日',f'<b>{esc(ld_label(n))}</b> — {esc(no["k"])}'),('❓ 各问',qchips)]
+    zoom='<div class="card reveal zoom"><h3 id="w-zoom">🔭 从整体到局部：六级缩放</h3><ol class="ladder">'+''.join(f'<li style="--i:{i}"><span class="rl">{h}</span><span class="rv2">{v}</span></li>' for i,(h,v) in enumerate(rungs))+'</ol><p class="small muted" style="margin:6px 0 0">本站的学习分类标签，并非信条原文。</p></div>'
+    PV=[('📖','整本圣经','big',no['big']),('🤝','圣约','cov',no['cov']),('📚','圣经画面','story',st),('✝️','指向基督','christ',ch),('🏛️','历史背景','why',no['why']),('📌','核心要点','core',no['core'][0]),('⚠️','难点','hard',no['hard']),('🌱','生活应用','app',no['app'][0])]
+    tgt={'big':'w-bible','cov':'w-cov','story':'w-story','christ':'w-christ','why':'why','core':'core','hard':'hard','app':'app'}
+    comp='<div class="card reveal"><h3 id="w-persp">🧭 八个视角罗盘（点击翻开一句话，再跳到详解）</h3><div class="persp">'+''.join(f'<details class="pv"><summary><span class="pi">{i}</span>{t}</summary><p>{esc(first(v))}</p><a class="small" href="#{tgt[k]}">详解 ↓</a></details>' for i,t,k,v in PV)+'</div></div>'
+    s2=sec('whole','🌍','整体：圣经神学 · 圣约神学 · 基督中心',zoom+'<div style="height:14px"></div>'+comp+f'''<div style="height:14px"></div><div class="grid g2">
 <div class="card pan big reveal"><h3 id="w-bible">📖 整本圣经的视角</h3><p>{K(no['big'])}</p></div>
 <div class="card pan cov reveal"><h3 id="w-cov">🤝 圣约神学的视角</h3><p>{K(no['cov'])}</p></div>
 <div class="card pan core reveal"><h3 id="w-story">📚 圣经中的一个画面</h3><p>{K(st)}</p></div>

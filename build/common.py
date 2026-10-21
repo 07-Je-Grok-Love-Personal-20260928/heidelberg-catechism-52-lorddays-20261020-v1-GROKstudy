@@ -210,3 +210,27 @@ def qa_html(q,c,anchor=True,tools=True,lv=None,marks=True):
     short=re.sub(r'^\d+[．.]\s*问：','',q['q'])
     lva=f' data-lv="{lv}" data-toc="Q{n} {esc(short)}"' if lv else ''
     return f'<div class="qa reveal" id="q{n}" style="--c:{c}"{lva}>{t}<div class="q"><span class="qn">Q{n}</span><span>{qtext}</span></div><div class="a">{a}</div>{rd}</div>'
+
+# ===== v5: canonical whole-Bible mapping (study labels, not confessional text) =====
+ACTS=[('cr','🌅','创造'),('fa','🍎','堕落'),('re','✝️','救赎'),('co','👑','完成'),('rs','🙌','回应')]
+def ld_act(n):
+    if n==1: return 're'
+    if n<=4: return 'fa'
+    if n in (9,10): return 'cr'
+    if n in (19,22): return 'co'
+    if n<=31: return 're'
+    return 'rs'
+def ld_cov(n):
+    if n==1: return '恩典之约的总纲：我属于信实的救主'
+    if n<=4: return '工作之约（生命之约）被违背：律法显明罪'
+    if n<=7: return '恩典之约的中保与接受（真信心）'
+    if n<=10: return '三一神：创造与护理之约的主'
+    if n<=19: return '恩典之约的中保：基督的位格与职分、降卑与升高'
+    if n<=22: return '圣灵施行恩典之约：教会、赦罪、复活与永生'
+    if n<=24: return '恩典之约的福益：唯独因信称义'
+    if n<=30: return '恩典之约的记号与印证：圣礼'
+    if n==31: return '恩典之约群体的秩序：天国的钥匙'
+    if n<=44: return '恩典之约中的感恩生活：十诫（律法第三功用）'
+    return '恩典之约中的感恩生活：祷告与主祷文'
+LOCI=[(1,1,'📖 序论（安慰）'),(2,4,'🧍 人论 · 罪论'),(5,7,'🌉 救恩论（中保与信心）'),(8,10,'👑 神论（三一 · 创造 · 护理）'),(11,19,'✝️ 基督论'),(20,20,'🕊️ 圣灵论'),(21,21,'⛪ 教会论'),(22,22,'⏳ 末世论'),(23,24,'⚖️ 救恩论（称义）'),(25,30,'🍞 圣礼论'),(31,31,'🗝️ 教会论（纪律）'),(32,44,'📜 伦理（十诫）'),(45,52,'🙏 祷告')]
+def ld_locus(n): return next(t for a,b,t in LOCI if a<=n<=b)

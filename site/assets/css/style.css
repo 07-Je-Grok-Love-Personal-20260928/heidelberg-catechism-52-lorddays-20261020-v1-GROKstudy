@@ -305,3 +305,11 @@ section.sec>h2::after{content:"";flex:1;height:2px;margin-left:10px;border-radiu
 section.sec:hover>h2::after{transform:scaleX(1)}
 .qa.reveal{transition-delay:calc(var(--i,0) * 40ms)}
 .gq{font-family:var(--serif);font-size:1.1em;font-weight:800;margin:6px 0 10px}
+
+/* ===== v5 ===== */
+dl.kv{display:grid;grid-template-columns:5.5em 1fr;gap:6px 10px;margin:0}dl.kv dt{font-weight:800;color:var(--muted);font-size:14px}dl.kv dd{margin:0;font-size:14.5px}
+.scrub .dot g{transform-box:fill-box;transform-origin:center;transform:scale(0);transition:transform .5s var(--ease),opacity .3s}
+.in .scrub .dot g,.scrub.in .dot g{transform:scale(1)}
+.scrub .dot:hover g{transform:scale(1.35)}
+.scrub .dot.dim g{opacity:.15}
+.pcard .tags .chip{font-size:12px;white-space:normal}

@@ -152,6 +152,12 @@ ready(()=>{
   $$('[data-pbar]').forEach(b=>{const [a,z]=b.dataset.pbar.split('-').map(Number);let c=0;for(let i=a;i<=z;i++)if(done[i])c++;$('.barx',b).style.transform='scaleX('+(c/(z-a+1))+')';$('.pc',b).textContent=c+' / '+(z-a+1)})}
  /* ---------- v4: count-up KPIs (one rAF loop, text only) ---------- */
  const kp=$$('.kpi b');if(kp.length&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const vals=kp.map(b=>+b.textContent);const kio=new IntersectionObserver(es=>{if(!es.some(e=>e.isIntersecting))return;kio.disconnect();const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/900),e=1-Math.pow(1-p,3);kp.forEach((b,i)=>b.textContent=Math.round(vals[i]*e));if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});kio.observe(kp[0])}
+
+ /* ---------- v5: history — era filter, fly-to, scrubber ---------- */
+ $$('.erab [data-era]').forEach(btn=>btn.addEventListener('click',()=>{const e=btn.dataset.era;$$('.erab [data-era]').forEach(x=>x.classList.toggle('pri',x===btn));
+  $$('#tl .ev, #pcards .pcard').forEach(x=>x.style.display=e==='all'||x.dataset.era===e?'':'none');
+  $$('.scrub .dot').forEach(d=>d.classList.toggle('dim',e!=='all'&&d.dataset.era!==e));window.hcMapEra&&hcMapEra(e)}));
+ document.addEventListener('click',e=>{const f=e.target.closest('[data-fly]');if(!f)return;const i=+f.dataset.fly;jump($('#map'),false);const go=()=>window.hcFly&&hcFly(i);if(window.hcFly)setTimeout(go,500);else document.addEventListener('hcmap',()=>setTimeout(go,300),{once:true})});
  /* ---------- keyboard ---------- */
  addEventListener('keydown',e=>{if(e.target.matches('input,textarea')||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key;if(k==='t')tocBtn?.click();else if(k==='r')$('#reciteBtn')?.click();else if(k==='m')$('#marksBtn')?.click();else if(k==='ArrowLeft'&&$('#prevLd'))location.href=$('#prevLd').href;else if(k==='ArrowRight'&&$('#nextLd'))location.href=$('#nextLd').href});
  $('#topBtn')?.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));

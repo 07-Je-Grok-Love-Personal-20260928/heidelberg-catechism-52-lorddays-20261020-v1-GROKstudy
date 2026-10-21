@@ -7,7 +7,7 @@ def count(t):
     cjk=len(re.findall(r'[\u4e00-\u9fff]',t)); lat=len(re.findall(r'[A-Za-z]+',t)); return cjk+lat
 res={}
 for f in sorted(glob.glob(ROOT+'/*.html')+glob.glob(ROOT+'/ld/*.html')):
-    s=BeautifulSoup(open(f),'html.parser'); m=s.select_one('main')
+    s=BeautifulSoup(re.sub(r'<(/?)template\b',r'<\1div',open(f).read()),'html.parser'); m=s.select_one('main')
     if not m: continue
     for x in m.select(VERB): x.decompose()
     res[os.path.relpath(f,ROOT)]=count(m.get_text(' '))

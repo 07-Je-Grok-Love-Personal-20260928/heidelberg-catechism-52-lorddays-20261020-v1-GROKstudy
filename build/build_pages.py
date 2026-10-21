@@ -9,6 +9,26 @@ def ldgrid_groups():
             out.append(f'<a class="ld reveal" data-ld-card="{n}" data-p="{p[0]}" href="ld/{n:02d}.html" style="--c:{p[2]}"><div class="n">{LDI[n]} 主日 {n} · Q{qa}{"–"+str(qb) if qb!=qa else ""}</div><div class="t">{esc(N[n]["t"])}</div><div class="k">{esc(N[n]["k"])}</div><div class="rv" aria-hidden="true"><b>💎 论题</b><br>{esc(re.sub(r"[*=~_:!]{2}","",T[n][0]))}</div></a>')
         out.append('</div></div>')
     return '<div class="grps">'+''.join(out)+'</div>'
+def ldgrid_mini(pre=''):
+    out=['<div class="ldgrid mini">']
+    for ld in D['hc']:
+        n=ld['n'];p=part(n)
+        out.append(f'<a class="ld" data-ld-card="{n}" data-p="{p[0]}" href="{pre}ld/{n:02d}.html" style="--c:{p[2]}" title="{esc(N[n]["k"])}"><span class="n">{LDI[n]} {n}</span><span class="t">{esc(N[n]["t"])}</span></a>')
+    out.append('</div>'); return ''.join(out)
+def xheat():
+    """v6: cross-reference heatmap — 52 LDs x (questions, Belgic, Dort, WSC)."""
+    rows=[('问答','--intro',lambda n,ld:len(ld['qas'])),('比利时','--deliv',lambda n,ld:len(N[n]['bc'])),('多特','--grat',lambda n,ld:len(N[n]['cd'])),('威斯敏斯特','--gold',lambda n,ld:len(N[n]['wsc']))]
+    cw,ch,lx=13,20,76; W=lx+52*cw+4; H=len(rows)*(ch+4)+26
+    o=[f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="52 主日交叉引用热力图" style="width:100%;min-width:640px;height:auto">']
+    for r,(lab,var,f) in enumerate(rows):
+        vals=[f(ld['n'],ld) for ld in D['hc']]; mx=max(vals) or 1; y=r*(ch+4)
+        o.append(f'<text x="0" y="{y+14}" style="fill:var(--fg);font-size:12px">{lab}</text>')
+        for i,(ld,v) in enumerate(zip(D['hc'],vals)):
+            op=0.08 if v==0 else round(.25+.75*v/mx,2)
+            o.append(f'<a href="ld/{ld["n"]:02d}.html"><rect x="{lx+i*cw}" y="{y}" width="{cw-2}" height="{ch}" rx="3" style="fill:var({var});opacity:{op}"><title>主日{ld["n"]} {esc(N[ld["n"]]["t"])}：{lab} {v}</title></rect></a>')
+    yb=len(rows)*(ch+4)+14
+    for i in range(0,52,4): o.append(f'<text x="{lx+i*cw}" y="{yb}" style="fill:var(--muted);font-size:10px">{i+1}</text>')
+    o.append('</svg>'); return ''.join(o)
 def ldgrid(pre=''):
     out=['<div class="ldgrid">']
     for ld in D['hc']:
@@ -23,7 +43,7 @@ idx=f'''<section class="hero reveal"><div class="tags"><span class="chip i">🇩
 <div class="kpi"><div><b>52</b>主日</div><div><b>129</b>问答</div><div><b>37</b>比利时信条</div><div><b>4</b>多特信经·项</div><div><b>3</b>普世信经</div><div><b>57</b>篇延伸证道</div></div>
 <div class="btns" style="margin-top:20px"><a class="btn pri" href="ld/01.html">🚀 从主日1开始</a><a class="btn" href="bible.html">🌍 先看整本圣经</a><a class="btn" href="history.html">🗺️ 历史与地图</a><a class="btn" href="memory.html">🧠 速记中心</a></div></section>'''
 idx+=sec('legend','🎨','图例：颜色记忆法 + 笔记标记（全站统一）',f'''<div class="grid g2"><div class="card reveal"><h3 id="lg-color">🌈 四色 = 四部分</h3>{legend}<p style="margin-top:10px">一句话记住全书：<span class="mn" style="display:inline-block;padding:4px 12px;font-size:20px">1 安慰 → 3 罪 → 27 恩 → 21 谢</span></p><p class="small muted">主日数：引言 1 + 愁苦 3 + 得救 27 + 感恩 21 = 52；“得救”27 个主日 = 中保 2（5–6）+ 信心与使徒信经 16（7–22）+ 称义 2（23–24）+ 圣言·圣礼·钥匙 7（25–31）。</p></div>
-<div class="card reveal"><h3 id="lg-marks">🖍️ 笔记标记</h3>{legend_html(True)}</div></div>''')
+<div class="card reveal"><h3 id="lg-marks">🖍️ 笔记标记</h3>{legend_html(False)}<p class="small muted" style="margin:8px 0 0">三层含义与示例见 <a href="memory.html#marks">速记中心 · 标记图例</a>。</p><h3 id="lg-theme" style="margin-top:14px">🎨 五套配色（自动保存）</h3><div class="thstrip">{theme_buttons()}</div></div></div>''')
 idx+=sec('essence','💎','全书精华：一个论题 · 三个部分',f'''{callout('core','核心','《海德堡要理问答》的总论题是<span class="mk-k">“唯一的安慰”</span>：“或生或死，我的身体和灵魂都<span class="mk-b">不属于我自己</span>，而属于我信实的救主耶稣基督”（第1问）。全书按<span class="mk-u">罪（愁苦）→ 恩（得救）→ 谢（感恩）</span>展开，大致对应罗马书 1:18–3:20 / 3:21–11 章 / 12–16 章的次序。')}
 {callout('gold','金句',f'“{esc(T[1][2])}”<span class="src">　—— 原文第1问（逐字）</span>')}
 {callout('trap','易错','把“感恩”理解为<span class="mk-r">赚取救恩的条件</span>：第三部的好行为是<span class="mk-u">得救的果子</span>而非根据（参第86、91问）。')}
@@ -38,7 +58,7 @@ idx+=sec('three','🏛️','三大支柱：信经 · 十诫 · 主祷文','''<di
 <div class="card pan core reveal lift"><h3>⚖️ 十诫 → 怎样活</h3><p>主日 34–44（第 92–115 问）：律法的第三功用——蒙恩者感恩生活的准则。</p></div>
 <div class="card pan cov reveal lift"><h3>🙏 主祷文 → 怎样求</h3><p>主日 45–52（第 116–129 问）：祷告是“感恩中最重要的一部分”（第116问）。</p></div></div>
 <p class="muted small">此外，圣言与圣礼（主日 25–31）把“信”连于教会生活：讲道、洗礼、圣餐、天国钥匙。古代教会的教理问答传统即以“信经—十诫—主祷文”为三大纲，海德堡继承而以“安慰”统摄。</p>''')
-idx+=sec('all52','📅','52 主日一览（颜色＝所属部分）',f'<p class="muted">✅ 绿框＝你已标记学完（保存在本机浏览器）。</p>{ldgrid()}')
+idx+=sec('all52','📅','52 主日一览（颜色＝所属部分）',f'<p class="muted small">✅ 绿框＝已学完（存于本机）。悬停看口诀；论题与分组见 <a href="lorddays.html">52 主日总览</a>。</p>{ldgrid_mini()}')
 idx+=sec('path','🛤️','建议学习路径','''<div class="grid g4">
 <a class="card lift reveal" href="bible.html"><h3>① 🌍 整体</h3><p class="muted">圣经神学、圣约神学、多视角</p></a>
 <a class="card lift reveal" href="history.html"><h3>② 🗺️ 背景</h3><p class="muted">时间线、故事线、地图、文化</p></a>
@@ -108,7 +128,8 @@ lds=f'''<section class="hero reveal"><span class="chip">📅 52 主日 · 129 �
 <div class="btns" style="margin-top:14px"><button class="btn pri" data-part="all">全部</button><button class="btn" data-part="i">💜 引言</button><button class="btn" data-part="m">💔 愁苦</button><button class="btn" data-part="d">✝️ 得救</button><button class="btn" data-part="g">🌿 感恩</button></div>
 <input id="ldFilter" class="tocsearch" style="margin-top:12px;font-size:16px" placeholder="🔍 输入关键词或主日编号（如：圣餐、称义、12）"></section>'''
 lds+=sec('grid','🗂️','全部主日（按 17 个主题分组）',ldgrid_groups())
-rows=''.join(f'<tr><td><a href="ld/{ld["n"]:02d}.html">{LDI[ld["n"]]} 主日{ld["n"]}</a></td><td>Q{qrange(ld)[0]}–{qrange(ld)[1]}</td><td><span class="chip {part(ld["n"])[0]}">{part(ld["n"])[1]}</span></td><td>{esc(" › ".join(ld["crumbs"][1:]) or "—")}</td><td><b>{esc(N[ld["n"]]["t"])}</b></td><td>{esc(N[ld["n"]]["k"])}</td><td>{"、".join(str(x) for x in N[ld["n"]]["bc"]) or "—"}</td></tr>' for ld in D['hc'])
-lds+=sec('table','📊','总表：主日 · 问答 · 结构 · 口诀 · 比利时信条对照',f'<div class="tbl"><table><thead><tr><th>主日</th><th>问答</th><th>部分</th><th>子目</th><th>主题</th><th>口诀</th><th>BC条</th></tr></thead><tbody>{rows}</tbody></table></div>')
+rows=''.join(f'<tr><td><a href="ld/{ld["n"]:02d}.html">{LDI[ld["n"]]} 主日{ld["n"]}</a></td><td>Q{qrange(ld)[0]}–{qrange(ld)[1]}</td><td><span class="chip {part(ld["n"])[0]}">{part(ld["n"])[1]}</span></td><td>{esc(" › ".join(ld["crumbs"][1:]) or "—")}</td><td>{"、".join(str(x) for x in N[ld["n"]]["bc"]) or "—"}</td><td>{len(N[ld["n"]]["cd"]) or "—"}</td><td>{"、".join(str(x) for x in N[ld["n"]]["wsc"]) or "—"}</td></tr>' for ld in D['hc'])
+lds+=sec('heat','🔥','交叉引用热力图：哪些主日与其他信条联系最密',f'<div class="card reveal"><div class="chart mm">{xheat()}</div><p class="small muted" style="margin:6px 0 0">颜色越深＝本站为该主日列出的对照越多（比利时信条条数 / 多特信经段落 / 威斯敏斯特问数）；点击格子进入主日。</p></div>')
+lds+=sec('table','📊','总表：结构与信条对照',f'<div class="tbl"><table><thead><tr><th>主日</th><th>问答</th><th>部分</th><th>子目</th><th>比利时信条</th><th>多特</th><th>WSC</th></tr></thead><tbody>{rows}</tbody></table></div>')
 page('lorddays.html','52主日总览',lds,'海德堡要理问答52主日总览')
 print('pages part1 done')

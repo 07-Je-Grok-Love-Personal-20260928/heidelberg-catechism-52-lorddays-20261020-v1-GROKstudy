@@ -6,7 +6,7 @@ D=json.load(open(os.path.join(ROOT,'data.json')))
 SER=json.load(open(os.path.join(ROOT,'sermons.json')))
 from notes1 import N as _a; from notes2 import N as _b; from notes3 import N as _c
 N={**_a,**_b,**_c}
-VERSION='v5'; DATE='2026-10-21'
+VERSION='v6'; DATE='2026-10-21'
 REPO='heidelberg-catechism-52-lorddays-GROKstudy'
 CCI='https://ccifellowship.org'
 def esc(s): return html.escape(s,quote=True)
@@ -83,7 +83,8 @@ def md(s):
     return s
 GLOSS=[(t,'mk-u') for t in ['恩典之约','行为之约','救赎之约','生命之约','盟约元首','盟约记号','盟约','代赎','归算','称义','成圣','重生','中保','三重职分','收养','预定','拣选','圣礼','圣约','道成肉身','神人二性','降在阴间','圣徒相通','天国的钥匙','教会纪律','律法的第三功用','治死旧人','活出新人','真信心','护理','受膏','大先知','大祭司','君王','记号与印记','属灵的同在','代求','再来','身体复活','永生','好行为','悔改','归正']]+\
       [(t,'mk-d') for t in ['罗马天主教','罗马教','特伦托','重洗派','路德宗','路德派','亚米念','阿民念','抗辩派','伯拉纠','苏西尼','亚流','变质说','弥撒','普救论','完美主义','律法主义','反律主义','神秘主义','自由主义','成功神学']]+\
-      [(t,'mk-k') for t in ['唯独恩典','唯独信心','唯独基督','唯独圣经','唯一的安慰']]
+      [(t,'mk-k') for t in ['唯独恩典','唯独信心','唯独基督','唯独圣经','唯一的安慰']]+\
+      [(t,'mk-g') for t in ['安慰','赦罪','永生','应许','白白','平安','得救的确据']]
 GRE=re.compile('|'.join(sorted({re.escape(t) for t,_ in GLOSS},key=len,reverse=True)))
 GCL=dict(GLOSS)
 REFRE=re.compile(r'(?<![\u4e00-\u9fa5])(?:创|出|利|民|申|书|士|得|撒上|撒下|王上|王下|代上|代下|拉|尼|斯|伯|诗|箴|传|歌|赛|耶|哀|结|但|何|珥|摩|俄|拿|弥|鸿|哈|番|该|亚|玛|太|可|路|约|徒|罗|林前|林后|加|弗|腓|西|帖前|帖后|提前|提后|多|门|来|雅|彼前|彼后|约壹|约贰|约叁|犹|启)\s?\d+[:：]\d+(?:[\-–,，]\d+)*')
@@ -174,12 +175,16 @@ def post(body):
     number(soup); automark(soup)
     return str(soup)
 LEGEND_ITEMS=[('<span class="mk-k">高亮</span>','核心词句'),('<span class="mk-b">粗体金</span>','重点'),('<span class="mk-u">蓝实线</span>','定义 / 术语'),('<span class="mk-w">橙波浪</span>','难点'),('<span class="mk-d">红虚线</span>','对比 / 错误立场'),('<span class="mk-r">红字</span>','警示'),('<span class="mk-ref">罗8:28</span>','经文')]
+MKLV=[('① 核心层 · 先背这里',[('mk-k','荧光底 + 粗体','核心词句（答案主干，背诵首选）')]),
+ ('② 重点层 · 有颜色的粗体',[('mk-b','金色粗体','重点概念 / 论题关键词'),('mk-g','绿色粗体','恩典 · 应许 · 安慰'),('mk-r','红色粗体','警示 · 审判 · 严重后果')]),
+ ('③ 语义线 · 线型代表含义',[('mk-u','蓝色实线','定义 / 术语（盟约、称义…）'),('mk-w','橙色波浪线','难点：需要细想'),('mk-d','红色虚线','对比 / 错误立场（罗马教、抗辩派…）'),('mk-ref','经文药丸','圣经出处')])]
 def legend_html(full=True):
-    it=''.join(f'<span class="it">{a}<span class="muted small">{b}</span></span>' for a,b in LEGEND_ITEMS)
-    co=''
-    if full:
-        co='<div class="grid g4" style="margin-top:10px">'+''.join(f'<div class="co {c} sample" style="margin:0"><b class="lab">{l}</b><span class="small">{d}</span></div>' for c,l,d in [('co-core','核心','一句话论题'),('co-hard','难点','需要细想的地方'),('co-trap','易错','常见误解'),('co-gold','金句','原文中的一句（逐字）'),('co-hook','记忆钩','口诀 / 联想')])+'</div>'
-    return f'<div class="legend nomk">{it}<button class="btn" data-marks style="padding:3px 12px;font-size:13px">🖍️ 显示/隐藏标记 (M)</button></div>{co}<p class="small muted" style="margin:8px 0 0">标记只加在样式层：原文引文的文字一字不改，可随时关闭标记。</p>'
+    if not full:
+        it=''.join(f'<span class="it"><span class="{c}">{l}</span><span class="muted small">{d.split("（")[0]}</span></span>' for _,rows in MKLV for c,l,d in rows)
+        return f'<div class="legend nomk">{it}<button class="btn" data-marks style="padding:3px 12px;font-size:13px">🖍️ 开/关 (M)</button></div>'
+    lv=''.join(f'<div class="lv"><h5>{h}</h5>'+''.join(f'<div class="rw"><span class="s"><span class="{c}">{l}</span></span><span class="small">{esc(d)}</span></div>' for c,l,d in rows)+'</div>' for h,rows in MKLV)
+    co='<div class="grid g4" style="margin-top:10px">'+''.join(f'<div class="co {c} sample" style="margin:0"><b class="lab">{l}</b><span class="small">{d}</span></div>' for c,l,d in [('co-core','核心','一句话论题'),('co-hard','难点','需要细想的地方'),('co-trap','易错','常见误解'),('co-gold','金句','原文逐字摘录'),('co-hook','记忆钩','一句口诀'),('co-bible','核心经文','原文脚注首条')])+'</div>'
+    return f'<div class="mklg nomk">{lv}</div>{co}<div class="btns" style="margin-top:10px"><button class="btn" data-marks>🖍️ 显示 / 隐藏全部标记 (M)</button></div><p class="small muted" style="margin:8px 0 0">规则：一种样式只表达一种含义；原文引文只加样式标签，文字一字不改（逐字校验 0 差异）；五套配色下颜色自动适配。</p>'
 def callout(kind,label,html_):
     return f'<div class="co co-{kind} nolv"><b class="lab">{label}</b>{html_}</div>'
 def gnav(pre,path):

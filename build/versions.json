@@ -15,7 +15,7 @@
  ],
  "V2": [
   [
-   "GitHub Pages（与 v5 同一地址，现显示最新版）",
+   "GitHub Pages（与 v6 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -29,7 +29,7 @@
  ],
  "V3": [
   [
-   "GitHub Pages（与 v5 同一地址，现显示最新版）",
+   "GitHub Pages（与 v6 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -43,7 +43,7 @@
  ],
  "V4": [
   [
-   "GitHub Pages（与 v5 同一地址，现显示最新版）",
+   "GitHub Pages（与 v6 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -57,7 +57,7 @@
  ],
  "V5": [
   [
-   "GitHub Pages",
+   "GitHub Pages（与 v6 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -68,6 +68,29 @@
    "Netlify",
    "https://heidelberg-catechism-52-lorddays-20261021-v5-grokstudy.netlify.app"
   ]
+ ],
+ "V6": [
+  [
+   "GitHub Pages",
+   "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
+  ],
+  [
+   "Surge",
+   "https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.surge.sh"
+  ],
+  [
+   "Netlify",
+   "https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.netlify.app"
+  ]
+ ],
+ "changes_v6": [
+  "⚡ 流畅度重做（针对“页面有些卡顿”）：几乎移除全部 backdrop-filter（仅桌面低 DPR 的顶栏保留，手机 / 高 DPI / 低配设备自动关闭）；移除大阴影、filter 动画与 SVG 内部过渡；背景只剩 2 个可合成图层，滚动中与标签页隐藏时暂停；滚动时不再做淡入；content-visibility 仅用在章节级。",
+  "⚡ 资源与 DOM：CSS / JS 压缩；人物图改为 webp（192 / 640 两档 + width/height）；Mermaid 流程图构建时预渲染为静态 SVG（不再加载 Mermaid 库）；速记中心 129 张卡片与 52 题小测分页渲染（每页 12 张 / 8 题，可按部分筛选、洗牌、跳转），DOM 从 2566 降到约 950 个元素。",
+  "🎨 五套配色主题：🌌 深夜星空 · 🌅 晨曦米白 · 🌲 翡翠森林 · 🍇 葡萄紫金 · 🌊 海洋蓝。顶栏 🎨 选择器（首页图例也有色板），自动保存，首屏绘制前应用（无闪烁）；所有图表、地图标记、流程图与标记颜色随主题变化；五套主题正文对比度均达 WCAG AA（实测 13.6–15.9:1）。",
+  "✂️ 内容提炼：主日页去掉与其他卡片重复的“八个视角罗盘”和“五问提要”；要义清单只出现一次（移到精华区，附数据卡）；易错提示合并为一处；解说中与要义重复的句子自动剔除；重复的提示语缩短。首页 52 主日一览改为紧凑格，对比页合并重复的“文体 / 历史”两条。字数：52 个主日解说 110,782 → 74,688（−32.6%）；概览页 24,716 → 21,416（−13.4%）；原文不计入，且一字未动。",
+  "🖍️ 笔记标记升级：三层图例（① 核心层：荧光底 + 粗体；② 重点层：金 / 绿 / 红色粗体 = 重点 / 恩典应许 / 警示；③ 语义线：实线 = 定义、波浪线 = 难点、虚线 = 对比 / 错误立场，外加经文药丸）；新增绿色“恩典 · 应许 · 安慰”标记；提示框左侧加粗色条与色块标签；五套主题下颜色统一由变量控制；M 键开关照常。",
+  "📊 新可视化：52 主日 × 信条交叉引用热力图（52 主日总览）、五个时期甘特图（历史页）、主日数据卡（问答数 / 经文组 / 信条对照 / 关键词），首页主题色板。",
+  "✅ 校验：原文逐字 0 差异（2094 段 + 53 条金句）；4 个宽度无溢出；Playwright 测试；6× CPU 降速 + 手机仿真滚动帧率与 Lighthouse 的 v5 → v6 对比见 README。"
  ],
  "changes": [
   "📱 手机端圣约神学流程图改为竖排“盟约阶梯”，平板与桌面仍显示 Mermaid 流程图；其余流程图在手机上按原始比例横向滑动，文字清晰。",

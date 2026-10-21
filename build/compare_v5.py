@@ -6,7 +6,7 @@ def problems():
     h='<div class="pflow">'
     for i,(p,d,a,u,c) in enumerate(PROB):
         h+=f'<div class="prow reveal" style="--c:{c};--i:{i}"><div class="pb pq"><span class="small muted">❓ 问题</span><p>{esc(p)}</p></div><span class="parr" aria-hidden="true">➜</span><a class="pb pd" href="{u}"><b>{d}</b></a><span class="parr" aria-hidden="true">➜</span><div class="pb pa"><span class="small muted">✅ 回答</span><p>{esc(a)}</p></div></div>'
-    return h+'</div><p class="small muted">一份文件回答一个处境：教导（HC）、告白（BC）、裁决（CD）。合起来才构成“三项联合信条”——这就是“为什么是三份而不是一份”的历史原因。（本站概述）</p>'
+    return h+'</div><p class="small muted">一个处境一份文件：教导（HC）· 告白（BC）· 裁决（CD）。（本站概述）</p>'
 def venn():
     C=[('HC',230,200,'#60a5fa','texts/hc.html'),('BC',370,200,'#fb7185','texts/bc.html'),('CD',300,320,'#34d399','texts/cd.html')]
     L=[(130,150,['📘 HC 独有','个人的安慰','十诫 · 主祷文','问答式教学'],'texts/hc.html'),

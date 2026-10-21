@@ -338,3 +338,13 @@ dl.kv{display:grid;grid-template-columns:5.5em 1fr;gap:6px 10px;margin:0}dl.kv d
 .venn{width:100%;height:auto;display:block}.venn .vc{transform-box:fill-box;transform-origin:center;transform:scale(.6);opacity:0;transition:transform .7s var(--ease),opacity .5s,fill-opacity .2s}
 .in .venn .vc{transform:scale(1);opacity:1}.venn a:hover .vc{fill-opacity:.32}.venn .vl:hover text{fill:var(--gold)}
 .venn a{color:var(--fg)}
+#player{position:fixed;left:50%;bottom:14px;z-index:60;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:99px;background:color-mix(in srgb,var(--bg2) 82%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px);border:1px solid var(--bd);box-shadow:var(--sh);transform:translate(-50%,140%);opacity:0;pointer-events:none;transition:transform .35s var(--ease),opacity .3s;max-width:calc(100vw - 24px);overflow:hidden}
+#player.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+#player button{border:0;background:var(--card2);color:var(--fg);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;flex:none}
+#player button:hover{background:color-mix(in srgb,var(--deliv) 30%,var(--card2))}
+#player .pl{font-size:13px;font-weight:700;min-width:6em;max-width:28vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#player select{background:var(--card2);color:var(--fg);border:1px solid var(--bd);border-radius:8px;font-size:12px;padding:3px}
+#player .pbarx{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--gold);transform-origin:left;transform:scaleX(0);transition:transform .4s}
+.speaking{outline:2px solid var(--gold);outline-offset:3px;box-shadow:0 0 0 6px color-mix(in srgb,var(--gold) 14%,transparent)}
+@media(max-width:480px){#player .pl{max-width:22vw}}
+body.hasplayer .fab{bottom:70px}body.hasplayer .toast{bottom:76px}

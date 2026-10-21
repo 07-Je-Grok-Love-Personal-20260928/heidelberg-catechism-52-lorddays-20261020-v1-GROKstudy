@@ -324,3 +324,6 @@ dl.kv{display:grid;grid-template-columns:5.5em 1fr;gap:6px 10px;margin:0}dl.kv d
 .pv:hover{transform:translateY(-2px)}.pv summary{cursor:pointer;font-weight:800;list-style:none;display:flex;gap:6px;align-items:center}.pv summary::-webkit-details-marker{display:none}
 .pv .pi{font-size:1.25em}.pv p{margin:.4em 0;font-size:14.5px}.pv[open]{grid-column:span 2}
 @media(max-width:600px){.ladder li{grid-template-columns:1fr;gap:2px;margin-left:calc(var(--i)*6px)}.pv[open]{grid-column:auto}}
+.actm table{min-width:720px}.actm td{vertical-align:top}.actm td .chip{margin:2px;font-size:12.5px;padding:2px 8px}
+.actm td.has{background:color-mix(in srgb,var(--deliv) 7%,transparent)}
+.actm tbody tr{transition:background .2s}.actm tbody tr:hover{background:color-mix(in srgb,var(--gold) 8%,transparent)}

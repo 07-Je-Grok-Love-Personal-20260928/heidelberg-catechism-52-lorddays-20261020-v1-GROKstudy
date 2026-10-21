@@ -76,6 +76,17 @@ classDef d fill:#60a5fa33,stroke:#60a5fa
 classDef y fill:#facc1544,stroke:#facc15
 classDef gr fill:#34d39933,stroke:#34d399
 </div>'''
+def acts_matrix():
+    head='<tr><th>教义主题 ＼ 圣经大戏</th>'+''.join(f'<th class="ac-{k}">{i} {t}<br><span class="small muted">{sum(1 for n in range(1,53) if ld_act(n)==k)} 个主日</span></th>' for k,i,t in ACTS)+'</tr>'
+    rows=''
+    for a,b,t in LOCI:
+        rows+=f'<tr><th>{t}<br><span class="small muted">主日{a}{"–"+str(b) if b!=a else ""}</span></th>'
+        for k,_,_ in ACTS:
+            cs=''.join(f'<a class="chip {part(n)[0]}" href="ld/{n:02d}.html" title="{esc(ld_label(n))}">{LDI[n]} {n}</a>' for n in range(a,b+1) if ld_act(n)==k)
+            rows+=f'<td class="{"has" if cs else ""}">{cs}</td>'
+        rows+='</tr>'
+    return f'<div class="tbl actm reveal"><table><thead>{head}</thead><tbody>{rows}</tbody></table></div><p class="small muted">每个主日按其主要重心归入一幕（学习分类，并非唯一的划分）：例如主日19（再来审判）与主日22（复活永生）指向“完成”，主日9–10（创造与护理）属于“创造”，第三部感恩（32–52）是蒙恩者的“回应”。点击芯片即进入该主日；同样的映射也出现在每个主日页的“六级缩放”中。</p>'
+bib+=sec('acts','🧩','52 主日 × 圣经大戏：教义主题矩阵',acts_matrix())
 bib+=sec('covenant','🤝','二、圣约神学（Covenant Theology）','<div class="cov-desktop">'+cov+'</div>'+LAD+f'''<div class="grid g2" style="margin-top:16px">
 <div class="card pan cov reveal"><h3>📌 海德堡要理问答本身的“盟约”语言</h3><ul class="clean"><li>第74问：婴孩“与父母同属于神的圣约和教会”——“割礼已被洗礼所取代”。</li><li>第82问：不信者领圣餐是“亵渎神的圣约”。</li><li>第103问：安息日聚会“与会众一同求告与我们立约的神”。</li><li>主日1 的“属于”（belonging）本身就是盟约关系的语言。</li></ul><p class="small muted">（引语出自本站所引 ccifellowship.org 原文。）</p></div>
 <div class="card pan why reveal"><h3>🧑‍🏫 历史：乌尔西努与俄利维亚努是盟约神学的先驱</h3><p>乌尔西努在为海德堡做准备的《大要理问答》（Catechesis maior，1562）中已用“自然之约/创造之约”与“恩典之约”的框架；俄利维亚努后来著《论神与选民之间恩典之约的本质》（De substantia foederis gratuiti, 1585）。因此，海德堡虽然没有系统展开盟约教义，却是在盟约神学的土壤中写成的。</p></div>

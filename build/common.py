@@ -6,7 +6,7 @@ D=json.load(open(os.path.join(ROOT,'data.json')))
 SER=json.load(open(os.path.join(ROOT,'sermons.json')))
 from notes1 import N as _a; from notes2 import N as _b; from notes3 import N as _c
 N={**_a,**_b,**_c}
-VERSION='v3'; DATE='2026-10-20'
+VERSION='v4'; DATE='2026-10-21'
 REPO='heidelberg-catechism-52-lorddays-GROKstudy'
 CCI='https://ccifellowship.org'
 def esc(s): return html.escape(s,quote=True)
@@ -53,6 +53,20 @@ from notes5 import KQ,T
 from bs4 import BeautifulSoup, NavigableString
 NAV=[('index.html','🏠','首页'),('bible.html','📖','圣经与圣约'),('history.html','🗺️','历史地理'),('lorddays.html','📅','52主日'),('texts/index.html','📜','原文'),('compare.html','⚖️','对比'),('memory.html','🧠','速记'),('search.html','🔎','搜索')]
 GNAV=[('index.html','🏠 首页'),('bible.html','📖 圣经与圣约'),('history.html','🗺️ 历史地理'),('lorddays.html','📅 52主日总览'),('texts/index.html','📜 原文中心'),('texts/hc.html','　📜 海德堡要理问答'),('texts/bc.html','　🛡️ 比利时信条'),('texts/cd.html','　🌷 多特信经'),('texts/creeds.html','　⛪ 三大普世信经'),('compare.html','⚖️ 三项信条对比'),('memory.html','🧠 速记中心'),('search.html','🔎 全文搜索'),('sources.html','🔗 资料与说明'),('changelog.html','🆕 版本更新')]
+
+# ---------- v4: ONE canonical title + icon table for all 52 Lord's Days ----------
+LDI={1:'✝️',2:'🪞',3:'🍎',4:'⚖️',5:'🤝',6:'👑',7:'🔑',8:'🔺',9:'🌍',10:'🛡️',11:'🌟',12:'🫒',13:'👶',14:'🌱',15:'🩸',16:'⚰️',17:'🌅',18:'☁️',19:'🏛️',20:'🕊️',21:'⛪',22:'🌄',23:'📜',24:'🎁',25:'📖',26:'💧',27:'👪',28:'🍞',29:'🍷',30:'🚫',31:'🗝️',32:'🌿',33:'🔄',34:'🪨',35:'🗿',36:'🗣️',37:'🤚',38:'🕯️',39:'👨‍👩‍👧',40:'❤️‍🩹',41:'💍',42:'💰',43:'🗨️',44:'💭',45:'🙏',46:'👨‍👧',47:'✨',48:'🏰',49:'🧭',50:'🌾',51:'🤲',52:'⚔️'}
+def ld_title(n): return N[n]['t']
+def ld_label(n): return f'{LDI[n]} 主日{n} · {N[n]["t"]}'
+PARTS=[('i','💜','引言','唯一的安慰',1,1),('m','💔','第一部','罪与愁苦',2,4),('d','✝️','第二部','得救',5,31),('g','🌿','第三部','感恩',32,52)]
+def part_label(k):
+    for kk,ic,a,b,s,e in PARTS:
+        if kk==k: return f'{ic} {a} · {b}（主日{s}–{e}）' if s!=e else f'{ic} {a} · {b}（主日{s}）'
+SUBI={'子神和我们的得赎':'🩸','圣灵神和我们的成圣':'🕊️','我们得称为义':'⚖️','圣言与圣礼':'📖','圣洗礼':'💧','圣餐':'🍞','十诫':'🪨','祷告':'🙏'}
+BCG=[(1,1,'论神','👁️'),(2,7,'论启示与圣经','📖'),(8,11,'论三位一体','🔺'),(12,13,'论创造与护理','🌍'),(14,15,'论人与罪','🍎'),(16,17,'论拣选与应许','🌟'),(18,21,'论基督','✝️'),(22,26,'论救恩','🎁'),(27,32,'论教会','⛪'),(33,35,'论圣礼','💧'),(36,36,'论政府','🏛️'),(37,37,'论末后审判','⚖️')]
+def bc_icon(k): return next(i for s,e,t,i in BCG if s<=k<=e)
+CDI={'section1':'🌟','section2':'🩸','section3-4':'🔄','section5':'🛡️'}
+def art_short(t): return re.sub(r'^第[一二三四五六七八九十]+条\s*','',t)
 CN='一二三四五六七八九十'
 def cnum(i):
     if i<=10: return CN[i-1]
@@ -107,13 +121,19 @@ def number(soup):
         if el.has_attr('data-lv'): els.append(el); continue
         if el.name in ('h2','h3') and not _noauto(el):
             el['data-lv']='1' if el.name=='h2' else '2'; els.append(el)
-    c=[0,0,0]
+    c=[0,0,0,0,0]
     for i,el in enumerate(els):
         lv=int(el['data-lv'])
         if not el.get('id'): el['id']=f's{i}'
-        if lv==1: c=[c[0]+1,0,0]; no=cnum(c[0])+'、'
-        elif lv==2: c=[c[0],c[1]+1,0]; no=f'{c[1]}.'
-        else: c[2]+=1; no=f'{c[1]}.{c[2]}'
+        if el.has_attr('data-nonum') and lv>1:
+            for j in range(lv-1,5): c[j]=0 if j>=lv else c[j]
+            continue
+        c[lv-1]+=1
+        for j in range(lv,5): c[j]=0
+        if el.has_attr('data-fix'): c[lv-1]=int(el['data-fix'])
+        if lv==1: no=cnum(c[0])+'、'
+        elif el.has_attr('data-fix'): no=f"{c[lv-1]}."
+        else: no='.'.join(str(x) for x in c[1:lv])+('.' if lv==2 else '')
         el['data-no']=no
         if el.name in ('h2','h3','h4') and not el.has_attr('data-nonum'):
             hn=soup.new_tag('span',attrs={'class':'hn'}); hn.string=no
@@ -141,9 +161,12 @@ def callout(kind,label,html_):
 def gnav(pre,path):
     out=['<h4>🧭 全站导航</h4><div id="gnav" class="gnav">']
     for h,t in GNAV: out.append(f'<a href="{pre}{h}" class="{"on" if h==path else ""}">{t}</a>')
-    out.append('</div><details style="margin:10px 4px"><summary class="small muted" style="cursor:pointer">📅 52 个主日速达</summary><div class="gnav">')
-    for n in range(1,53):
-        out.append(f'<a href="{pre}ld/{n:02d}.html" title="主日{n} · {esc(N[n]["t"])}">主日{n} · {esc(N[n]["t"])}</a>')
+    cur=int(path[3:5]) if path.startswith('ld/') else 0
+    out.append(f'</div><details class="ldnav" style="margin:10px 4px"{" open" if cur else ""}><summary class="small muted" style="cursor:pointer">📅 52 个主日速览</summary><div class="gnav">')
+    for k,ic,pa,pb,s_,e_ in PARTS:
+        out.append(f'<div class="gpart" style="color:{part(s_)[2]}">{esc(part_label(k))}</div>')
+        for n in range(s_,e_+1):
+            out.append(f'<a href="{pre}ld/{n:02d}.html" class="{"on" if n==cur else ""}" title="{n}. {esc(ld_label(n))}"><span class="no">{n}.</span> {esc(ld_label(n))}</a>')
     out.append('</div></details>')
     return ''.join(out)
 def page(path,title,body,desc='',head=''):

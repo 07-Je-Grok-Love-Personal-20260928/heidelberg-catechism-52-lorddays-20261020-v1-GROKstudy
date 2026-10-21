@@ -4,26 +4,34 @@ def intro(ps): return ''.join(f'<p>{p}</p>' for p in ps)
 # HC
 b=[f'<section class="hero reveal"><span class="chip i">📜 干净阅读版 · 背诵版</span><h1>海德堡要理问答（全文）</h1><p class="lead">52 主日 · 129 问，全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/heidelberg-catechism" target="_blank" rel="noopener">ccifellowship.org</a>。可开启背诵模式遮住答案自测。</p>{tools}</section>']
 b.append(f'<section class="sec"><h2 id="intro"><span class="ico">ℹ️</span>简介（ccifellowship.org 原文）</h2><div class="card reading">{intro(D["hc_intro"])}</div></section>')
-cur=None
+cur=None; cursub=None
+def subrange(top,sub):
+    ns=[l['n'] for l in D['hc'] if l['crumbs'][:1]==[top] and l['crumbs'][1:2]==[sub]]
+    return ns[0],ns[-1]
 for ld in D['hc']:
-    n=ld['n']; p=part(n); top=(ld['crumbs'][0] if ld['crumbs'] else '引言')
+    n=ld['n']; p=part(n); top=(ld['crumbs'][0] if ld['crumbs'] else '引言'); sub=ld['crumbs'][1] if len(ld['crumbs'])>1 else None
     if top!=cur:
-        cur=top; b.append(f'<h2 id="p{n}" style="margin-top:40px"><span class="ico">{p[3]}</span>{esc(top)}</h2>')
-    sub=(' · '+ld['crumbs'][1]) if len(ld['crumbs'])>1 else ''
-    b.append(f'<section class="sec" style="margin:18px 0"><h3 id="ld{n}" data-toc="主日{n}{sub}" style="color:{p[2]}">📅 主日 {n}<span class="muted small">{esc(sub)}</span> <a class="small" href="../ld/{n:02d}.html">→ 深度解析</a></h3>'+''.join(qa_html(q,p[2],lv=3) for q in ld['qas'])+'</section>')
+        cur=top; cursub=None; b.append(f'<h2 id="p{n}" data-toc="{esc(part_label(p[0]))}" style="margin-top:40px;color:{p[2]}"><span class="ico">{PARTS[["i","m","d","g"].index(p[0])][1]}</span>{esc(top)}<span class="small muted">　{esc(part_label(p[0]).split("（")[1].rstrip("）"))}</span></h2>')
+    if sub!=cursub:
+        cursub=sub
+        if sub:
+            s_,e_=subrange(top,sub); ic=SUBI.get(sub,'📌')
+            b.append(f'<h3 id="sub{n}" data-lv="2" data-nonum data-toc="{ic} {esc(sub)}（主日{s_}{"–"+str(e_) if e_!=s_ else ""}）" class="subhd" style="color:{p[2]}">{ic} {esc(sub)}<span class="small muted">　主日 {s_}{"–"+str(e_) if e_!=s_ else ""}</span></h3>')
+    lv=3 if sub else 2
+    b.append(f'<section class="sec" style="margin:18px 0"><h3 id="ld{n}" data-lv="{lv}" data-fix="{n}" data-toc="{esc(ld_label(n))}" style="color:{p[2]}">{LDI[n]} 主日 {n} · {esc(N[n]["t"])} <a class="small" href="../ld/{n:02d}.html">→ 深度解析</a></h3>'+''.join(qa_html(q,p[2],lv=lv+1) for q in ld['qas'])+'</section>')
 page('texts/hc.html','海德堡要理问答 全文阅读版',''.join(b),'海德堡要理问答129问全文 干净阅读背诵版')
 # BC
 b=[f'<section class="hero reveal"><span class="chip d">🛡️ 干净阅读版</span><h1>比利时信条（全文 37 条）</h1><p class="lead">又名《真基督教信条》，1561 年德布利（Guido de Brès）著。全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/the-belgic-confession" target="_blank" rel="noopener">ccifellowship.org</a>。</p>{tools}</section>']
 b.append(f'<section class="sec"><h2 id="intro"><span class="ico">ℹ️</span>简介（ccifellowship.org 原文）</h2><div class="card reading">{intro(D["bc_intro"])}</div></section>')
 groups=[(1,1,'论神'),(2,7,'论启示与圣经'),(8,11,'论三位一体'),(12,13,'论创造与护理'),(14,15,'论人与罪'),(16,17,'论拣选与应许'),(18,21,'论基督'),(22,26,'论救恩'),(27,32,'论教会'),(33,35,'论圣礼'),(36,36,'论政府'),(37,37,'论末后审判')]
-b.append('<section class="sec"><h2 id="arts"><span class="ico">📜</span>正文</h2><div class="reading">')
 cols=['var(--intro)','var(--deliv)','var(--intro)','var(--gold)','var(--misery)','var(--gold)','var(--deliv)','var(--grat)','var(--deliv)','var(--grat)','var(--gold)','var(--misery)']
 for gi,(s,e,t) in enumerate(groups):
-    b.append(f'<h3 id="g{s}" data-toc="第{s}{"–"+str(e) if e!=s else ""}条 {t}" style="color:{cols[gi]}">🔖 第{s}{"–"+str(e) if e!=s else ""}条 · {t}<span class="small muted">（本站分组）</span></h3>')
+    gi_ic=BCG[gi][3]
+    b.append(f'<section class="sec"><h2 id="g{s}" data-toc="{gi_ic} {t}（第{s}{"–"+str(e) if e!=s else ""}条）" style="color:{cols[gi]}"><span class="ico">{gi_ic}</span>{t}<span class="small muted">　第{s}{"–"+str(e) if e!=s else ""}条 · 本站分组</span></h2><div class="reading">')
     for k in range(s,e+1):
         a=BC[k]; refs=''.join(f'<li>{esc(r)}</li>' for r in a['refs'])
-        b.append(f'<div class="art reveal" id="bc{k}" data-lv="3" data-toc="{esc(a['title'])}" style="--c:{cols[gi]}"><div class="tools" style="float:right"><button class="btn" data-speak style="padding:2px 8px">🔊</button></div><h3>{esc(a["title"])}</h3>{"".join(f"<p>{x}</p>" for x in a["paras"])}'+(f'<details class="small muted"><summary>📖 经文出处（{len(a["refs"])}）</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
-b.append('</div></section>')
+        b.append(f'<div class="art reveal" id="bc{k}" data-lv="2" data-fix="{k}" data-toc="{bc_icon(k)} {esc(art_short(a['title']))}" style="--c:{cols[gi]}"><div class="tools" style="float:right"><button class="btn" data-speak style="padding:2px 8px">🔊</button></div><h3>{esc(a["title"])}</h3>{"".join(f"<p>{x}</p>" for x in a["paras"])}'+(f'<details class="small muted"><summary>📖 经文出处（{len(a["refs"])}）</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
+    b.append('</div></section>')
 page('texts/bc.html','比利时信条 全文阅读版',''.join(b),'比利时信条37条全文')
 # CD
 b=[f'<section class="hero reveal"><span class="chip g">🌷 干净阅读版</span><h1>多特信经（全文）</h1><p class="lead">又称《反对抗辩派的五大点》，1618–1619 年多特大会采纳。全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/canons-of-dort" target="_blank" rel="noopener">ccifellowship.org</a>。</p>{tools}</section>']
@@ -31,11 +39,11 @@ b.append(f'<section class="sec"><h2 id="intro"><span class="ico">ℹ️</span>�
 ccol={'section1':'var(--intro)','section2':'var(--misery)','section3-4':'var(--deliv)','section5':'var(--grat)'}
 for s in D['cd']:
     c=ccol[s['sec']]
-    b.append(f'<section class="sec"><h2 id="{s["sec"]}" style="color:{c}"><span class="ico">🌷</span>{esc(s["title"])}</h2><div class="reading">')
+    b.append(f'<section class="sec"><h2 id="{s["sec"]}" data-toc="{CDI[s["sec"]]} {esc(s["title"])}" style="color:{c}"><span class="ico">{CDI[s["sec"]]}</span>{esc(s["title"])}</h2><div class="reading">')
     for a in s['arts']:
         rid=f'{s["sec"]}-{a["n"]}'; refs=''.join(f'<li>{esc(r)}</li>' for r in a['refs'])
         isrej=a['title']=='错谬反驳'
-        b.append(f'<div class="art reveal" id="cd{rid}" data-lv="2" data-toc="{esc(a['title'])}" style="--c:{"var(--misery)" if isrej else c}{";border-style:dashed" if isrej else ""}">'+(f'<h3 id="rej-{s["sec"]}">❌ 错谬反驳</h3>' if isrej else f'<h3>{esc(a["title"])}</h3>')+''.join(f'<p>{x}</p>' for x in a['paras'])+(f'<details class="small muted"><summary>📖 经文出处</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
+        b.append(f'<div class="art reveal" id="cd{rid}" data-lv="2" '+(f'data-nonum data-toc="❌ 错谬反驳（{len(a["paras"])} 段）"' if isrej else f'data-fix="{a["n"]}" data-toc="{CDI[s["sec"]]} {esc(art_short(a["title"]))}"')+f' style="--c:{"var(--misery)" if isrej else c}{";border-style:dashed" if isrej else ""}">'+(f'<h3 id="rej-{s["sec"]}">❌ 错谬反驳</h3>' if isrej else f'<h3>{esc(a["title"])}</h3>')+''.join(f'<p>{x}</p>' for x in a['paras'])+(f'<details class="small muted"><summary>📖 经文出处</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
     b.append('</div></section>')
 page('texts/cd.html','多特信经 全文阅读版',''.join(b),'多特信经全文')
 # creeds

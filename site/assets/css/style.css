@@ -264,3 +264,4 @@ ol.core li::before{content:counter(c);position:absolute;left:10px;top:8px;width:
 @keyframes pulse{50%{transform:scale(1.015)}}
 .toc .row>a:first-child{margin-left:24px}
 .grps{display:flex;flex-wrap:wrap;gap:0 22px}.grp{flex:1 1 calc(var(--k) * 160px + 70px);min-width:min(100%,160px)}.grp .ldgrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}.grp h3{font-size:17px;flex-wrap:wrap;gap:2px 8px}.grp h3 .small{white-space:nowrap}
+.gnav .no{color:var(--deliv);font-weight:800;font-variant-numeric:tabular-nums;margin-right:2px}.gpart{font-size:12px;font-weight:900;letter-spacing:.04em;margin:10px 8px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

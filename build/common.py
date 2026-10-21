@@ -6,7 +6,7 @@ D=json.load(open(os.path.join(ROOT,'data.json')))
 SER=json.load(open(os.path.join(ROOT,'sermons.json')))
 from notes1 import N as _a; from notes2 import N as _b; from notes3 import N as _c
 N={**_a,**_b,**_c}
-VERSION='v4'; DATE='2026-10-21'
+VERSION='v5'; DATE='2026-10-21'
 REPO='heidelberg-catechism-52-lorddays-GROKstudy'
 CCI='https://ccifellowship.org'
 def esc(s): return html.escape(s,quote=True)

@@ -33,7 +33,7 @@ ready(()=>{
    const li=document.createElement('li');li.className='l'+lv;
    const row=document.createElement('div');row.className='row';
    const a=document.createElement('a');a.href='#'+h.id;
-   let label=h.dataset.toc;if(!label){const c=h.cloneNode(true);c.querySelectorAll('.ico,.hn,.tools,small,.small,a').forEach(x=>x.remove());label=c.textContent.replace(/\s+/g,' ').trim()}
+   let label=h.dataset.toc;if(!label){const c=h.cloneNode(true);const ic=c.querySelector('.ico');const it=ic?ic.textContent.trim()+' ':'';c.querySelectorAll('.ico,.hn,.tools,small,.small,a').forEach(x=>x.remove());label=it+c.textContent.replace(/\s+/g,' ').trim()}
    const no=h.dataset.no&&!h.closest('.qa')?h.dataset.no:'';
    if(no){const s=document.createElement('span');s.className='no';s.textContent=no;a.appendChild(s)}
    a.appendChild(document.createTextNode(label));a.title=(no?no+' ':'')+label;

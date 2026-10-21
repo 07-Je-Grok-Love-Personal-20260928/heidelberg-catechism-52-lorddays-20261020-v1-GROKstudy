@@ -110,6 +110,48 @@ ready(()=>{
  const lf=$('#ldFilter');if(lf){lf.addEventListener('input',()=>{const q=lf.value.trim();$$('[data-ld-card]').forEach(c=>c.style.display=!q||c.textContent.includes(q)||c.dataset.ldCard===q?'':'none');tidy()})}
  $$('[data-part]').forEach(btn=>btn.addEventListener('click',()=>{const p=btn.dataset.part;$$('[data-part]').forEach(x=>x.classList.toggle('pri',x===btn));$$('[data-ld-card]').forEach(c=>c.style.display=p==='all'||c.dataset.p===p?'':'none');tidy()}));
  $('#shuffleBtn')?.addEventListener('click',()=>{const d=$('#deck');[...d.children].sort(()=>Math.random()-.5).forEach(x=>d.appendChild(x));toast('🔀 已随机打乱')});
+
+ /* ---------- v4: drag-to-order challenge (pointer events + FLIP, transform only) ---------- */
+ const flip=(list,fn)=>{const kids=[...list.children];const f=new Map(kids.map(k=>[k,k.getBoundingClientRect().top]));fn();kids.forEach(k=>{const d=f.get(k)-k.getBoundingClientRect().top;if(d&&!k.classList.contains('drag')){k.style.transition='none';k.style.transform=`translate3d(0,${d}px,0)`;requestAnimationFrame(()=>{k.style.transition='transform .22s cubic-bezier(.22,.8,.24,1)';k.style.transform=''})}})};
+ $$('.sortbox').forEach(box=>{const list=$('.sortq',box),res=$('.res',box);
+  const clear=()=>{$$('li',list).forEach(li=>li.classList.remove('ok','no'));res.textContent=''};
+  list.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const li=b.closest('li');clear();flip(list,()=>{if(b.hasAttribute('data-up')&&li.previousElementSibling)list.insertBefore(li,li.previousElementSibling);if(b.hasAttribute('data-down')&&li.nextElementSibling)list.insertBefore(li.nextElementSibling,li)})});
+  let drag=null,sy=0,base=0;
+  list.addEventListener('pointerdown',e=>{const li=e.target.closest('li');if(!li||e.target.closest('button'))return;e.preventDefault();drag=li;li.setPointerCapture(e.pointerId);sy=e.clientY;base=0;li.classList.add('drag');clear()});
+  list.addEventListener('pointermove',e=>{if(!drag)return;let dy=e.clientY-sy-base;const pr=drag.previousElementSibling,nx=drag.nextElementSibling;
+   if(nx&&dy>nx.offsetHeight/2){const h=nx.offsetHeight+8;flip(list,()=>list.insertBefore(nx,drag));base+=h;dy-=h}
+   else if(pr&&dy<-pr.offsetHeight/2){const h=pr.offsetHeight+8;flip(list,()=>list.insertBefore(drag,pr));base-=h;dy+=h}
+   drag.style.transform=`translate3d(0,${dy}px,0) scale(1.02)`});
+  const up=()=>{if(!drag)return;const d=drag;drag=null;d.classList.remove('drag');d.style.transition='transform .2s';d.style.transform='';setTimeout(()=>d.style.transition='',220)};
+  list.addEventListener('pointerup',up);list.addEventListener('pointercancel',up);
+  $('[data-sortcheck]',box).addEventListener('click',()=>{const li=$$('li',list);let good=0;const want=li.map(x=>+x.dataset.q).sort((a,b)=>a-b);li.forEach((x,i)=>{const k=+x.dataset.q===want[i];x.classList.toggle('ok',k);x.classList.toggle('no',!k);good+=k});res.textContent=good===li.length?'🎉 完全正确！问题的推进你已经掌握':'还差一点：'+good+' / '+li.length+' 个位置正确'});
+  $('[data-sortshuffle]',box).addEventListener('click',()=>{clear();flip(list,()=>{const k=[...list.children];for(let i=k.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[k[i],k[j]]=[k[j],k[i]]}k.forEach(x=>list.appendChild(x))})});
+ });
+ /* ---------- v4: cloze recite test built from the marked phrases ---------- */
+ $$('[data-cloze]').forEach(box=>{const out=$('.clozeout',box),res=$('.res',box);
+  const build=()=>{out.textContent='';let n=0;$$('.qa').forEach(qa=>{const a=$('.a',qa);if(!a)return;const c=a.cloneNode(true);c.querySelectorAll('sup').forEach(x=>x.remove());
+    c.querySelectorAll('[class^="mk-"]').forEach(sp=>{const t=sp.textContent;const inp=document.createElement('input');inp.className='cz';inp.dataset.ans=t;inp.setAttribute('aria-label','填空');inp.style.width=Math.min(Math.max(t.length*1.05,3),22)+'em';inp.placeholder='（'+t.length+'字）';sp.replaceWith(inp);n++});
+    const d=document.createElement('div');d.className='czq';const h=document.createElement('b');h.textContent=qa.querySelector('.qn').textContent+' ';d.append(h,c);out.appendChild(d)});
+   res.textContent='共 '+n+' 个空格';const f=$('input',out);f&&f.focus({preventScroll:true})};
+  const norm=s=>s.replace(/[\s，。、；：“”‘’！？,.;:!?"'（）()]/g,'');
+  $('[data-clozestart]',box).addEventListener('click',build);
+  $('[data-clozecheck]',box).addEventListener('click',()=>{const ins=$$('input.cz',out);if(!ins.length)build();let ok=0;$$('input.cz',out).forEach(i=>{const g=norm(i.value)===norm(i.dataset.ans);i.classList.toggle('ok',g);i.classList.toggle('no',!g&&i.value!=='');ok+=g});const t=$$('input.cz',out).length;res.textContent='✅ '+ok+' / '+t+(ok===t?' 全部正确！':'')});
+  $('[data-clozeshow]',box).addEventListener('click',()=>{if(!$('input.cz',out))build();$$('input.cz',out).forEach(i=>{if(norm(i.value)!==norm(i.dataset.ans)){i.value=i.dataset.ans;i.classList.add('shown')}})});
+  out.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input.cz')){const a=$$('input.cz',out);const i=a.indexOf(e.target);(a[i+1]||a[0]).focus()}});
+ });
+ /* ---------- v4: "which Lord's Day?" game ---------- */
+ const gm=$('#ldgame');if(gm){const Q=JSON.parse($('#ldgame-data').textContent);let sc=0,tot=0,streak=0,best=LS.get('hc-game-best',0);
+  const qel=$('.gq',gm),opts=$('.gopts',gm),st=$('.gstat',gm);
+  const stat=()=>st.textContent=`得分 ${sc} / ${tot} · 连对 ${streak} · 最佳连对 ${best}`;
+  const next=()=>{const it=Q[Math.floor(Math.random()*Q.length)];const ans=it[1];const pool=new Set([ans]);while(pool.size<4){const r=Q[Math.floor(Math.random()*Q.length)][1];if(Math.abs(r-ans)<=6)pool.add(r);else if(Math.random()<.3)pool.add(r)}
+   const arr=[...pool].sort(()=>Math.random()-.5);qel.textContent=it[0];opts.textContent='';
+   arr.forEach(n=>{const b=document.createElement('button');b.className='opt';b.textContent=LDL[n-1];b.addEventListener('click',()=>{if(opts.dataset.done)return;opts.dataset.done=1;tot++;const g=n===ans;if(g){sc++;streak++;if(streak>best){best=streak;LS.set('hc-game-best',best)}}else streak=0;b.classList.add(g?'ok':'no');[...opts.children][arr.indexOf(ans)].classList.add('ok');stat();setTimeout(()=>{delete opts.dataset.done;next()},g?700:1600)});opts.appendChild(b)});stat()};
+  const LDL=JSON.parse($('#ldgame-labels').textContent);next()}
+ /* ---------- v4: progress ring + per-part bars ---------- */
+ const ring=$('#ring');if(ring){const k=Object.values(done).filter(Boolean).length;const C=2*Math.PI*52;const arc=$('.arc',ring);arc.style.strokeDasharray=C;arc.style.strokeDashoffset=C*(1-k/52);$('.rk',ring).textContent=k;
+  $$('[data-pbar]').forEach(b=>{const [a,z]=b.dataset.pbar.split('-').map(Number);let c=0;for(let i=a;i<=z;i++)if(done[i])c++;$('.barx',b).style.transform='scaleX('+(c/(z-a+1))+')';$('.pc',b).textContent=c+' / '+(z-a+1)})}
+ /* ---------- v4: count-up KPIs (one rAF loop, text only) ---------- */
+ const kp=$$('.kpi b');if(kp.length&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const vals=kp.map(b=>+b.textContent);const kio=new IntersectionObserver(es=>{if(!es.some(e=>e.isIntersecting))return;kio.disconnect();const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/900),e=1-Math.pow(1-p,3);kp.forEach((b,i)=>b.textContent=Math.round(vals[i]*e));if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});kio.observe(kp[0])}
  /* ---------- keyboard ---------- */
  addEventListener('keydown',e=>{if(e.target.matches('input,textarea')||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key;if(k==='t')tocBtn?.click();else if(k==='r')$('#reciteBtn')?.click();else if(k==='m')$('#marksBtn')?.click();else if(k==='ArrowLeft'&&$('#prevLd'))location.href=$('#prevLd').href;else if(k==='ArrowRight'&&$('#nextLd'))location.href=$('#nextLd').href});
  $('#topBtn')?.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));

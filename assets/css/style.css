@@ -265,3 +265,43 @@ ol.core li::before{content:counter(c);position:absolute;left:10px;top:8px;width:
 .toc .row>a:first-child{margin-left:24px}
 .grps{display:flex;flex-wrap:wrap;gap:0 22px}.grp{flex:1 1 calc(var(--k) * 160px + 70px);min-width:min(100%,160px)}.grp .ldgrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}.grp h3{font-size:17px;flex-wrap:wrap;gap:2px 8px}.grp h3 .small{white-space:nowrap}
 .gnav .no{color:var(--deliv);font-weight:800;font-variant-numeric:tabular-nums;margin-right:2px}.gpart{font-size:12px;font-weight:900;letter-spacing:.04em;margin:10px 8px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== v4 ===== */
+.const .cn g{transform-box:fill-box;transform-origin:center;transition:transform .25s var(--ease)}
+.const .cn:hover g,.const .cn:focus g{transform:scale(1.14)}
+.const .cn{cursor:pointer}
+.refbars{display:grid;gap:6px;margin-top:8px}
+.rb{display:grid;grid-template-columns:3.2em 1fr 3.4em;align-items:center;gap:8px;color:var(--fg);text-decoration:none!important}
+.rbt{height:10px;border-radius:6px;background:var(--card2);overflow:hidden}.rbt .barx{display:block;height:100%;border-radius:6px}
+.rb:hover .rbt{outline:1px solid var(--deliv)}
+.bridge .node{text-decoration:none!important;color:var(--fg);transition:transform .25s var(--ease)}
+a.node:hover{transform:translate3d(0,-2px,0)}
+.sortq{list-style:none;padding:0;margin:8px 0 12px;counter-reset:s;touch-action:none}
+.sortq li{counter-increment:s;display:flex;align-items:center;gap:10px;padding:10px 12px;margin:8px 0;border-radius:12px;background:var(--card2);border:1px solid var(--bd);border-left:4px solid var(--c);cursor:grab;user-select:none;position:relative;will-change:transform}
+.sortq li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:13px;background:var(--c);color:#0b1020}
+.sortq li.drag{cursor:grabbing;z-index:3;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.sortq li.ok{border-color:var(--grat);background:color-mix(in srgb,var(--grat) 16%,var(--card2))}
+.sortq li.no{border-color:var(--misery);background:color-mix(in srgb,var(--misery) 14%,var(--card2))}
+.sortq .grip{color:var(--muted)}.sortq .st{flex:1;min-width:0}
+.sortq .mv{display:flex;gap:4px}.sortq .mv button{border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:8px;width:30px;height:30px;cursor:pointer}
+.clozeout{font-family:var(--serif);line-height:2.3;margin-top:10px}
+.czq{padding:8px 0;border-bottom:1px dashed var(--bd)}
+input.cz{font:inherit;font-size:.95em;max-width:100%;padding:0 6px;border:none;border-bottom:2px solid var(--deliv);background:color-mix(in srgb,var(--deliv) 10%,transparent);color:var(--fg);border-radius:4px 4px 0 0}
+input.cz.ok{border-color:var(--grat);background:color-mix(in srgb,var(--grat) 18%,transparent)}
+input.cz.no{border-color:var(--misery);background:color-mix(in srgb,var(--misery) 16%,transparent)}
+input.cz.shown{border-color:var(--gold);color:var(--gold)}
+.donut .seg{opacity:0;transform:scale(.86);transform-origin:150px 150px;transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.in .donut .seg,.donut.in .seg{opacity:1;transform:none}
+.donut .seg:hover path{fill-opacity:1}
+.ringw{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+#ring .arc{transition:stroke-dashoffset 1.2s var(--ease);transform:rotate(-90deg);transform-origin:60px 60px}
+.pbar{display:grid;grid-template-columns:7.5em 1fr 4em;gap:8px;align-items:center;margin:6px 0}
+.pbar .t{height:10px;border-radius:6px;background:var(--card2);overflow:hidden}.pbar .barx{display:block;height:100%;transform:scaleX(0);transform-origin:0 50%;transition:transform 1s var(--ease)}
+.ld{position:relative;overflow:hidden}
+.ld .rv{position:absolute;inset:0;padding:10px 12px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 30%,var(--bg2)),var(--bg2));font-size:13px;line-height:1.5;opacity:0;transform:translate3d(0,10px,0);transition:opacity .25s var(--ease),transform .25s var(--ease);pointer-events:none;overflow:hidden}
+.ld:hover .rv,.ld:focus-visible .rv{opacity:1;transform:none}
+@media(hover:none){.ld .rv{display:none}}
+section.sec>h2::after{content:"";flex:1;height:2px;margin-left:10px;border-radius:2px;background:linear-gradient(90deg,var(--key),transparent);transform-origin:0 50%;transform:scaleX(.15);transition:transform .9s var(--ease);opacity:.6}
+section.sec:hover>h2::after{transform:scaleX(1)}
+.qa.reveal{transition-delay:calc(var(--i,0) * 40ms)}
+.gq{font-family:var(--serif);font-size:1.1em;font-weight:800;margin:6px 0 10px}

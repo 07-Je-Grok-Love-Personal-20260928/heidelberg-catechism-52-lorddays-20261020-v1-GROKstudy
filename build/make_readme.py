@@ -1,7 +1,7 @@
 import json
 from common import VERSION,DATE,REPO
 V=json.load(open('versions.json'))
-a=json.load(open('perf_v2.json'));b=json.load(open('perf_v3.json'))
+a=json.load(open('perf_v3.json'));b=json.load(open('perf_v4.json'))
 rows=[]
 for k in a:
     x,y=a[k],b[k]
@@ -11,32 +11,38 @@ toc=json.load(open('toc_test_result.json'))
 tt='\n'.join(f"- {'✅' if r[1] else '❌'} {r[0]} {('（'+r[2]+'）') if r[2] and len(r[2])<60 else ''}" for r in toc)
 REL='https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/'
 L=lambda key:'\n'.join(f'| {t} | {u} |' for t,u in V[key])
-md=f'''# heidelberg-catechism-52-lorddays-20261020-v3-GROKstudy
+md=f'''# heidelberg-catechism-52-lorddays-20261021-v4-GROKstudy
 
 > 《海德堡要理问答》52 主日全景深度解析：简体中文深度学习网站，共 129 问，持守欧陆改革宗立场（三项联合信条 + 三大普世信经）。
 
-## 🌐 当前在线访问（v3）
+## 🌐 当前在线访问（v4）
 
 | 平台 | 链接 |
 |---|---|
 | GitHub Pages | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
-| Surge | https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh |
-| Netlify | https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.netlify.app |
+| Surge | https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.surge.sh |
+| Netlify | https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.netlify.app |
 
 📦 源码仓库：https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}
-🏷️ Release：[v3]({REL}v3) · [v2]({REL}v2) · [v1]({REL}v1)
+🏷️ Release：[v4]({REL}v4) · [v3]({REL}v3) · [v2]({REL}v2) · [v1]({REL}v1)
 
-## 🆕 更新说明（v3 · {DATE}）
+## 🆕 更新说明（v4 · {DATE}）
+
+''' + '\n'.join(f'- {x}' for x in V['changes_v4']) + f'''
+
+<details><summary>v3 更新说明</summary>
 
 ''' + '\n'.join(f'- {x}' for x in V['changes_v3']) + f'''
 
-### ⚡ 性能对比（v2 → v3）
+</details>
 
-测量方法：`build/perf.py`，Playwright 无头 Chromium，CDP 模拟 **4 倍 CPU 降速**，页面加载后以 rAF 记录 4 秒自动滚动的帧时间，并用 PerformanceObserver 统计长任务（>50 ms）。两版在同一台机器、同一脚本下测得（原始数据：`build/perf_v2.json`、`build/perf_v3.json`）。无头环境数字只用于前后对比，不等同于真机体验。
+### ⚡ 性能对比（v3 → v4）
+
+测量方法：`build/perf.py`，Playwright 无头 Chromium，CDP 模拟 **4 倍 CPU 降速**，页面加载后以 rAF 记录 4 秒自动滚动的帧时间，并用 PerformanceObserver 统计长任务（>50 ms）。两版在同一台机器、同一脚本下测得（原始数据：`build/perf_v3.json`、`build/perf_v4.json`；v2 基线见 `build/perf_v2.json`）。无头环境数字只用于前后对比，不等同于真机体验。
 
 {perf}
 
-### 🧪 目录测试（`build/toc_test.py`，Playwright）
+### 🧪 目录与互动测试（`build/toc_test.py`，Playwright）
 
 {tt}
 
@@ -63,9 +69,9 @@ md=f'''# heidelberg-catechism-52-lorddays-20261020-v3-GROKstudy
 | `bible.html` | 圣经神学、圣约神学（桌面流程图 / 手机盟约阶梯）、八个视角、本质核心 |
 | `history.html` | 三线故事线、时间线、Leaflet 地图、人物图像、区域文化 |
 | `lorddays.html` | 52 主日按 17 个主题分组、筛选、进度、总表 |
-| `ld/01.html … ld/52.html` | 精华速览（五问提要 · 金句 · 易错 · 关联星图）→ 原文 → 整体 → 局部 → 交叉对照 → 应用（页签）→ 记忆 → 延伸 |
+| `ld/01.html … ld/52.html` | 精华速览（五问提要 · 金句 · 易错 · 核心经文 · 可点击关联星图 · 承上启下）→ 原文 → 整体 → 局部 → 交叉对照 → 应用（页签）→ 记忆 → 延伸 |
 | `texts/index.html` | 原文中心（v3 新增） |
-| `texts/hc.html` `bc.html` `cd.html` `creeds.html` | 干净阅读版/背诵版（三级目录：部 → 主日 → 问） |
+| `texts/hc.html` `bc.html` `cd.html` `creeds.html` | 干净阅读版/背诵版（要理问答四级目录：部 → 主题 → 主日 → 问；比利时信条 12 主题 → 37 条；多特信经 4 项 → 条目） |
 | `compare.html` | 覆盖度图（v3 新增）、总对比、为什么三份、教义矩阵、三大信经对比 |
 | `memory.html` | 标记图例、数字骨架、52 口诀、129 卡片、52 测验 |
 | `search.html` · `sources.html` · `changelog.html` | 搜索 · 资料与校验方法 · 版本记录 |
@@ -88,13 +94,18 @@ python3 build/layout_check.py URL 375   # 布局检测（需本地服务器）
 python3 build/toc_test.py URL           # 目录拖动/折叠测试
 python3 build/perf.py URL out.json      # 性能测量
 git subtree push --prefix site origin gh-pages
-surge site heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh
-netlify deploy --prod --dir site --site 22d5c459-5918-4538-83ec-156d777963e0
+surge site heidelberg-catechism-52-lorddays-20261021-v4-grokser.surge.sh
+netlify deploy --prod --dir site --site <v4 site id>
 ```
 
 ## 🗂️ 版本历史
 
-### v3 · {DATE} · [Release]({REL}v3)
+### v4 · {DATE} · [Release]({REL}v4)
+| 平台 | 链接 |
+|---|---|
+{L('V4')}
+
+### v3 · 2026-10-20 · [Release]({REL}v3)
 | 平台 | 链接 |
 |---|---|
 {L('V3')}

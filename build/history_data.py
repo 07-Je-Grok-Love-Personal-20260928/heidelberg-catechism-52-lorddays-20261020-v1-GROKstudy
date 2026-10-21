@@ -82,4 +82,4 @@ def regions_html():
     return '<div class="grid g2">'+''.join(f'<div class="card reveal" style="border-left:4px solid {c}"><h3 style="color:{c}">{t}</h3><dl class="kv">'+''.join(f'<dt>{k}</dt><dd>{esc(v)}</dd>' for k,v in kv)+'</dl></div>' for t,c,kv in REGIONS)+'</div>'
 def mapjs():
     PL=[[la,lo,t,e,d,[[n,ld_label(n)] for n in ls]] for la,lo,t,e,d,ls in PLACES]
-    return 'const P='+json.dumps(PL,ensure_ascii=False)+';const EH='+json.dumps(ERA_HEX)+';'+open(os.path.join(os.path.dirname(__file__),'map_v5.js')).read()
+    return 'const P='+json.dumps(PL,ensure_ascii=False)+';'+open(os.path.join(os.path.dirname(__file__),'map_v5.js')).read()

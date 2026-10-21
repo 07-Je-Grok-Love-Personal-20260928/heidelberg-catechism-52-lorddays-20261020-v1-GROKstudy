@@ -145,6 +145,30 @@ def _noauto(el):
         c=p.get('class') or []
         if p.name in ('header','aside','footer','summary','a','details') or any(x in ('fc','quiz','qa','hero','art','nolv','pager') for x in c): return True
     return False
+
+# ===== v6: theme-ify hardcoded colours (SVG presentation attrs + inline styles → CSS variables) =====
+HEXVAR={'#a78bfa':'var(--intro)','#fb7185':'var(--misery)','#60a5fa':'var(--deliv)','#34d399':'var(--grat)','#fbbf24':'var(--gold)','#facc15':'var(--key)',
+ '#2dd4bf':'var(--teal)','#f59e0b':'var(--gold)','#c084fc':'var(--intro)','#0b1020':'var(--ink)','#1e293b':'var(--card2)','#fde68a':'var(--gold)','#e2e8f0':'var(--fg)'}
+_HX=re.compile(r'#[0-9a-fA-F]{6}\b')
+_TAG=re.compile(r'<(svg|g|rect|circle|path|text|tspan|polygon|polyline|line|ellipse|stop|a|div|span|li|td|th|section|h2|h3|b)\b([^<>]*?)(/?)>',re.S)
+_ATTR=re.compile(r'\s(fill|stroke|stop-color)="(#[0-9a-fA-F]{3,6})"')
+def _fix_tag(m):
+    tag,attrs,sl=m.group(1),m.group(2),m.group(3)
+    add=[]
+    def ra(a):
+        k,v=a.group(1),a.group(2).lower()
+        if tag in('svg','g','rect','circle','path','text','tspan','polygon','polyline','line','ellipse','stop'):
+            if v in HEXVAR: add.append(f'{k}:{HEXVAR[v]}'); return ''
+            if v=='#fff' and k=='fill' and tag in('text','tspan'): add.append('fill:var(--ink)'); return ''
+        return a.group(0)
+    attrs=_ATTR.sub(ra,attrs)
+    if 'style="' in attrs:
+        attrs=re.sub(r'style="([^"]*)"',lambda x:'style="'+_HX.sub(lambda h:HEXVAR.get(h.group(0).lower(),h.group(0)),x.group(1))+(';'+';'.join(add) if add else '')+'"',attrs,count=1)
+    elif add: attrs+=' style="'+';'.join(add)+'"'
+    return f'<{tag}{attrs}{sl}>'
+def themeify(html):
+    html=html.replace(' filter="url(#gl)"','')
+    return _TAG.sub(_fix_tag,html)
 def post(body):
     soup=BeautifulSoup(body,'html.parser')
     number(soup); automark(soup)
@@ -169,18 +193,33 @@ def gnav(pre,path):
             out.append(f'<a href="{pre}ld/{n:02d}.html" class="{"on" if n==cur else ""}" title="{n}. {esc(ld_label(n))}"><span class="no">{n}.</span> {esc(ld_label(n))}</a>')
     out.append('</div></details>')
     return ''.join(out)
+THEMES=[('night','🌌','深夜星空','#0b1020','#60a5fa','#fbbf24','#0b1020'),('dawn','🌅','晨曦米白','#f6f1e7','#1d4ed8','#a15c07','#f6f1e7'),('forest','🌲','翡翠森林','#08160f','#6ee7b7','#fde047','#08160f'),('grape','🍇','葡萄紫金','#140c22','#d8b4fe','#fbbf24','#140c22'),('ocean','🌊','海洋蓝','#eaf4fa','#0461a8','#0e7490','#eaf4fa')]
+def theme_buttons(cls=''):
+    return ''.join(f'<button type="button" role="radio" aria-checked="false" data-theme-set="{k}"{cls}><span class="sw" style="--a:{a};--b:{b};--c2:{c}"></span>{i} {t}</button>' for k,i,t,a,b,c,_ in THEMES)
+THPICK='<div class="thp" id="thp"><button class="ibtn" id="themeBtn" aria-haspopup="true" aria-expanded="false" aria-controls="thpop" title="配色主题（5 套）" aria-label="配色主题">🎨</button><div class="thpop" id="thpop" role="radiogroup" aria-label="配色主题"><h5>🎨 配色主题 · 自动保存</h5>'+theme_buttons()+'</div></div>'
+_TC=json.dumps({k:tc for k,_,_,_,_,_,tc in THEMES})
+HEADJS=('try{var d=document.documentElement,L=localStorage,n=navigator,q=location.search,M=function(x){return matchMedia(x).matches};'
+ 'var t=JSON.parse(L.getItem("hc-theme"));t={dark:"night",light:"dawn"}[t]||t;'
+ 'if(!/^(night|dawn|forest|grape|ocean)$/.test(t||""))t=M("(prefers-color-scheme: light)")?"dawn":"night";d.dataset.theme=t;'
+ 'var TC='+_TC+';document.querySelector("meta[name=theme-color]").content=TC[t];'
+ 'var c=n.hardwareConcurrency||4,m=n.deviceMemory||8,sd=n.connection&&n.connection.saveData;'
+ 'var lite=/[?&]full/.test(q)?false:(/[?&]lite/.test(q)||M("(max-width:1024px)")||M("(pointer:coarse)")||M("(prefers-reduced-motion: reduce)")||sd||c<=4||m<=4);'
+ 'd.classList.add(lite?"lite":"full");'
+ 'if(!lite&&c>=8&&!/[?&]noanim/.test(q))d.classList.add("anim");'
+ 'if(!lite&&(window.devicePixelRatio||1)<2)d.classList.add("glass");'
+ 'var w=JSON.parse(L.getItem("hc-side-w"));if(w)d.style.setProperty("--side",w+"px")}catch(e){}')
 def page(path,title,body,desc='',head=''):
     depth=path.count('/'); pre='../'*depth
     sect=path.split('/')[0] if '/' in path else path
     def on(h): return h==path or (h=='texts/index.html' and path.startswith('texts/')) or (h=='lorddays.html' and path.startswith('ld/'))
     navh=''.join(f'<a href="{pre}{h}" class="{"on" if on(h) else ""}" title="{t}"><span>{i}</span><span class="lb">{t}</span></a>' for h,i,t in NAV)
-    body=post(body)
-    doc=f'''<!doctype html><html lang="zh-Hans" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>{esc(title)} | 海德堡要理问答 52 主日深度解析</title><meta name="description" content="{esc(desc or title)}"><meta name="theme-color" content="#0a0f1f"><script>try{{var d=document.documentElement,t=JSON.parse(localStorage.getItem("hc-theme"));if(t)d.dataset.theme=t;var w=JSON.parse(localStorage.getItem("hc-side-w"));if(w)d.style.setProperty("--side",w+"px")}}catch(e){{}}</script>
+    body=themeify(post(body))
+    doc=f'''<!doctype html><html lang="zh-Hans" data-theme="night"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{esc(title)} | 海德堡要理问答 52 主日深度解析</title><meta name="description" content="{esc(desc or title)}"><meta name="theme-color" content="#0b1020"><script>{HEADJS}</script>
 <link rel="icon" href="data:image/svg+xml,{esc(LOGO.replace('class="logo" ','').replace('#','%23'))}">
 <link rel="stylesheet" href="{pre}assets/css/style.css">{head}</head><body>
-<div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-<header class="topbar"><button class="ibtn" id="tocBtn" title="显示/隐藏目录 (T)" aria-label="目录">☰</button><a class="brand" href="{pre}index.html">{LOGO}<b>海德堡要理问答 · 52主日</b></a><nav class="nav">{navh}</nav><a class="vbadge" href="{pre}changelog.html" title="版本更新记录">{VERSION} · {DATE}</a><button class="ibtn" id="marksBtn" data-marks title="显示/隐藏笔记标记 (M)" aria-label="标记" aria-pressed="true">🖍️</button><button class="ibtn" id="themeBtn" title="切换深浅色" aria-label="主题">🌓</button></header>
+<div class="sky" aria-hidden="true"><i></i><i></i></div>
+<header class="topbar"><button class="ibtn" id="tocBtn" title="显示/隐藏目录 (T)" aria-label="目录">☰</button><a class="brand" href="{pre}index.html">{LOGO}<b>海德堡要理问答 · 52主日</b></a><nav class="nav">{navh}</nav><a class="vbadge" href="{pre}changelog.html" title="版本更新记录">{VERSION} · {DATE}</a><button class="ibtn" id="marksBtn" data-marks title="显示/隐藏笔记标记 (M)" aria-label="标记" aria-pressed="true">🖍️</button>{THPICK}</header>
 <div class="progress"></div><div class="backdrop"></div>
 <div class="layout"><aside class="side" id="side"><div class="scroll"><input id="tocSearch" class="tocsearch" placeholder="🔍 过滤目录…" aria-label="过滤目录"><h4>📑 本页目录</h4><div class="tocbar"><button id="tocExpand" title="全部展开">⊞ 全部展开</button><button id="tocCollapse" title="全部折叠">⊟ 全部折叠</button></div><nav id="toc" class="toc" aria-label="本页目录"></nav><hr style="border:none;border-top:1px solid var(--bd);margin:14px 0">{gnav(pre,path)}<hr style="border:none;border-top:1px solid var(--bd);margin:14px 0"><h4>🖍️ 标记图例</h4><div class="legend-mini">{''.join(f'<span>{a}</span>' for a,b in LEGEND_ITEMS)}</div></div><div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="拖动调整目录宽度" tabindex="0" title="拖动调整宽度（双击恢复默认）"></div></aside>
 <main id="main"><div class="wrap">{body}

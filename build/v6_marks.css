@@ -1,0 +1,25 @@
+mark{background:var(--mk-hl);color:inherit;padding:0 2px;border-radius:3px}
+/* ===== v6 note-marking system: 3 levels, one meaning per style, colours per theme ===== */
+/* L1 核心：荧光底 + 加粗 */
+.mk-k{background:linear-gradient(transparent 38%,var(--mk-hl) 38% 92%,transparent 92%);font-weight:700;padding:0 2px;border-radius:2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+/* L2 重点：金色粗体 / 恩典应许：绿色粗体 / 警示：红字粗体 */
+.mk-b{font-weight:800;color:var(--mk-bold)}
+.mk-g{font-weight:800;color:var(--mk-grace)}
+.mk-r{font-weight:800;color:var(--mk-warn)}
+/* L3 下划线语义：实线＝定义术语，波浪＝难点，虚线＝对比/错误立场 */
+.mk-u{text-decoration:underline solid var(--mk-def);text-decoration-thickness:2px;text-underline-offset:.28em;text-decoration-skip-ink:none}
+.mk-w{text-decoration:underline wavy var(--mk-hard);text-decoration-thickness:1.5px;text-underline-offset:.3em;text-decoration-skip-ink:none}
+.mk-d{text-decoration:underline dashed var(--mk-con);text-decoration-thickness:2px;text-underline-offset:.28em;text-decoration-skip-ink:none}
+/* 概念块：浅色底框 / 经文：小号药丸 */
+.mk-bg{background:var(--mk-hl2);border-radius:5px;padding:0 4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.mk-ref{color:var(--mk-ref);font-size:.86em;white-space:nowrap;padding:0 6px;border-radius:999px;border:1px solid color-mix(in srgb,var(--mk-ref) 45%,transparent);font-family:var(--font);font-weight:600}
+body.nomarks .mk-k,body.nomarks .mk-bg{background:none;padding:0;font-weight:inherit}
+body.nomarks .mk-b,body.nomarks .mk-r,body.nomarks .mk-g{font-weight:inherit;color:inherit}
+body.nomarks .mk-u,body.nomarks .mk-d,body.nomarks .mk-w{text-decoration:none}
+body.nomarks .mk-ref{color:inherit;font-size:inherit;border:0;padding:0;font-weight:inherit}
+/* block callouts */
+.co{position:relative;margin:12px 0;padding:12px 14px 12px 50px;border-radius:14px;border:1px solid color-mix(in srgb,var(--cc) 40%,var(--bd));border-left:5px solid var(--cc);background:color-mix(in srgb,var(--cc) 9%,var(--card));overflow-wrap:anywhere}
+.co::before{content:var(--ci);position:absolute;left:14px;top:12px;font-size:20px;line-height:1}
+.co>b.lab{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--ink);background:var(--cc);margin-right:8px;padding:1px 9px;border-radius:999px}
+.co-core{--cc:var(--grat);--ci:"💎"}.co-hard{--cc:var(--hard);--ci:"⚠️";border-style:dashed;border-left-style:solid}.co-trap{--cc:var(--misery);--ci:"🚫"}.co-gold{--cc:var(--gold);--ci:"✨";font-family:var(--serif);font-size:1.06em}.co-hook{--cc:var(--intro);--ci:"🪝"}.co-bible{--cc:var(--teal);--ci:"📖"}
+body.nomarks .co{background:var(--card);border-color:var(--bd);border-left-color:var(--cc)}

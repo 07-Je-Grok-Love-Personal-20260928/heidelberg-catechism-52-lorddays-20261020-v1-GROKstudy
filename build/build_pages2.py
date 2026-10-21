@@ -61,8 +61,8 @@ deck=[]
 for ld in D['hc']:
     c=part(ld['n'])[2]
     for q in ld['qas']:
-        deck.append(f'<div class="fc" style="--c:{c}"><div class="in"><div class="f"><div class="small muted">{LDI[ld["n"]]} 主日{ld["n"]} · {esc(N[ld["n"]]["t"])}</div><div class="big">Q{qnum(q)}</div><div>{esc(re.sub(r"^\d+[．.]\s*问：","",q["q"]))}</div></div><div class="b">{"".join(f"<p>{x}</p>" for x in q["a"])}</div></div></div>')
-quiz=''.join(f'<div class="card quiz reveal" data-ans="{N[n]["quiz"][2]}" data-id="ld{n}"><div class="small muted">{esc(ld_label(n))}</div><p><b>{esc(N[n]["quiz"][0])}</b></p>{"".join(f"<button class=\"opt\">{"ABCD"[i]}. {esc(o)}</button>" for i,o in enumerate(N[n]["quiz"][1]))}<p class="res key"></p></div>' for n in range(1,53))
+        deck.append(f'<div class="fc" data-p="{part(ld["n"])[0]}" data-q="{qnum(q)}" style="--c:{c}"><div class="in"><div class="f"><div class="small muted">{LDI[ld["n"]]} 主日{ld["n"]} · {esc(N[ld["n"]]["t"])}</div><div class="big">Q{qnum(q)}</div><div>{esc(re.sub(r"^\d+[．.]\s*问：","",q["q"]))}</div></div><div class="b">{"".join(f"<p>{x}</p>" for x in q["a"])}</div></div></div>')
+quiz=''.join(f'<div class="card quiz" data-p="{part(n)[0]}" data-q="{n}" data-ans="{N[n]["quiz"][2]}" data-id="ld{n}"><div class="small muted">{esc(ld_label(n))}</div><p><b>{esc(N[n]["quiz"][0])}</b></p>{"".join(f"<button class=\"opt\">{"ABCD"[i]}. {esc(o)}</button>" for i,o in enumerate(N[n]["quiz"][1]))}<p class="res key"></p></div>' for n in range(1,53))
 mrows=''.join(f'<tr><td style="color:{part(n)[2]};font-weight:800">{n}</td><td>{LDI[n]} {esc(N[n]["t"])}</td><td class="key">{esc(N[n]["k"])}</td><td>{"、".join(esc(k) for k in N[n]["kw"])}</td></tr>' for n in range(1,53))
 mem=f'''<section class="hero reveal"><span class="chip g">🧠 速记中心</span><h1>快速记住 52 主日</h1><p class="lead">口诀 → 结构 → 卡片 → 测验 → 背诵：五步法。快捷键：<b>T</b> 目录 · <b>R</b> 背诵模式 · <b>←/→</b> 上一/下一主日。</p></section>'''
 GD=json.dumps([[re.sub(r'^\d+[．.]\s*问：','',q['q']),ld['n']] for ld in D['hc'] for q in ld['qas']],ensure_ascii=False)
@@ -75,8 +75,8 @@ mem+=sec('marks','🖍️','标记图例：读懂本站的颜色与线条',f'<di
 mem+=sec('frame','🏗️','第一步：记住骨架（数字记忆）','''<div class="grid g4"><div class="card reveal" style="border-top:4px solid var(--intro)"><h3>💜 1</h3><p>引言：主日 1（Q1–2）安慰与三件事</p></div><div class="card reveal" style="border-top:4px solid var(--misery)"><h3>💔 2–4</h3><p>罪与愁苦：律法 → 堕落 → 公义（Q3–11）</p></div><div class="card reveal" style="border-top:4px solid var(--deliv)"><h3>✝️ 5–31</h3><p>得救：中保 5–6 · 信心 7 · 信经 8–22 · 称义 23–24 · 圣言圣礼 25–30 · 钥匙 31（Q12–85）</p></div><div class="card reveal" style="border-top:4px solid var(--grat)"><h3>🌿 32–52</h3><p>感恩：归正 32–33 · 十诫 34–44 · 主祷文 45–52（Q86–129）</p></div></div>
 <div class="card reveal" style="margin-top:14px"><p class="mn">🔢 “1·3·27·21”：一安慰、三愁苦、廿七得救、廿一感恩。</p><p class="mn">🔢 信经 8–22 的“三一三段”：父 9–10 · 子 11–19 · 灵 20–22。</p><p class="mn">🔢 十诫 34–44：每主日约一诫（第3诫加“起誓”主日37，第10诫加律法功用）。</p><p class="mn">🔢 主祷文 45–52：45 总论 · 46 称呼 · 47–52 六个祈求（52 含结语与阿们）。</p></div>''')
 mem+=sec('mnemonics','🔑','第二步：52 条口诀表',f'<div class="tbl"><table><thead><tr><th>主日</th><th>主题</th><th>口诀</th><th>关键词</th></tr></thead><tbody>{mrows}</tbody></table></div>')
-mem+=sec('cards','🃏','第三步：129 张问答卡片（原文）',f'<div class="btns" style="margin-bottom:12px"><button class="btn" id="shuffleBtn">🔀 随机打乱</button></div><div class="grid" id="deck">{"".join(deck)}</div>')
-mem+=sec('quiz','🎯','第四步：52 题小测验',f'<div class="grid">{quiz}</div>')
+mem+=sec('cards','🃏','第三步：129 张问答卡片（原文）',f'<div class="paged" data-size="12" data-parts="1" data-shuffle="1" data-jump="1" data-unit="问"><div class="pgctl btns"></div><div class="grid pg-out" id="deck"></div><template>{"".join(deck)}</template></div><p class="small muted">每页 12 张（只渲染当前页，页面更轻快）；可按四部分筛选、随机打乱或输入问号直接跳转。</p>')
+mem+=sec('quiz','🎯','第四步：52 题小测验',f'<div class="paged" data-size="8" data-parts="1" data-jump="1" data-unit="主日"><div class="pgctl btns"></div><div class="grid pg-out"></div><template>{quiz}</template></div>')
 mem+=sec('recite','🎙️','第五步：背诵与朗读','<div class="card reveal"><p>打开 <a href="texts/hc.html">📜 要理问答全文</a>，点击“背诵模式”遮住答案，逐问回忆后点击答案核对；🔊 按钮可调用浏览器中文语音朗读。<br>建议节奏：<b class="key">每周一个主日</b>（与教会下午崇拜同步），一年一轮；每天复习前一主日的卡片 3 分钟。</p></div>')
 page('memory.html','速记中心',mem,'海德堡要理问答记忆法、卡片、测验')
 # ---------------- SOURCES

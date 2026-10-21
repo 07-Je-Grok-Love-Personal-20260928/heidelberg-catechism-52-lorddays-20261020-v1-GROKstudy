@@ -143,5 +143,45 @@
   "LD game scores",
   true,
   "得分 0 / 1 · 连对 0 · 最佳连对 0"
+ ],
+ [
+  "v5 timeline: scrubber dots = events, era filter",
+  true,
+  "35 dots / 35 events"
+ ],
+ [
+  "v5 place card flies map + opens popup with LD links",
+  true,
+  "海德堡 Heidelberg普法尔茨选帝侯首府；1563 要理问答在此写成。📅 "
+ ],
+ [
+  "v5 route toggle",
+  true,
+  "btn"
+ ],
+ [
+  "v5 zoom ladder 6 levels + current act",
+  true,
+  "{\"n\": 6, \"on\": \"✝️ 救赎\", \"op\": \"1\"}"
+ ],
+ [
+  "v5 perspective compass opens",
+  true,
+  "1"
+ ],
+ [
+  "v5 read-aloud player opens, highlights, next",
+  true,
+  "{\"show\": true, \"hl\": [\"q29\"]} Q30 · 2/2"
+ ],
+ [
+  "v5 compare: problems flow + Venn + Remonstrance table",
+  true,
+  "{\"v\": 10, \"p\": 3, \"r\": 5}"
+ ],
+ [
+  "v5 bible matrix has all 52 LDs",
+  true,
+  "52"
  ]
 ]

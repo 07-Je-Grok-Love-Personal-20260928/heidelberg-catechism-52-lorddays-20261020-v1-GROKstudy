@@ -348,3 +348,4 @@ dl.kv{display:grid;grid-template-columns:5.5em 1fr;gap:6px 10px;margin:0}dl.kv d
 .speaking{outline:2px solid var(--gold);outline-offset:3px;box-shadow:0 0 0 6px color-mix(in srgb,var(--gold) 14%,transparent)}
 @media(max-width:480px){#player .pl{max-width:22vw}}
 body.hasplayer .fab{bottom:70px}body.hasplayer .toast{bottom:76px}
+#map{scroll-margin-top:84px}

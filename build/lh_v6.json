@@ -1,0 +1,42 @@
+{
+ "index.html": {
+  "score": 100,
+  "fcp": 1201,
+  "lcp": 1385,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1201
+ },
+ "ld/01.html": {
+  "score": 99,
+  "fcp": 1265,
+  "lcp": 1384,
+  "tbt": 0,
+  "cls": 0.053,
+  "si": 1265
+ },
+ "texts/hc.html": {
+  "score": 97,
+  "fcp": 2060,
+  "lcp": 2060,
+  "tbt": 0,
+  "cls": 0,
+  "si": 2060
+ },
+ "history.html": {
+  "score": 100,
+  "fcp": 1201,
+  "lcp": 1373,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1201
+ },
+ "memory.html": {
+  "score": 97,
+  "fcp": 2056,
+  "lcp": 2072,
+  "tbt": 0,
+  "cls": 0,
+  "si": 2056
+ }
+}

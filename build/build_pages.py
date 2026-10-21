@@ -3,17 +3,17 @@ import svgs
 def ldgrid_groups():
     out=[]
     for k,pn,a,b,t in GROUPS:
-        out.append(f'<div class="grp" style="--k:{min(b-a+1,6)}"><h3 id="grp{a}" data-toc="{pn} · {t}（主日{a}{"–"+str(b) if b!=a else ""}）" style="color:{part(a)[2]}">{part(a)[3]} {pn} · {t}<span class="small muted">　主日 {a}{"–"+str(b) if b!=a else ""}</span></h3><div class="ldgrid">')
+        out.append(f'<div class="grp" style="--k:{min(b-a+1,6)}"><h3 id="grp{a}" data-toc="{part(a)[3]} {pn} · {t}（主日{a}{"–"+str(b) if b!=a else ""}）" style="color:{part(a)[2]}">{part(a)[3]} {pn} · {t}<span class="small muted">　主日 {a}{"–"+str(b) if b!=a else ""}</span></h3><div class="ldgrid">')
         for n in range(a,b+1):
             ld=D['hc'][n-1];p=part(n);qa,qb=qrange(ld)
-            out.append(f'<a class="ld reveal" data-ld-card="{n}" data-p="{p[0]}" href="ld/{n:02d}.html" style="--c:{p[2]}"><div class="n">主日 {n} · Q{qa}{"–"+str(qb) if qb!=qa else ""}</div><div class="t">{esc(N[n]["t"])}</div><div class="k">{esc(N[n]["k"])}</div></a>')
+            out.append(f'<a class="ld reveal" data-ld-card="{n}" data-p="{p[0]}" href="ld/{n:02d}.html" style="--c:{p[2]}"><div class="n">{LDI[n]} 主日 {n} · Q{qa}{"–"+str(qb) if qb!=qa else ""}</div><div class="t">{esc(N[n]["t"])}</div><div class="k">{esc(N[n]["k"])}</div><div class="rv" aria-hidden="true"><b>💎 论题</b><br>{esc(re.sub(r"[*=~_:!]{2}","",T[n][0]))}</div></a>')
         out.append('</div></div>')
     return '<div class="grps">'+''.join(out)+'</div>'
 def ldgrid(pre=''):
     out=['<div class="ldgrid">']
     for ld in D['hc']:
         n=ld['n'];p=part(n);a,b=qrange(ld)
-        out.append(f'<a class="ld reveal" data-ld-card="{n}" data-p="{p[0]}" href="{pre}ld/{n:02d}.html" style="--c:{p[2]}"><div class="n">主日 {n} · Q{a}{"–"+str(b) if b!=a else ""}</div><div class="t">{esc(N[n]["t"])}</div><div class="k">{esc(N[n]["k"])}</div></a>')
+        out.append(f'<a class="ld reveal" data-ld-card="{n}" data-p="{p[0]}" href="{pre}ld/{n:02d}.html" style="--c:{p[2]}"><div class="n">{LDI[n]} 主日 {n} · Q{a}{"–"+str(b) if b!=a else ""}</div><div class="t">{esc(N[n]["t"])}</div><div class="k">{esc(N[n]["k"])}</div><div class="rv" aria-hidden="true"><b>💎 论题</b><br>{esc(re.sub(r"[*=~_:!]{2}","",T[n][0]))}</div></a>')
     out.append('</div>'); return ''.join(out)
 # ---------------- INDEX
 legend='<div class="tags" style="display:flex;flex-wrap:wrap;gap:8px"><span class="chip i">💜 引言（紫）</span><span class="chip m">💔 罪与愁苦（红）</span><span class="chip d">✝️ 得救（蓝）</span><span class="chip g">🌿 感恩（绿）</span><span class="chip" style="border-color:var(--hard)">⚠️ 难点（橙色斜纹）</span><span class="chip" style="border-color:var(--key)">🔑 重点（黄色高亮）</span></div>'
@@ -174,7 +174,7 @@ lds=f'''<section class="hero reveal"><span class="chip">📅 52 主日 · 129 �
 <div class="btns" style="margin-top:14px"><button class="btn pri" data-part="all">全部</button><button class="btn" data-part="i">💜 引言</button><button class="btn" data-part="m">💔 愁苦</button><button class="btn" data-part="d">✝️ 得救</button><button class="btn" data-part="g">🌿 感恩</button></div>
 <input id="ldFilter" class="tocsearch" style="margin-top:12px;font-size:16px" placeholder="🔍 输入关键词或主日编号（如：圣餐、称义、12）"></section>'''
 lds+=sec('grid','🗂️','全部主日（按 17 个主题分组）',ldgrid_groups())
-rows=''.join(f'<tr><td><a href="ld/{ld["n"]:02d}.html">主日{ld["n"]}</a></td><td>Q{qrange(ld)[0]}–{qrange(ld)[1]}</td><td><span class="chip {part(ld["n"])[0]}">{part(ld["n"])[1]}</span></td><td>{esc(" › ".join(ld["crumbs"][1:]) or "—")}</td><td><b>{esc(N[ld["n"]]["t"])}</b></td><td>{esc(N[ld["n"]]["k"])}</td><td>{"、".join(str(x) for x in N[ld["n"]]["bc"]) or "—"}</td></tr>' for ld in D['hc'])
+rows=''.join(f'<tr><td><a href="ld/{ld["n"]:02d}.html">{LDI[ld["n"]]} 主日{ld["n"]}</a></td><td>Q{qrange(ld)[0]}–{qrange(ld)[1]}</td><td><span class="chip {part(ld["n"])[0]}">{part(ld["n"])[1]}</span></td><td>{esc(" › ".join(ld["crumbs"][1:]) or "—")}</td><td><b>{esc(N[ld["n"]]["t"])}</b></td><td>{esc(N[ld["n"]]["k"])}</td><td>{"、".join(str(x) for x in N[ld["n"]]["bc"]) or "—"}</td></tr>' for ld in D['hc'])
 lds+=sec('table','📊','总表：主日 · 问答 · 结构 · 口诀 · 比利时信条对照',f'<div class="tbl"><table><thead><tr><th>主日</th><th>问答</th><th>部分</th><th>子目</th><th>主题</th><th>口诀</th><th>BC条</th></tr></thead><tbody>{rows}</tbody></table></div>')
 page('lorddays.html','52主日总览',lds,'海德堡要理问答52主日总览')
 print('pages part1 done')

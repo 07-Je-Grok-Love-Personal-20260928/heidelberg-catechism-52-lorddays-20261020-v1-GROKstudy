@@ -62,12 +62,12 @@ def ld_constellation(n,ld,no):
     import math
     W,H=560,340; cx,cy=W/2,H/2; p=part(n); col=COLS[p[0]]
     qs=[qnum(q) for q in ld['qas']]
-    outer=[(k,'#facc15','kw') for k in no['kw'][:5]]
-    outer+=[(f'比利时{BC[k]["title"][:4]}','#60a5fa','bc') for k in no['bc'][:3]]
+    outer=[(k,'#facc15','../search.html?q='+k) for k in no['kw'][:5]]
+    outer+=[(f'比利时{BC[k]["title"][:4]}','#60a5fa',f'#xbc{k}') for k in no['bc'][:3]]
     for s in no['cd'][:2]:
         sec_,st_,arts=parse_cd(s)
-        outer.append((('多特'+st_[:3]).replace('第',''),'#34d399','cd'))
-    outer+=[(f'WSC {x}','#fbbf24','wsc') for x in no['wsc'][:2]]
+        outer.append((('多特'+st_[:3]).replace('第',''),'#34d399','#x-cd'))
+    outer+=[(f'WSC {x}','#fbbf24','#x-wsc') for x in no['wsc'][:2]]
     g=[f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="主日{n}关联星图" class="const">']
     g.append(f'<defs><radialGradient id="cg{n}"><stop offset="0" stop-color="{col}" stop-opacity=".95"/><stop offset="1" stop-color="{col}" stop-opacity=".35"/></radialGradient></defs>')
     # orbits
@@ -75,19 +75,21 @@ def ld_constellation(n,ld,no):
     nodes=[]
     for i,q in enumerate(qs):
         a=-math.pi/2+2*math.pi*i/len(qs); x=cx+92*math.cos(a); y=cy+70*math.sin(a)
-        nodes.append(('q',x,y,f'Q{q}',col))
+        nodes.append(('q',x,y,f'Q{q}',col,f'#q{q}'))
     for i,(t,c,k) in enumerate(outer):
         a=-math.pi/2+2*math.pi*(i+.5)/max(len(outer),1); x=cx+225*math.cos(a); y=cy+135*math.sin(a)
-        nodes.append(('o',x,y,t,c))
-    for j,(k,x,y,t,c) in enumerate(nodes):
+        nodes.append(('o',x,y,t,c,k))
+    for j,(k,x,y,t,c,h) in enumerate(nodes):
         g.append(f'<line class="draw" x1="{cx:.0f}" y1="{cy:.0f}" x2="{x:.0f}" y2="{y:.0f}" stroke="{c}" stroke-opacity=".55" stroke-width="{2 if k=="q" else 1.4}" style="transition-delay:{j*60}ms"/>')
     g.append(f'<circle cx="{cx}" cy="{cy}" r="44" fill="url(#cg{n})"/><text x="{cx}" y="{cy-6}" text-anchor="middle" font-size="13" fill="#0b1020" font-weight="800">主日</text><text x="{cx}" y="{cy+18}" text-anchor="middle" font-size="26" fill="#0b1020" font-weight="900">{n}</text>')
-    for k,x,y,t,c in nodes:
+    for k,x,y,t,c,h in nodes:
+        g.append(f'<a href="{esc(h)}" class="cn"><title>{esc(t)} — 点击跳转</title><g>')
         if k=='q':
             g.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="19" fill="{c}"/><text x="{x:.0f}" y="{y+5:.0f}" text-anchor="middle" font-size="13" font-weight="800" fill="#0b1020">{t}</text>')
         else:
             tw=len(t)*15+18
             g.append(f'<rect x="{x-tw/2:.0f}" y="{y-15:.0f}" width="{tw}" height="30" rx="15" fill="{c}" fill-opacity=".18" stroke="{c}"/><text x="{x:.0f}" y="{y+5:.0f}" text-anchor="middle" font-size="14" fill="currentColor">{esc(t)}</text>')
+        g.append('</g></a>')
     g.append('</svg>')
     return ''.join(g)
 def q_bars():
@@ -118,3 +120,22 @@ def parts_stack():
             small+=1
         x+=w
     out.append('<text x="4" y="142" font-size="13" fill="currentColor" opacity=".7">引言 Q1–2 · 1 个主日　|　罪与愁苦 Q3–11 · 3 个主日</text></svg>'); return ''.join(out)
+
+def refbars(ld,c):
+    qs=[(qnum(q),len(q['refs'])) for q in ld['qas']]; mx=max([v for _,v in qs]+[1])
+    rows=''.join(f'<a class="rb" href="#q{n}"><span class="small" style="width:3.2em">Q{n}</span><span class="rbt"><span class="barx" style="width:{max(v/mx*100,3):.0f}%;background:{c};transition-delay:{i*90}ms"></span></span><span class="small muted">{v} 处</span></a>' for i,(n,v) in enumerate(qs))
+    return f'<div class="refbars">{rows}</div>'
+def bc_donut():
+    import math
+    R,r=120,72; cx=cy=150; tot=37; a0=-math.pi/2; out=['<svg viewBox="0 0 300 300" role="img" aria-label="比利时信条37条分组" class="donut">']
+    cols=['#a78bfa','#60a5fa','#a78bfa','#fbbf24','#fb7185','#fbbf24','#60a5fa','#34d399','#60a5fa','#34d399','#fbbf24','#fb7185']
+    for i,(s_,e_,t,ic) in enumerate(BCG):
+        n=e_-s_+1; a1=a0+2*math.pi*n/tot-0.015
+        p=lambda a,rr:(cx+rr*math.cos(a),cy+rr*math.sin(a))
+        x1,y1=p(a0,R);x2,y2=p(a1,R);x3,y3=p(a1,r);x4,y4=p(a0,r); lg=1 if a1-a0>math.pi else 0
+        out.append(f'<a href="texts/bc.html#g{s_}" class="seg" style="transition-delay:{i*70}ms"><path d="M{x1:.1f},{y1:.1f} A{R},{R} 0 {lg} 1 {x2:.1f},{y2:.1f} L{x3:.1f},{y3:.1f} A{r},{r} 0 {lg} 0 {x4:.1f},{y4:.1f}Z" fill="{cols[i]}" fill-opacity=".85"><title>{ic} {t}：第{s_}{"–"+str(e_) if e_!=s_ else ""}条（{n} 条）</title></path></a>')
+        am=(a0+a1)/2; lx,ly=p(am,(R+r)/2)
+        if n>=2: out.append(f'<text x="{lx:.0f}" y="{ly+5:.0f}" text-anchor="middle" font-size="15" pointer-events="none">{ic}</text>')
+        a0=a1+0.015
+    out.append(f'<text x="{cx}" y="{cy-4}" text-anchor="middle" font-size="34" font-weight="900" fill="currentColor">37</text><text x="{cx}" y="{cy+20}" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7">条 · 12 组</text></svg>')
+    return ''.join(out)

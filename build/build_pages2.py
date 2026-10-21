@@ -1,4 +1,5 @@
 from common import *
+import svgs
 # ---------------- COMPARE
 cmp_rows=[('📅 年代','1563','1561（多特大会 1619 年修订确认）','1618–1619'),
 ('📍 地点','德国 · 海德堡（选帝侯普法尔茨）','南尼德兰（今比利时）· 图尔奈一带','荷兰共和国 · 多德雷赫特'),
@@ -27,6 +28,7 @@ def covchart():
     return ''.join(out)
 cp+=sec('table','📊','一、三项联合信条总对比',ct)
 cp+=sec('coverage','📈','覆盖度图：同一教义，三份文件各用多少篇幅',covchart())
+cp+=sec('bcgroups','🍩','比利时信条 37 条的 12 个主题（点击扇区跳到原文）',f'<div class="grid g2"><div class="card reveal"><div class="chart" style="max-width:340px;margin:auto">{svgs.bc_donut()}</div></div><div class="card reveal"><ul class="clean">'+''.join(f'<li>{ic} <a href="texts/bc.html#g{s_}">{t}</a>：第{s_}{"–"+str(e_) if e_!=s_ else ""}条（{e_-s_+1} 条）</li>' for s_,e_,t,ic in BCG)+'</ul><p class="small muted">分组为本站学习用划分；条文标题与正文见原文中心。</p></div></div>')
 cp+=sec('why3','❓','二、为什么需要三份，而不是一份？','''<div class="grid g2">
 <div class="card pan core reveal"><h3>① 不同的问题需要不同的文体</h3><p>教导孩童与安慰病人，需要问答体与第一人称（海德堡）；面对君王的指控，需要条理分明的公开宣告（比利时信条）；面对神学争论，需要法庭式的精确裁决与错谬反驳（多特信经）。<b class="key">一种文体无法同时胜任三种任务。</b></p></div>
 <div class="card pan why reveal"><h3>② 历史是逐步展开的</h3><p>信条不是一次写成的“系统”，而是教会在历史中回应真实挑战的见证。1561 与 1563 年面对的是罗马教与重洗派；1610 年代的新问题（阿米念主义）出现在改革宗内部，因此需要第三份文件。</p></div>
@@ -55,10 +57,16 @@ deck=[]
 for ld in D['hc']:
     c=part(ld['n'])[2]
     for q in ld['qas']:
-        deck.append(f'<div class="fc" style="--c:{c}"><div class="in"><div class="f"><div class="small muted">主日{ld["n"]} · 点击翻转</div><div class="big">Q{qnum(q)}</div><div>{esc(re.sub(r"^\d+[．.]\s*问：","",q["q"]))}</div></div><div class="b">{"".join(f"<p>{x}</p>" for x in q["a"])}</div></div></div>')
-quiz=''.join(f'<div class="card quiz reveal" data-ans="{N[n]["quiz"][2]}" data-id="ld{n}"><div class="small muted">主日{n} · {esc(N[n]["t"])}</div><p><b>{esc(N[n]["quiz"][0])}</b></p>{"".join(f"<button class=\"opt\">{"ABCD"[i]}. {esc(o)}</button>" for i,o in enumerate(N[n]["quiz"][1]))}<p class="res key"></p></div>' for n in range(1,53))
-mrows=''.join(f'<tr><td style="color:{part(n)[2]};font-weight:800">{n}</td><td>{esc(N[n]["t"])}</td><td class="key">{esc(N[n]["k"])}</td><td>{"、".join(esc(k) for k in N[n]["kw"])}</td></tr>' for n in range(1,53))
+        deck.append(f'<div class="fc" style="--c:{c}"><div class="in"><div class="f"><div class="small muted">{LDI[ld["n"]]} 主日{ld["n"]} · {esc(N[ld["n"]]["t"])}</div><div class="big">Q{qnum(q)}</div><div>{esc(re.sub(r"^\d+[．.]\s*问：","",q["q"]))}</div></div><div class="b">{"".join(f"<p>{x}</p>" for x in q["a"])}</div></div></div>')
+quiz=''.join(f'<div class="card quiz reveal" data-ans="{N[n]["quiz"][2]}" data-id="ld{n}"><div class="small muted">{esc(ld_label(n))}</div><p><b>{esc(N[n]["quiz"][0])}</b></p>{"".join(f"<button class=\"opt\">{"ABCD"[i]}. {esc(o)}</button>" for i,o in enumerate(N[n]["quiz"][1]))}<p class="res key"></p></div>' for n in range(1,53))
+mrows=''.join(f'<tr><td style="color:{part(n)[2]};font-weight:800">{n}</td><td>{LDI[n]} {esc(N[n]["t"])}</td><td class="key">{esc(N[n]["k"])}</td><td>{"、".join(esc(k) for k in N[n]["kw"])}</td></tr>' for n in range(1,53))
 mem=f'''<section class="hero reveal"><span class="chip g">🧠 速记中心</span><h1>快速记住 52 主日</h1><p class="lead">口诀 → 结构 → 卡片 → 测验 → 背诵：五步法。快捷键：<b>T</b> 目录 · <b>R</b> 背诵模式 · <b>←/→</b> 上一/下一主日。</p></section>'''
+GD=json.dumps([[re.sub(r'^\d+[．.]\s*问：','',q['q']),ld['n']] for ld in D['hc'] for q in ld['qas']],ensure_ascii=False)
+GL=json.dumps([ld_label(n) for n in range(1,53)],ensure_ascii=False)
+ring='<svg id="ring" viewBox="0 0 120 120" width="150" height="150"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-opacity=".12" stroke-width="12"/><circle class="arc" cx="60" cy="60" r="52" fill="none" stroke="url(#rg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"/><defs><linearGradient id="rg"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs><text class="rk" x="60" y="62" text-anchor="middle" font-size="30" font-weight="900" fill="currentColor">0</text><text x="60" y="82" text-anchor="middle" font-size="11" fill="currentColor" opacity=".7">/ 52 已学完</text></svg>'
+pbars=''.join(f'<div class="pbar" data-pbar="{s_}-{e_}"><span class="small">{ic} {a} {b}</span><span class="t"><span class="barx" style="background:{part(s_)[2]}"></span></span><span class="pc small muted">0</span></div>' for k,ic,a,b,s_,e_ in PARTS)
+mem+=sec('progress','📈','我的学习进度（保存在本机）',f'<div class="card reveal"><div class="ringw">{ring}<div style="flex:1;min-width:220px">{pbars}<p class="small muted">在每个主日页面点“☑️ 标记已学完”即可累计。</p></div></div></div>')
+mem+=sec('game','🎲','归属挑战：这一问属于哪个主日？',f'<div class="card reveal" id="ldgame"><p class="gstat small muted"></p><p class="gq"></p><div class="gopts quiz"></div><script type="application/json" id="ldgame-data">{GD}</script><script type="application/json" id="ldgame-labels">{GL}</script></div>')
 mem+=sec('marks','🖍️','标记图例：读懂本站的颜色与线条',f'<div class="card reveal">{legend_html(True)}</div>')
 mem+=sec('frame','🏗️','第一步：记住骨架（数字记忆）','''<div class="grid g4"><div class="card reveal" style="border-top:4px solid var(--intro)"><h3>💜 1</h3><p>引言：主日 1（Q1–2）安慰与三件事</p></div><div class="card reveal" style="border-top:4px solid var(--misery)"><h3>💔 2–4</h3><p>罪与愁苦：律法 → 堕落 → 公义（Q3–11）</p></div><div class="card reveal" style="border-top:4px solid var(--deliv)"><h3>✝️ 5–31</h3><p>得救：中保 5–6 · 信心 7 · 信经 8–22 · 称义 23–24 · 圣言圣礼 25–30 · 钥匙 31（Q12–85）</p></div><div class="card reveal" style="border-top:4px solid var(--grat)"><h3>🌿 32–52</h3><p>感恩：归正 32–33 · 十诫 34–44 · 主祷文 45–52（Q86–129）</p></div></div>
 <div class="card reveal" style="margin-top:14px"><p class="mn">🔢 “1·3·27·21”：一安慰、三愁苦、廿七得救、廿一感恩。</p><p class="mn">🔢 信经 8–22 的“三一三段”：父 9–10 · 子 11–19 · 灵 20–22。</p><p class="mn">🔢 十诫 34–44：每主日约一诫（第3诫加“起誓”主日37，第10诫加律法功用）。</p><p class="mn">🔢 主祷文 45–52：45 总论 · 46 称呼 · 47–52 六个祈求（52 含结语与阿们）。</p></div>''')

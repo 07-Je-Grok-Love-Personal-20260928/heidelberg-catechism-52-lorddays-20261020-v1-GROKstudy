@@ -1,6 +1,6 @@
 from common import *
 from notes4 import X
-import svgs
+import svgs, random
 def strip_tags(s): return re.sub('<[^>]+>','',s)
 def first(s,k=1):
     parts=[x for x in re.split(r'(?<=[。！？])',s) if x.strip()]
@@ -17,16 +17,19 @@ def ld_page(ld):
     qr=f'第{a}{"–"+str(b) if b!=a else ""}问'
     kws=''.join(f'<span class="chip {p[0]}">🔑 {esc(k)}</span>' for k in no['kw'])
     hero=f'''<section class="hero reveal" style="background:linear-gradient(135deg,color-mix(in srgb,{c} 32%,transparent),color-mix(in srgb,{c} 6%,transparent))"><div class="tags"><span class="chip {p[0]}">{p[3]} {esc(p[1])}</span><span class="chip">🧭 {esc(crumbs)}</span><span class="chip">❓ {qr} · 共{len(ld['qas'])}问</span></div>
-<h1>主日 {n}　{esc(no['t'])}</h1>{callout('core','核心',md(th))}{callout('hook','记忆钩',f'<b style="font-family:var(--serif);font-size:1.1em">{esc(no["k"])}</b>')}<div class="tags">{kws}</div>
+<h1>{LDI[n]} 主日 {n}　{esc(no['t'])}</h1>{callout('core','核心',md(th))}{callout('hook','记忆钩',f'<b style="font-family:var(--serif);font-size:1.1em">{esc(no["k"])}</b>')}<div class="tags">{kws}</div>
 <div class="chart" style="margin-top:14px">{svgs.ld_strip(n)}</div><div class="small muted">全书位置 {n}/52 · {qr}</div>
 <div class="btns" style="margin-top:14px"><button class="btn" id="reciteBtn">🙈 背诵模式 (R)</button><button class="btn" id="supBtn">🔢 脚注编号</button><button class="btn" data-marks>🖍️ 标记 (M)</button><button class="btn pri" id="doneBtn" data-ld="{n}">☑️ 标记已学完</button></div>
 <details class="small" style="margin-top:12px"><summary style="cursor:pointer">🖍️ 标记图例（点击展开）</summary><div style="margin-top:8px">{legend_html(False)}</div></details></section>'''
     # 1. essence
+    keyrefs='　'.join(f'<a href="#q{qnum(q)}" class="chip" style="white-space:nowrap">Q{qnum(q)} · {esc(q["refs"][0].split("；")[0])}</a>' for q in ld['qas'] if q['refs'])+'<span class="src">　（各问第一条经文出处，引自原文脚注）</span>'
+    bridge=(f'<a class="node" href="{n-1:02d}.html">⬅ 承接<br><b>{esc(ld_label(n-1))}</b></a>' if n>1 else '<span class="node">🚪 全书开端</span>')+'<span class="arr">➜</span>'+f'<span class="node" style="border-color:{c}"><b>{esc(ld_label(n))}</b><br><span class="small">{esc(no["k"])}</span></span><span class="arr">➜</span>'+(f'<a class="node" href="{n+1:02d}.html">引出 ➡<br><b>{esc(ld_label(n+1))}</b></a>' if n<52 else '<span class="node">🙌 阿们：全书结束</span>')
     rows=[('🎯 论题','core',md(th)),('❓ 为什么','why',K(first(no['why']))),('📌 写了什么','what','；'.join(K(x) for x in no['core'][:2])),('🌱 怎么活','app',K(no['app'][0])),('🤝 圣经·圣约','cov',K(first(no['cov'])))]
     ess=''.join(f'<tr><th>{h}</th><td>{v}</td></tr>' for h,_,v in rows)
     s0=sec('essence','💎',f'精华速览：一页抓住主日{n}',f'''<div class="grid g2"><div class="card reveal"><h3 id="ess-table">五问提要</h3><div class="tbl" style="border:none;background:none"><table style="min-width:0"><tbody>{ess}</tbody></table></div>
-{callout('gold','金句',f'“{esc(gold)}”<span class="src">　—— 原文第{goldq}问（逐字）</span>')}{callout('trap','易错',md(trap))}</div>
-<div class="card reveal"><h3 id="ess-map">关联星图</h3><div class="chart">{svgs.ld_constellation(n,ld,no)}</div><p class="small muted" style="margin:6px 0 0">中心为本主日；内圈为各问，外圈为关键词与比利时信条 / 多特信经 / 威斯敏斯特对照。</p></div></div>''')
+{callout('gold','金句',f'“{esc(gold)}”<span class="src">　—— 原文第{goldq}问（逐字）</span>')}{callout('trap','易错',md(trap))}{callout('bible','核心经文',keyrefs)}</div>
+<div class="card reveal"><h3 id="ess-map">关联星图</h3><div class="chart">{svgs.ld_constellation(n,ld,no)}</div><p class="small muted" style="margin:6px 0 0">中心为本主日；内圈为各问，外圈为关键词与比利时信条 / 多特信经 / 威斯敏斯特对照。<b>每个节点都可点击</b>跳到对应原文或搜索。</p></div></div>
+<div class="card reveal" style="margin-top:14px"><h3 id="ess-bridge">🔗 承上启下：在全书中的位置</h3><div class="chain bridge">{bridge}</div></div>''')
     # 2. text
     chain=[]
     for i,q in enumerate(ld['qas']):
@@ -73,12 +76,19 @@ def ld_page(ld):
 <div class="tabp"><ol class="clean">{''.join(f"<li>{esc(x)}</li>" for x in dq)}</ol></div></div>''')
     cards=''.join(f'<div class="fc" style="--c:{c}"><div class="in"><div class="f"><div class="small muted">点击翻转</div><div class="big">Q{qnum(q)}</div><div>{esc(re.sub(r"^\d+[．.]\s*问：","",q["q"]))}</div></div><div class="b">{"".join(f"<p>{x}</p>" for x in q["a"])}</div></div></div>' for q in ld['qas'])
     qz=no['quiz']; opts=''.join(f'<button class="opt">{"ABCD"[i]}. {esc(o)}</button>' for i,o in enumerate(qz[1]))
-    s6=sec('memo','🧠','记忆：卡片 + 小测',f'''<h3 id="m-cards">🃏 翻转卡片</h3><div class="grid">{cards}</div>
+    sortq=''
+    if len(ld['qas'])>=2:
+        items=[(qnum(q),re.sub(r'^\d+[．.]\s*问：','',q['q'])) for q in ld['qas']]
+        rnd=random.Random(n); sh=items[:]
+        while sh==items: rnd.shuffle(sh)
+        sortq=f'''<h3 id="m-sort">🧩 排序挑战：把本主日的问题排回原来的顺序</h3><div class="card reveal sortbox"><p class="small muted">按住拖动（或用 ↑ ↓ 按钮）调整顺序，再点“检查”。</p><ol class="sortq">{"".join(f'<li data-q="{qn}" style="--c:{c}"><span class="grip" aria-hidden="true">⠿</span><span class="st">{esc(t)}</span><span class="mv"><button type="button" data-up aria-label="上移">↑</button><button type="button" data-down aria-label="下移">↓</button></span></li>' for qn,t in sh)}</ol><div class="btns"><button class="btn pri" data-sortcheck>✅ 检查</button><button class="btn" data-sortshuffle>🔀 重新打乱</button></div><p class="res key"></p></div>'''
+    cloze=f'''<h3 id="m-cloze">✍️ 填空背诵：标记的关键短语变成空格</h3><div class="card reveal clozebox" data-cloze><p class="small muted">根据上方原文中的标记短语自动生成（题目来自原文，作答只在本机）。</p><div class="btns"><button class="btn pri" data-clozestart>▶️ 开始填空</button><button class="btn" data-clozecheck>✅ 检查</button><button class="btn" data-clozeshow>👀 显示答案</button></div><div class="clozeout"></div><p class="res key"></p></div>'''
+    s6=sec('memo','🧠','记忆：卡片 · 排序 · 填空 · 小测',f'''<h3 id="m-cards">🃏 翻转卡片</h3><div class="grid">{cards}</div>{sortq}{cloze}
 <h3 id="m-quiz">🎯 小测验</h3><div class="card quiz reveal" data-ans="{qz[2]}" data-id="ld{n}"><p><b>{esc(qz[0])}</b></p>{opts}<p class="res key"></p></div>''')
     sers=[s for s in SER if s['ld']==n]
     s7=sec('more','🎧','延伸：ccifellowship.org 要理问答证道',f'<div class="card reveal"><ul class="clean">{"".join(f"<li>🗣️ <a href=\"{s["url"]}\" target=\"_blank\" rel=\"noopener\">{esc(s["title"])}</a></li>" for s in sers)}</ul><p class="small muted">证道作者 Clarence Stam（加拿大改革宗教会牧师），中文译本由 ccifellowship.org 提供。</p></div>')
-    prev=f'<a id="prevLd" href="{n-1:02d}.html">⬅ 主日{n-1} · {esc(N[n-1]["t"])}</a>' if n>1 else '<a href="../lorddays.html">⬅ 52主日总览</a>'
-    nxt=f'<a id="nextLd" class="r" href="{n+1:02d}.html">主日{n+1} · {esc(N[n+1]["t"])} ➡</a>' if n<52 else '<a class="r" href="../memory.html">🧠 去速记中心 ➡</a>'
+    prev=f'<a id="prevLd" href="{n-1:02d}.html">⬅ {esc(ld_label(n-1))}</a>' if n>1 else '<a href="../lorddays.html">⬅ 52主日总览</a>'
+    nxt=f'<a id="nextLd" class="r" href="{n+1:02d}.html">{esc(ld_label(n+1))} ➡</a>' if n<52 else '<a class="r" href="../memory.html">🧠 去速记中心 ➡</a>'
     body=hero+s0+s1+s2+s3+s4+s5+s6+s7+f'<div class="pager">{prev}{nxt}</div>'
     page(f'ld/{n:02d}.html',f'主日{n} {no["t"]}',body,desc=f'海德堡要理问答主日{n}：{no["t"]}——{no["k"]}')
 for ld in D['hc']: ld_page(ld)

@@ -3,9 +3,9 @@ def plain(s): return re.sub(r'<sup>.*?</sup>','',s).replace('<','\u003c') if Fal
 idx=[]
 for ld in D['hc']:
     for q in ld['qas']:
-        idx.append(dict(k='海德堡',t=f'主日{ld["n"]} · {q["q"]}',x=plain(' '.join(q['a'])),u=f'ld/{ld["n"]:02d}.html#q{qnum(q)}'))
+        idx.append(dict(k='海德堡',t=f'{LDI[ld["n"]]} 主日{ld["n"]} · {q["q"]}',x=plain(' '.join(q['a'])),u=f'ld/{ld["n"]:02d}.html#q{qnum(q)}'))
     no=N[ld['n']]
-    idx.append(dict(k='解读',t=f'主日{ld["n"]} · {no["t"]}（本站解读）',x=' '.join([re.sub(r'[*=~_:!]{2}','',T[ld['n']][0]),no['k'],no['big'],no['cov'],no['why'],no['hard']]),u=f'ld/{ld["n"]:02d}.html'))
+    idx.append(dict(k='解读',t=f'{ld_label(ld["n"])}（本站解读）',x=' '.join([re.sub(r'[*=~_:!]{2}','',T[ld['n']][0]),no['k'],no['big'],no['cov'],no['why'],no['hard']]),u=f'ld/{ld["n"]:02d}.html'))
 for a in D['bc']: idx.append(dict(k='比利时信条',t=a['title'],x=plain(' '.join(a['paras'])),u=f'texts/bc.html#bc{a["n"]}'))
 for s in D['cd']:
     for a in s['arts']: idx.append(dict(k='多特信经',t=f'{s["title"]} · {a["title"]}',x=plain(' '.join(a['paras'])),u=f'texts/cd.html#cd{s["sec"]}-{a["n"]}'))

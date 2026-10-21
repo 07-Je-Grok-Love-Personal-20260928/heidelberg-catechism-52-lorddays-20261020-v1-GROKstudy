@@ -38,7 +38,7 @@ async def main():
         # hierarchy
         info=await pg.evaluate("""()=>{const t=document.getElementById('toc');return {l1:t.querySelectorAll('li.l1').length,l2:t.querySelectorAll('li.l2').length,l3:t.querySelectorAll('li.l3').length,
           firstNo:t.querySelector('li.l1 .no')?.textContent,l2No:t.querySelector('li.l2 .no')?.textContent,l3No:t.querySelector('li.l3 .no')?.textContent,closed:t.querySelectorAll('li.closed').length}}""")
-        ok('3-level numbered TOC (texts/hc)',info['l1']>=4 and info['l2']>=52 and info['l3']>=129 and info['firstNo']=='一、',json.dumps(info,ensure_ascii=False))
+        ok('multi-level numbered TOC (texts/hc: 部→主题→主日→问)',info['l1']>=4 and info['l2']+info['l3']>=52+20 and info['firstNo']=='一、',json.dumps(info,ensure_ascii=False))
         await pg.click('#tocExpand'); c1=await pg.evaluate("document.querySelectorAll('#toc li.closed').length")
         await pg.click('#tocCollapse'); c2=await pg.evaluate("[document.querySelectorAll('#toc li.closed').length,document.querySelectorAll('#toc li:has(>ul)').length]")
         ok('expand all',c1==0,str(c1)); ok('collapse all (current path stays open)',c2[0]>=c2[1]-3 and c2[0]>0,str(c2))
@@ -80,7 +80,47 @@ async def main():
         ok('touch drag resizes (pointer events)',w1>w0+30 and w1<=390*.92+1,f'{w0:.0f}->{w1:.0f}')
         await pg.tap('.backdrop',position={'x':380,'y':400}); await pg.wait_for_timeout(450)
         cl=await pg.evaluate("!document.body.classList.contains('toc-open')"); ok('backdrop tap closes drawer',cl)
-        await ctx.close(); await b.close()
+        await ctx.close()
+
+        # ---- v4 ----
+        ctx=await b.new_context(viewport={'width':1440,'height':900}); pg=await ctx.new_page()
+        await pg.goto(BASE+'texts/hc.html',wait_until='networkidle')
+        lab=await pg.evaluate("[...document.querySelectorAll('#toc li')].filter(li=>/^\\d+\\./.test(li.querySelector(':scope>.row>a').textContent)&&li.querySelector(':scope>.row>a').textContent.includes('主日')).map(li=>li.querySelector(':scope>.row>a').textContent)")
+        import re as _re
+        uniq=len(set(lab))==52 and all(_re.match(r'^(\d+)\.\S+ 主日\1 · \S',x) for x in lab)
+        ok('texts/hc: 52 unique LD entries "n.🔣 主日n · 标题"',uniq,lab[0]+' … '+lab[-1])
+        parts=await pg.evaluate("[...document.querySelectorAll('#toc li.l1>.row>a')].map(a=>a.textContent)")
+        ok('part headings have icons',all(any(i in p for i in '💜💔✝️🌿') for p in parts[1:]),' | '.join(parts))
+        nav=await pg.evaluate("[...document.querySelectorAll('.ldnav a')].map(a=>a.textContent)")
+        ok('nav 52-LD list numbered + icons, synced with TOC',len(nav)==52 and all(nav[i].replace(' ','')==lab[i].replace(' ','') for i in range(52)),nav[0])
+        for u,minn in (('texts/bc.html',37),('texts/cd.html',59)):
+            await pg.goto(BASE+u,wait_until='networkidle')
+            L=await pg.evaluate("[...document.querySelectorAll('#toc li.l2>.row>a')].map(a=>a.textContent)")
+            ok(f'{u}: specific numbered article titles',len(L)>=minn and len(set(L))==len(L) and not any(_re.match(r'^\d+\.\S*\s*第',x) for x in L),f'{len(L)} e.g. {L[1]}')
+        await pg.goto(BASE+'ld/16.html',wait_until='networkidle')
+        await pg.evaluate("hcJump('m-sort')"); await pg.wait_for_timeout(800)
+        items=pg.locator('.sortq li')
+        n=await items.count()
+        # solve by dragging: repeatedly drag the li with smallest q to correct place via mouse
+        for target in range(n):
+            qs=await pg.evaluate("[...document.querySelectorAll('.sortq li')].map(l=>+l.dataset.q)")
+            want=sorted(qs)[target]; cur=qs.index(want)
+            if cur==target: continue
+            src=await items.nth(cur).bounding_box(); dst=await items.nth(target).bounding_box()
+            await pg.mouse.move(src['x']+40,src['y']+src['height']/2); await pg.mouse.down()
+            await pg.mouse.move(src['x']+40,dst['y']+4,steps=14); await pg.mouse.up(); await pg.wait_for_timeout(300)
+        await pg.click('[data-sortcheck]'); r=await pg.inner_text('.sortbox .res')
+        ok('drag-to-order solved by pointer drag',('完全正确' in r),r)
+        await pg.click('[data-clozestart]'); nb=await pg.evaluate("document.querySelectorAll('input.cz').length")
+        await pg.evaluate("document.querySelectorAll('input.cz').forEach(i=>i.value=i.dataset.ans)"); await pg.click('[data-clozecheck]')
+        r=await pg.inner_text('.clozebox .res'); ok('cloze generated from marks and checks',nb>0 and '全部正确' in r,f'{nb} blanks · {r}')
+        hrefs=await pg.evaluate("[...document.querySelectorAll('.const a.cn')].map(a=>a.getAttribute('href'))")
+        ok('constellation nodes clickable',len(hrefs)>=8 and '#q40' in hrefs,str(len(hrefs)))
+        await pg.goto(BASE+'memory.html',wait_until='networkidle'); await pg.evaluate("hcJump('game')"); await pg.wait_for_timeout(600)
+        q1=await pg.inner_text('#ldgame .gq'); await pg.locator('#ldgame .opt').first.click(); await pg.wait_for_timeout(1800)
+        st=await pg.inner_text('#ldgame .gstat'); ok('LD game scores',' / 1' in st,st)
+        await ctx.close()
+        await b.close()
     print('RESULT',sum(1 for r in R if r[1]),'/',len(R),'passed')
     json.dump(R,open('/workspace/hc52-20261020/build/toc_test_result.json','w'),ensure_ascii=False,indent=1)
 asyncio.run(main())

@@ -81,13 +81,13 @@ def md(s):
     s=esc(s)
     for pat,c in MD: s=re.sub(pat,lambda m:f'<span class="{c}">{m.group(1)}</span>',s)
     return s
-GLOSS=[(t,'mk-u') for t in ['恩典之约','行为之约','救赎之约','生命之约','盟约元首','盟约记号','盟约','代赎','归算','称义','成圣','重生','中保','三重职分','收养','预定','拣选','圣礼','圣约']]+\
+GLOSS=[(t,'mk-u') for t in ['恩典之约','行为之约','救赎之约','生命之约','盟约元首','盟约记号','盟约','代赎','归算','称义','成圣','重生','中保','三重职分','收养','预定','拣选','圣礼','圣约','道成肉身','神人二性','降在阴间','圣徒相通','天国的钥匙','教会纪律','律法的第三功用','治死旧人','活出新人','真信心','护理','受膏','大先知','大祭司','君王','记号与印记','属灵的同在','代求','再来','身体复活','永生','好行为','悔改','归正']]+\
       [(t,'mk-d') for t in ['罗马天主教','罗马教','特伦托','重洗派','路德宗','路德派','亚米念','阿民念','抗辩派','伯拉纠','苏西尼','亚流','变质说','弥撒','普救论','完美主义','律法主义','反律主义','神秘主义','自由主义','成功神学']]+\
       [(t,'mk-k') for t in ['唯独恩典','唯独信心','唯独基督','唯独圣经','唯一的安慰']]
 GRE=re.compile('|'.join(sorted({re.escape(t) for t,_ in GLOSS},key=len,reverse=True)))
 GCL=dict(GLOSS)
 REFRE=re.compile(r'(?<![\u4e00-\u9fa5])(?:创|出|利|民|申|书|士|得|撒上|撒下|王上|王下|代上|代下|拉|尼|斯|伯|诗|箴|传|歌|赛|耶|哀|结|但|何|珥|摩|俄|拿|弥|鸿|哈|番|该|亚|玛|太|可|路|约|徒|罗|林前|林后|加|弗|腓|西|帖前|帖后|提前|提后|多|门|来|雅|彼前|彼后|约壹|约贰|约叁|犹|启)\s?\d+[:：]\d+(?:[\-–,，]\d+)*')
-SKIP_ANC={'qa','reading','creed','fc','verb','co-gold','tbl','chip','mn','src','toc','gnav','nomk','legend','mermaid','tools','opt','ld','tabs'}
+SKIP_ANC={'sortq','clozebox','qa','reading','creed','fc','verb','co-gold','tbl','chip','mn','src','toc','gnav','nomk','legend','mermaid','tools','opt','ld','tabs'}
 def _skip(el):
     for p in el.parents:
         if p.name in ('a','h1','h2','h3','h4','script','style','svg','button','summary','table','blockquote','code','mark'): return True
@@ -108,7 +108,7 @@ def automark(soup):
                 w=m.group(0)
                 if REFRE.fullmatch(w): c='mk-ref'
                 else:
-                    if w in used or cnt[0]>=3: continue
+                    if w in used or cnt[0]>=4: continue
                     c=GCL[w]; used.add(w); cnt[0]+=1
                 out.append(esc(s[pos:m.start()])); out.append(f'<span class="{c}">{esc(w)}</span>'); pos=m.end(); changed=True
             if changed:

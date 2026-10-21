@@ -43,7 +43,7 @@ for s in D['cd']:
     for a in s['arts']:
         rid=f'{s["sec"]}-{a["n"]}'; refs=''.join(f'<li>{esc(r)}</li>' for r in a['refs'])
         isrej=a['title']=='错谬反驳'
-        b.append(f'<div class="art reveal" id="cd{rid}" data-lv="2" '+(f'data-nonum data-toc="❌ 错谬反驳（{len(a["paras"])} 段）"' if isrej else f'data-fix="{a["n"]}" data-toc="{CDI[s["sec"]]} {esc(art_short(a["title"]))}"')+f' style="--c:{"var(--misery)" if isrej else c}{";border-style:dashed" if isrej else ""}">'+(f'<h3 id="rej-{s["sec"]}">❌ 错谬反驳</h3>' if isrej else f'<h3>{esc(a["title"])}</h3>')+''.join(f'<p>{x}</p>' for x in a['paras'])+(f'<details class="small muted"><summary>📖 经文出处</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
+        b.append(f'<div class="art reveal" id="cd{rid}" data-lv="2" '+(f'data-nonum data-toc="❌ {s["title"].split("教义")[0]}错谬反驳（{len(a["paras"])} 段）"' if isrej else f'data-fix="{a["n"]}" data-toc="{CDI[s["sec"]]} {esc(art_short(a["title"]))}"')+f' style="--c:{"var(--misery)" if isrej else c}{";border-style:dashed" if isrej else ""}">'+(f'<h3 id="rej-{s["sec"]}">❌ 错谬反驳</h3>' if isrej else f'<h3>{esc(a["title"])}</h3>')+''.join(f'<p>{x}</p>' for x in a['paras'])+(f'<details class="small muted"><summary>📖 经文出处</summary><ol>{refs}</ol></details>' if refs else '')+f'<p class="src"><a href="{a["url"]}" target="_blank" rel="noopener">原文出处</a></p></div>')
     b.append('</div></section>')
 page('texts/cd.html','多特信经 全文阅读版',''.join(b),'多特信经全文')
 # creeds

@@ -35,9 +35,9 @@
   "300"
  ],
  [
-  "3-level numbered TOC (texts/hc)",
+  "multi-level numbered TOC (texts/hc: 部→主题→主日→问)",
   true,
-  "{\"l1\": 5, \"l2\": 52, \"l3\": 129, \"firstNo\": \"一、\", \"l2No\": \"1.\", \"l3No\": null, \"closed\": 52}"
+  "{\"l1\": 5, \"l2\": 20, \"l3\": 74, \"firstNo\": \"一、\", \"l2No\": \"1.\", \"l3No\": \"11.\", \"closed\": 60}"
  ],
  [
   "expand all",
@@ -47,7 +47,7 @@
  [
   "collapse all (current path stays open)",
   true,
-  "[56, 56]"
+  "[64, 64]"
  ],
  [
   "single twisty toggles",
@@ -57,7 +57,7 @@
  [
   "TOC jump lands on target despite content-visibility",
   true,
-  "top=70"
+  "top=69"
  ],
  [
   "scrollspy highlights current Q and auto-expands parents",
@@ -98,5 +98,50 @@
   "backdrop tap closes drawer",
   true,
   ""
+ ],
+ [
+  "texts/hc: 52 unique LD entries \"n.🔣 主日n · 标题\"",
+  true,
+  "1.✝️ 主日1 · 唯一的安慰 … 52.⚔️ 主日52 · 第六个祈求、结语与“阿们”"
+ ],
+ [
+  "part headings have icons",
+  true,
+  "一、ℹ️ 简介（ccifellowship.org 原文） | 二、💜 引言 · 唯一的安慰（主日1） | 三、💔 第一部 · 罪与愁苦（主日2–4） | 四、✝️ 第二部 · 得救（主日5–31） | 五、🌿 第三部 · 感恩（主日32–52）"
+ ],
+ [
+  "nav 52-LD list numbered + icons, synced with TOC",
+  true,
+  "1. ✝️ 主日1 · 唯一的安慰"
+ ],
+ [
+  "texts/bc.html: specific numbered article titles",
+  true,
+  "37 e.g. 2.📖 论神启示自己的方法"
+ ],
+ [
+  "texts/cd.html: specific numbered article titles",
+  true,
+  "63 e.g. 2.🌟 神差爱子"
+ ],
+ [
+  "drag-to-order solved by pointer drag",
+  true,
+  "🎉 完全正确！问题的推进你已经掌握"
+ ],
+ [
+  "cloze generated from marks and checks",
+  true,
+  "5 blanks · ✅ 5 / 5 全部正确！"
+ ],
+ [
+  "constellation nodes clickable",
+  true,
+  "13"
+ ],
+ [
+  "LD game scores",
+  true,
+  "得分 0 / 1 · 连对 0 · 最佳连对 0"
  ]
 ]

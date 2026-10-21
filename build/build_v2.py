@@ -34,8 +34,9 @@ v2changes=['📱 手机端圣约神学流程图改为竖排“盟约阶梯”，
 '🎨 主题在页面渲染前即应用（无闪烁）；表格首列不折行；打印样式优化。',
 '🏷️ 仓库更名为 heidelberg-catechism-52-lorddays-GROKstudy（保留全部历史），GitHub Pages 地址随之更新；全站只用相对路径。',
 '✅ 原文逐字校验仍为 0 处差异；375 / 768 / 1440 三种宽度的溢出检测重新跑过；截图全部重拍。']
-V3=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.netlify.app')]
-V2=[('GitHub Pages（与 v3 同一地址，现显示 v3）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app')]
+V4=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.netlify.app')]
+V3=[('GitHub Pages（与 v4 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.netlify.app')]
+V2=[('GitHub Pages（与 v4 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app')]
 REL='https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/'
 v3changes=['⚡ 流畅度重构：毛玻璃 backdrop-filter 只保留在顶栏、悬浮按钮与提示条；卡片改为“伪玻璃”渐变；背景改为预模糊的径向渐变云层，只用 transform 漂移（不再对大面积元素做 filter:blur 动画）；各 section 使用 content-visibility:auto；目录高亮改用 IntersectionObserver，进度条使用 CSS scroll-timeline（不支持时用 rAF）；所有监听器 passive；支持 prefers-reduced-motion。',
 '↔️ 左侧目录可拖动右边缘调整宽度（220px – min(640px, 70vw)），支持鼠标、触屏与键盘方向键，宽度保存在本机；双击把手恢复默认；长标题单行省略并带悬停提示。',
@@ -45,12 +46,21 @@ v3changes=['⚡ 流畅度重构：毛玻璃 backdrop-filter 只保留在顶栏�
 '📊 新增图表：首页 129 问三部分比例条、52 主日问答数柱状图（可点击）；对比页“覆盖度图”；原文中心卡片进度条；动画只用 transform / stroke-dashoffset。',
 '🧭 结构收紧：顶栏导航精简为 8 项（修复约 1024px 宽度时最后一项被截断），新增“原文中心”汇总四部原文；52 主日总览按 17 个主题分组；主日页重排为 精华 → 原文 → 整体 → 局部 → 对照 → 应用（分页签）→ 记忆 → 延伸。',
 '✅ 校验：原文逐字比对 0 差异（含金句）；375 / 768 / 1440 全部页面无横向溢出；Playwright 测试目录拖动与折叠；截图全部重拍（v3-*）。']
+v4changes=['🏷️ 统一的“主日图标 + 标题”总表：52 个主日各有专属图标与具体标题（如“✝️ 主日1 · 唯一的安慰”“🪞 主日2 · 律法照出我的愁苦”），全站共用——原文阅读版目录、侧栏 52 主日速览、总览、主日页标题与翻页、速记卡片/口诀表/测验、搜索结果。',
+'📑 原文目录重做：要理问答为 部（💜引言 / 💔第一部 / ✝️第二部 / 🌿第三部）→ 主题（🩸子神和我们的得赎、🕊️圣灵神和我们的成圣、⚖️称义、📖圣言与圣礼、💧洗礼、🍞圣餐、🪨十诫、🙏祷告）→ 主日（编号＝主日号）→ 问 的四级可折叠树，不再出现“1. 主日1”或重复的部名；比利时信条按 12 个主题分组，37 条用原文条目标题＋图标＋条号；多特信经四项各配图标，条目用原文标题，错谬反驳单独标注。',
+'🧭 侧栏“52 个主日速览”改为按四部分组、带编号与图标，与页内目录同步；在主日页自动展开并高亮当前主日。',
+'🖍️ 标记增加：全部 129 问都有原文关键短语标记（共 215 处，原文文字不变）；术语词表扩充，每段最多 4 处。',
+'💎 每个主日新增“核心经文”（各问第一条经文出处，取自原文脚注）与“承上启下”链条（上一主日 → 本主日 → 下一主日）。',
+'🎮 新互动：🧩 拖动排序挑战（按住拖动或 ↑↓，FLIP 动画）、✍️ 填空背诵（由标记短语自动生成并判分）、🎲 “这一问属于哪个主日？”归属挑战（得分与最佳连对）、可点击的关联星图（节点跳到对应问答 / 信条 / 搜索）、总览卡片悬停显示论题。',
+'📊 新图表：各问经文出处数量条形图（可点击）、比利时信条 37 条 12 主题环形图（可点击扇区）、速记中心学习进度环与四部分进度条、首页数字滚动计数；全部动画只用 transform / opacity。',
+'✅ 校验：原文逐字 0 差异；全部页面 375 / 768 / 1024 / 1440 无溢出；Playwright 目录 + 互动测试全部通过；v3 → v4 性能对比见 README。']
 lnk=lambda L:''.join(f'<li>{esc(t)}：<a href="{u}" target="_blank" rel="noopener">{u}</a></li>' for t,u in L)
 ch=f'''<section class="hero reveal"><span class="chip g">🆕 版本记录</span><h1>更新记录 Changelog</h1><p class="lead">当前版本：<b class="key">{VERSION}</b> · {DATE}</p></section>'''
-ch+=sec('v3','🚀','v3 · 2026-10-20',f'<div class="card pan core reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v3changes)}</ul><h3>🌐 v3 部署</h3><ul class="clean">{lnk(V3)}<li>Release：<a href="{REL}v3">{REL}v3</a></li></ul></div>')
+ch+=sec('v4','🚀','v4 · 2026-10-21',f'<div class="card pan core reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v4changes)}</ul><h3>🌐 v4 部署</h3><ul class="clean">{lnk(V4)}<li>Release：<a href="{REL}v4">{REL}v4</a></li></ul></div>')
+ch+=sec('v3','📦','v3 · 2026-10-20',f'<div class="card pan why reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v3changes)}</ul><h3>🌐 v3 部署（保留）</h3><ul class="clean">{lnk(V3)}<li>Release：<a href="{REL}v3">{REL}v3</a></li></ul></div>')
 ch+=sec('v2','📦','v2 · 2026-10-20',f'<div class="card pan why reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v2changes)}</ul><h3>🌐 v2 部署（保留）</h3><ul class="clean">{lnk(V2)}<li>Release：<a href="{REL}v2">{REL}v2</a></li></ul></div>')
 ch+=sec('v1','📦','v1 · 2026-10-20',f'<div class="card pan why reveal"><ul class="clean"><li>首版：52 主日深度解析页、四部全文阅读/背诵版、圣经与圣约、历史地理（时间线、地图）、信条对比、速记中心、资料页。</li><li>全部原文由程序从 ccifellowship.org 抓取并逐字校验。</li></ul><h3>🌐 v1 部署（保留不动）</h3><ul class="clean">{lnk(V1)}<li>Release：<a href="{REL}v1">{REL}v1</a></li></ul></div>')
 ch+=sec('repo','📂','源码',f'<div class="card reveal"><p><a href="https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}">github.com/07-Je-Grok-Love-Personal-20260928/{REPO}</a></p></div>')
 page('changelog.html','更新记录',ch,'版本更新记录')
-json.dump(dict(V1=V1,V2=V2,V3=V3,changes=v2changes,changes_v3=v3changes),open(ROOT+'/build/versions.json','w'),ensure_ascii=False,indent=1)
+json.dump(dict(V1=V1,V2=V2,V3=V3,V4=V4,changes=v2changes,changes_v3=v3changes,changes_v4=v4changes),open(ROOT+'/build/versions.json','w'),ensure_ascii=False,indent=1)
 print('v3 pages done', len(idx))

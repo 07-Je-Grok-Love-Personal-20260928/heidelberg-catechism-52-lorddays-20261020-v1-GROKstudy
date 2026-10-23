@@ -34,13 +34,14 @@ v2changes=['📱 手机端圣约神学流程图改为竖排“盟约阶梯”，
 '🎨 主题在页面渲染前即应用（无闪烁）；表格首列不折行；打印样式优化。',
 '🏷️ 仓库更名为 heidelberg-catechism-52-lorddays-GROKstudy（保留全部历史），GitHub Pages 地址随之更新；全站只用相对路径。',
 '✅ 原文逐字校验仍为 0 处差异；375 / 768 / 1440 三种宽度的溢出检测重新跑过；截图全部重拍。']
-V8=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.netlify.app')]
-V7=[('GitHub Pages（与 v8 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.netlify.app')]
-V6=[('GitHub Pages（与 v8 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.netlify.app')]
-V5=[('GitHub Pages（与 v8 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v5-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v5-grokstudy.netlify.app')]
-V4=[('GitHub Pages（与 v8 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.netlify.app')]
-V3=[('GitHub Pages（与 v8 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.netlify.app')]
-V2=[('GitHub Pages（与 v8 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app')]
+V9=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.netlify.app')]
+V8=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.netlify.app')]
+V7=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.netlify.app')]
+V6=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.netlify.app')]
+V5=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v5-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v5-grokstudy.netlify.app')]
+V4=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.netlify.app')]
+V3=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.netlify.app')]
+V2=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app')]
 REL='https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/'
 v3changes=['⚡ 流畅度重构：毛玻璃 backdrop-filter 只保留在顶栏、悬浮按钮与提示条；卡片改为“伪玻璃”渐变；背景改为预模糊的径向渐变云层，只用 transform 漂移（不再对大面积元素做 filter:blur 动画）；各 section 使用 content-visibility:auto；目录高亮改用 IntersectionObserver，进度条使用 CSS scroll-timeline（不支持时用 rAF）；所有监听器 passive；支持 prefers-reduced-motion。',
 '↔️ 左侧目录可拖动右边缘调整宽度（220px – min(640px, 70vw)），支持鼠标、触屏与键盘方向键，宽度保存在本机；双击把手恢复默认；长标题单行省略并带悬停提示。',
@@ -67,6 +68,14 @@ v5changes=['⏳ 历史时间线扩充到 36 个事件，分为五个时期（背
 '⚖️ 对比页新增：“三个处境 → 三份文件”问题—文件—回答流程（说明为什么是三份而不是一份）；可点击的三圆维恩图（独有重点 / 两两共同 / 共同核心）；“抗辩派五条 vs 多特 vs 海德堡 vs 比利时”对照表。',
 '🎧 连续朗读播放器：主日页与原文阅读版一键“连续朗读”，底部播放条支持 上一段 / 播放暂停 / 下一段 / 语速 / 进度，当前朗读的问答高亮并自动滚动到视野内（使用浏览器自带语音，效果取决于系统中文语音）。',
 '✅ 校验：原文逐字 0 差异；全部页面 375 / 768 / 1024 / 1440 无溢出；Playwright 测试（新增地图飞行、时期筛选、朗读播放器、缩放与罗盘测试）；v4 → v5 性能对比见 README。']
+v9changes=[
+'☁️ 流畅度（重点）：逐帧剖析真实卡顿来源后对症处理——① 滚动期间放一层透明“滚动护罩”，静止的鼠标不再触发悬停样式与提示气泡的重算（替代 v8 对整个 main 切换 pointer-events 带来的整树样式重算）；② “滚动结束”改为 380 ms 真正静止后才算（scrollend 在滚轮两格之间也会触发），图表展开、路线描线等动画不会在手势中途启动；③ 滚动一开始就把正在播放的路线动画直接定格到终点；④ 空闲时按“离视口最近者优先”逐段预排版 content-visibility 区块（地图区块除外），快速滚动时不再临时排版整段；⑤ 背景云层漂移在滚动时暂停；⑥ 所有监听均为 passive，动画只用 transform / opacity。前后对比见 README 的 perf6 表。',
+'🎨 新增五套主题（共十套）：🌸 樱花粉霞 · 🍋 柠檬薄荷 · 🔥 暮光琥珀（深色）· 🌠 极光青紫（深色）· 🖋️ 水墨朱砂。选择器改为双列色板预览（底色 / 卡片 / “Aa” 字色 / 两个强调色），一键切换并带淡入过渡（尊重“减少动态效果”），自动保存，首屏绘制前应用（无闪烁）；十套主题的正文、弱化文字、强调色与荧光底全部通过 WCAG AA（contrast.py 0 失败）；地图、图表、标记颜色随主题变化（深色主题自动换深色底图）。',
+'🖍️ 笔记标记 3.0：荧光笔改为“马克笔”斜切笔触；重点粗体加柔和下辉光；定义 = 实线、难点 = 波浪线、对比 = 虚线、经文 = 双下划线，线粗与间距重新调校；新增“着重号”（字下圆点，用于要义里最该背的关键词：;;词;;）；提示框加渐变底色与图标圆章。M 键开关、三层图例照常。',
+'✒️ 中文排版：标点挤压（text-spacing-trim）、中西文自动间距（text-autospace）、标题均衡换行、段落避免孤字（text-wrap: pretty）、严格断行；正文行高 1.9、问答答句行长限制约 42 字；h4 加菱形引导符，标题层级更分明。',
+'📊 新图表：52 主日总览页新增“核心词分布”堆叠条形图（22 个教义词在三大部分中的出现次数，按原文统计）；每个主日新增“🔑 关键词 × 问答”矩阵（每个关键词在本主日各问答中出现几次，圆点大小 = 次数）。',
+'✂️ 内容提炼：解说与要义重复的句子判定门槛从 0.62 降到 0.55，主日页更紧凑；原文一字未动。',
+'✅ 校验：原文逐字 0 差异；和合本经文 0 差异；十套主题 × 375 / 768 / 1024 / 1440 四个宽度无横向溢出；v8 Playwright 测试与目录测试通过。']
 v8changes=['🗺️ 地图重做：去掉不稳定的 Leaflet / OSM CDN，改用站内自托管 MapLibre GL 4.7.1（assets/vendor，BSD-3）＋站内 Natural Earth 底图（assets/geo/base.json，公有领域）。在线瓦片按 Esri 街道图 → CARTO Voyager → OpenStreetMap 顺序并行探测、自动择优、出错自动切换；全部不可达时用站内主题底图（离线可用）；地图引擎或 WebGL 不可用时显示同一幅静态示意图，不会出现空白框。另有卫星图（Esri）与“主题底图”按钮。',
 '🎨 每个地图都是“概念示意图 + 实时交互地图”成对出现：示意图（构建时由 Natural Earth 投影生成的 SVG）带渐变陆海、河流、路线描边动画、沿路线移动的光点、编号脉冲标记、指北针、比例尺、密集地区的放大镜插图，标签自动避让；实时地图与之联动（点击地点 / 路线 / ▶ 播放 / 时期筛选两边同步）。',
 '🏰 新增“历史地图集”（maps.html）：1563 年普法尔茨、宗教改革的传播、两位作者的人生路线、尼德兰难民之路、多特大会代表 5 个专题，每个都有核心一句、为什么重要、站点卡、地点表、相关主日、文化背景；另有多特代表条形图、改革路线泳道图、专题卡片。',
@@ -100,7 +109,8 @@ v6changes=['⚡ 流畅度重做（针对“页面有些卡顿”）：几乎移�
 '✅ 校验：原文逐字 0 差异（2094 段 + 53 条金句）；4 个宽度无溢出；Playwright 测试；6× CPU 降速 + 手机仿真滚动帧率与 Lighthouse 的 v5 → v6 对比见 README。']
 lnk=lambda L:''.join(f'<li>{esc(t)}：<a href="{u}" target="_blank" rel="noopener">{u}</a></li>' for t,u in L)
 ch=f'''<section class="hero reveal"><span class="chip g">🆕 版本记录</span><h1>更新记录 Changelog</h1><p class="lead">当前版本：<b class="key">{VERSION}</b> · {DATE}</p></section>'''
-ch+=sec('v8','🚀','v8 · 2026-10-23',f'<div class="card pan core reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v8changes)}</ul><h3>🌐 v8 部署</h3><ul class="clean">{lnk(V8)}<li>Release：<a href="{REL}v8">{REL}v8</a></li></ul></div>')
+ch+=sec('v9','🚀','v9 · 2026-10-23',f'<div class="card pan core reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v9changes)}</ul><h3>🌐 v9 部署</h3><ul class="clean">{lnk(V9)}<li>Release：<a href="{REL}v9">{REL}v9</a></li></ul></div>')
+ch+=sec('v8','📦','v8 · 2026-10-23',f'<div class="card pan why reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v8changes)}</ul><h3>🌐 v8 部署（保留）</h3><ul class="clean">{lnk(V8)}<li>Release：<a href="{REL}v8">{REL}v8</a></li></ul></div>')
 ch+=sec('v7','📦','v7 · 2026-10-23',f'<div class="card pan why reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v7changes)}</ul><h3>🌐 v7 部署（保留）</h3><ul class="clean">{lnk(V7)}<li>Release：<a href="{REL}v7">{REL}v7</a></li></ul></div>')
 ch+=sec('v6','📦','v6 · 2026-10-21',f'<div class="card pan why reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v6changes)}</ul><h3>🌐 v6 部署（保留）</h3><ul class="clean">{lnk(V6)}<li>Release：<a href="{REL}v6">{REL}v6</a></li></ul></div>')
 ch+=sec('v5','📦','v5 · 2026-10-21',f'<div class="card pan why reveal"><ul class="clean">{"".join(f"<li>{esc(x)}</li>" for x in v5changes)}</ul><h3>🌐 v5 部署（保留）</h3><ul class="clean">{lnk(V5)}<li>Release：<a href="{REL}v5">{REL}v5</a></li></ul></div>')
@@ -110,5 +120,5 @@ ch+=sec('v2','📦','v2 · 2026-10-20',f'<div class="card pan why reveal"><ul cl
 ch+=sec('v1','📦','v1 · 2026-10-20',f'<div class="card pan why reveal"><ul class="clean"><li>首版：52 主日深度解析页、四部全文阅读/背诵版、圣经与圣约、历史地理（时间线、地图）、信条对比、速记中心、资料页。</li><li>全部原文由程序从 ccifellowship.org 抓取并逐字校验。</li></ul><h3>🌐 v1 部署（保留不动）</h3><ul class="clean">{lnk(V1)}<li>Release：<a href="{REL}v1">{REL}v1</a></li></ul></div>')
 ch+=sec('repo','📂','源码',f'<div class="card reveal"><p><a href="https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}">github.com/07-Je-Grok-Love-Personal-20260928/{REPO}</a></p></div>')
 page('changelog.html','更新记录',ch,'版本更新记录')
-json.dump(dict(V8=V8,changes_v8=v8changes,V1=V1,V2=V2,V3=V3,V4=V4,V5=V5,V6=V6,V7=V7,changes_v7=v7changes,changes_v6=v6changes,changes=v2changes,changes_v3=v3changes,changes_v4=v4changes,changes_v5=v5changes),open(ROOT+'/build/versions.json','w'),ensure_ascii=False,indent=1)
+json.dump(dict(V9=V9,changes_v9=v9changes,V8=V8,changes_v8=v8changes,V1=V1,V2=V2,V3=V3,V4=V4,V5=V5,V6=V6,V7=V7,changes_v7=v7changes,changes_v6=v6changes,changes=v2changes,changes_v3=v3changes,changes_v4=v4changes,changes_v5=v5changes),open(ROOT+'/build/versions.json','w'),ensure_ascii=False,indent=1)
 print('v3 pages done', len(idx))

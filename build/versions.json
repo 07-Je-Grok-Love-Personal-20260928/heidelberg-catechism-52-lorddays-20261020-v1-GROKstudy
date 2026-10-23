@@ -1,7 +1,30 @@
 {
- "V8": [
+ "V9": [
   [
    "GitHub Pages",
+   "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
+  ],
+  [
+   "Surge",
+   "https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.surge.sh"
+  ],
+  [
+   "Netlify",
+   "https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.netlify.app"
+  ]
+ ],
+ "changes_v9": [
+  "☁️ 流畅度（重点）：逐帧剖析真实卡顿来源后对症处理——① 滚动期间放一层透明“滚动护罩”，静止的鼠标不再触发悬停样式与提示气泡的重算（替代 v8 对整个 main 切换 pointer-events 带来的整树样式重算）；② “滚动结束”改为 380 ms 真正静止后才算（scrollend 在滚轮两格之间也会触发），图表展开、路线描线等动画不会在手势中途启动；③ 滚动一开始就把正在播放的路线动画直接定格到终点；④ 空闲时按“离视口最近者优先”逐段预排版 content-visibility 区块（地图区块除外），快速滚动时不再临时排版整段；⑤ 背景云层漂移在滚动时暂停；⑥ 所有监听均为 passive，动画只用 transform / opacity。前后对比见 README 的 perf6 表。",
+  "🎨 新增五套主题（共十套）：🌸 樱花粉霞 · 🍋 柠檬薄荷 · 🔥 暮光琥珀（深色）· 🌠 极光青紫（深色）· 🖋️ 水墨朱砂。选择器改为双列色板预览（底色 / 卡片 / “Aa” 字色 / 两个强调色），一键切换并带淡入过渡（尊重“减少动态效果”），自动保存，首屏绘制前应用（无闪烁）；十套主题的正文、弱化文字、强调色与荧光底全部通过 WCAG AA（contrast.py 0 失败）；地图、图表、标记颜色随主题变化（深色主题自动换深色底图）。",
+  "🖍️ 笔记标记 3.0：荧光笔改为“马克笔”斜切笔触；重点粗体加柔和下辉光；定义 = 实线、难点 = 波浪线、对比 = 虚线、经文 = 双下划线，线粗与间距重新调校；新增“着重号”（字下圆点，用于要义里最该背的关键词：;;词;;）；提示框加渐变底色与图标圆章。M 键开关、三层图例照常。",
+  "✒️ 中文排版：标点挤压（text-spacing-trim）、中西文自动间距（text-autospace）、标题均衡换行、段落避免孤字（text-wrap: pretty）、严格断行；正文行高 1.9、问答答句行长限制约 42 字；h4 加菱形引导符，标题层级更分明。",
+  "📊 新图表：52 主日总览页新增“核心词分布”堆叠条形图（22 个教义词在三大部分中的出现次数，按原文统计）；每个主日新增“🔑 关键词 × 问答”矩阵（每个关键词在本主日各问答中出现几次，圆点大小 = 次数）。",
+  "✂️ 内容提炼：解说与要义重复的句子判定门槛从 0.62 降到 0.55，主日页更紧凑；原文一字未动。",
+  "✅ 校验：原文逐字 0 差异；和合本经文 0 差异；十套主题 × 375 / 768 / 1024 / 1440 四个宽度无横向溢出；v8 Playwright 测试与目录测试通过。"
+ ],
+ "V8": [
+  [
+   "GitHub Pages（与 v9 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -41,7 +64,7 @@
  ],
  "V2": [
   [
-   "GitHub Pages（与 v8 同一地址，现显示最新版）",
+   "GitHub Pages（与 v9 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -55,7 +78,7 @@
  ],
  "V3": [
   [
-   "GitHub Pages（与 v8 同一地址，现显示最新版）",
+   "GitHub Pages（与 v9 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -69,7 +92,7 @@
  ],
  "V4": [
   [
-   "GitHub Pages（与 v8 同一地址，现显示最新版）",
+   "GitHub Pages（与 v9 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -83,7 +106,7 @@
  ],
  "V5": [
   [
-   "GitHub Pages（与 v8 同一地址，现显示最新版）",
+   "GitHub Pages（与 v9 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -97,7 +120,7 @@
  ],
  "V6": [
   [
-   "GitHub Pages（与 v8 同一地址，现显示最新版）",
+   "GitHub Pages（与 v9 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [
@@ -111,7 +134,7 @@
  ],
  "V7": [
   [
-   "GitHub Pages（与 v8 同一地址，现显示最新版）",
+   "GitHub Pages（与 v9 同一地址，现显示最新版）",
    "https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/"
   ],
   [

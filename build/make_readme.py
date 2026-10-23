@@ -63,9 +63,7 @@ md=f'''# heidelberg-catechism-52-lorddays-20261023-v7-GROKstudy
 
 {lht('lh_v6c.json','lh_v7.json')}
 
-线上 Netlify（v6 站 vs v7 站；`lh_v6_netlify.json` / `lh_v7_netlify.json`）：
-
-{lht('lh_v6_netlify.json','lh_v7_netlify.json')}
+线上 Netlify：v7 站本轮未单独测 Lighthouse（部署后环境重置，测量工具需重装）；以上本地数据用的是同一份构建产物。
 
 ### 📝 字数（`build/wordcount.py`，只计解说文字：汉字 + 英文词；原文问答 / 信条 / 金句不计）
 

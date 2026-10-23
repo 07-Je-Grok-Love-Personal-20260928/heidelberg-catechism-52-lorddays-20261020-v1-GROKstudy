@@ -72,11 +72,7 @@
 | history.html | 100 → **100** | 0 → **6** | 0 → **0** | 1082 → 1141 | 1056 → 1085 |
 | memory.html | 100 → **100** | 4 → **21** | 0 → **0** | 1346 → 1318 | 1319 → 1203 |
 
-线上 Netlify（v6 站 vs v7 站；`lh_v6_netlify.json` / `lh_v7_netlify.json`）：
-
-| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |
-|---|---|---|---|---|---|
-
+线上 Netlify：v7 站本轮未单独测 Lighthouse（部署后环境重置，测量工具需重装）；以上本地数据用的是同一份构建产物。
 
 ### 📝 字数（`build/wordcount.py`，只计解说文字：汉字 + 英文词；原文问答 / 信条 / 金句不计）
 
@@ -230,7 +226,7 @@ python3 build/perf6.py URL out.json     # 流畅度测量（6× CPU）
 python3 build/lh.py URL out.json 3      # Lighthouse
 git subtree push --prefix site origin gh-pages
 surge site heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.surge.sh
-netlify deploy --prod --dir site --site <v7-site-id>
+netlify deploy --prod --dir site --site 2a8c313e-9174-4a68-8b90-3d0a56c29809
 ```
 
 ## 🗂️ 版本历史

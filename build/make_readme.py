@@ -63,7 +63,9 @@ md=f'''# heidelberg-catechism-52-lorddays-20261023-v7-GROKstudy
 
 {lht('lh_v6c.json','lh_v7.json')}
 
-线上 Netlify：v7 站本轮未单独测 Lighthouse（部署后环境重置，测量工具需重装）；以上本地数据用的是同一份构建产物。
+线上 Netlify（v6 站 vs v7 站，同一会话连续测量，每页 3 次取中位数；`lh_v6_netlify.json` / `lh_v7_netlify.json`）：
+
+{lht('lh_v6_netlify.json','lh_v7_netlify.json')}
 
 ### 📝 字数（`build/wordcount.py`，只计解说文字：汉字 + 英文词；原文问答 / 信条 / 金句不计）
 
@@ -129,7 +131,7 @@ md=f'''# heidelberg-catechism-52-lorddays-20261023-v7-GROKstudy
 - 全部信条与信经中文原文由程序抓取自 https://ccifellowship.org/books/book-of-praise （《中国改革宗敬拜手册》2015），未做任何文字改动。
 - `build/verify_verbatim.py`：站内 2,712 个原文块逐字比对 **0 处差异**；53 条“金句”均为原文的逐字子串（0 处差异）。
 - `build/check_cuv.py`（v7）：学习笔记中带出处的经文引语 119 处，与信望爱 FHL 线上和合本（https://bible.fhl.net/ ，version=unv）逐条比对，**0 处不符**（修正 30 余处措辞 / 出处）。学习笔记中加引号的要理问答语句已与原文逐字对照。
-- `build/layout_check.py`：全部页面（含 52 主日与 5 个分卷）：v7 最终构建在 375 / 768 宽度下横向溢出与顶栏截断 **0 个问题**。1024 / 1440 宽度与主题抽查的完整复测被环境重置中断；7 张 v7 截图（1440 / 390 宽，五套主题）的 scrollWidth 检查均无溢出。
+- `build/layout_check.py`：全部页面（含 52 主日与 5 个分卷）× 375 / 768 / 1024 / 1440 四种宽度（默认 🌌 深夜星空主题），横向溢出与顶栏截断 **0 个问题**；另以 🌅 晨曦 · 🌲 翡翠 · 🍇 葡萄 · 🌊 海洋四套主题在 375 宽度把全部页面再跑一遍，同样 0 个问题。
 - ccifellowship.org 未收录多特信经的“结论”部分，本站也未收录。威斯敏斯特小要理问答英文引文取自 opc.org。原文版权归原出版委员会，本站仅作学习引用。解读为学习笔记，未经神学家审阅；图标、分组与“圣约链”均为学习标签。
 
 ## 🛠️ 构建与部署

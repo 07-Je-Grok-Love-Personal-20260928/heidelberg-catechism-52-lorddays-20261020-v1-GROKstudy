@@ -110,7 +110,7 @@ ready(()=>{
  /* ---------- reveal ---------- */
  const rv=$$('.reveal, section.sec');
  const seen=e=>e.classList.add(e.matches('section.sec')?'seen':'in');
- const ANIM='.bar-grow,.barx,.draw,.seg,.dot,.ladder,.parr,.vc,.arc';const lazyA=e=>e.matches(ANIM)||!!e.querySelector(ANIM);
+ const ANIM='.bar-grow,.barx,.draw,.seg,.dot,.ladder,.parr,.vc,.arc,.cch';const lazyA=e=>e.matches(ANIM)||!!e.querySelector(ANIM);
  if(root.classList.contains('lite')||!('IntersectionObserver' in window))rv.forEach(seen);
  else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){seen(e.target);io.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px'});rv.forEach(e=>lazyA(e)?io.observe(e):seen(e))}
  const clean=box=>{const c=box.cloneNode(true);c.querySelectorAll('sup,details,.tools,button').forEach(x=>x.remove());return c.textContent.replace(/\s+\n/g,'\n').trim()};

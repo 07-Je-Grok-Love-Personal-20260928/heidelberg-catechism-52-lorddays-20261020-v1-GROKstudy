@@ -1,5 +1,6 @@
 from common import *
 from notes4 import X
+from notes7 import E
 import svgs, random
 def strip_tags(s): return re.sub('<[^>]+>','',s)
 def first(s,k=1):
@@ -12,9 +13,9 @@ def kwmark(s,kws):
 def _sents(x): return [y for y in re.split(r'(?<=[。！？；])',x) if y.strip()]
 def _bg(x): x=re.sub(r'[^\u4e00-\u9fff]','',re.sub(r'[=*_~!]','',x)); return {x[i:i+2] for i in range(len(x)-1)}
 DSTAT=[0,0]
-def distill(no,st,ch,th,trap):
+def distill(no,st,ch,th,trap,ex=()):
     """v6: drop a commentary sentence when >=62% of its content already appears in a sentence shown elsewhere on the page."""
-    shown=[_bg(y) for t in [th,trap]+list(no['core'])+list(no['app'][:1]) for y in _sents(t)]
+    shown=[z for z in (_bg(y) for t in [th,trap]+list(no['core'])+list(no['app'][:1])+list(ex) for y in _sents(t)) if z]
     out={}
     for k,v in [('big',no['big']),('cov',no['cov']),('story',st),('christ',ch),('why',no['why']),('hard',no['hard'])]:
         keep=[]
@@ -27,14 +28,15 @@ def distill(no,st,ch,th,trap):
 def ld_page(ld):
     n=ld['n']; no=N[n]; p=part(n); c=p[2]; a,b=qrange(ld); th,trap,gold=T[n]
     st,ch,pr,dq=X[n]
-    F=distill(no,st,ch,th,trap)
+    e7=E[n]
+    F=distill(no,st,ch,th,trap,[x for x in [e7['so'],e7['do'],e7.get('deep','')]+[a for a,_ in e7['ch']] if x])
     goldq=next(qnum(q) for q in ld['qas'] if any(gold in x for x in q['a']))
     K=lambda s:kwmark(esc(s),no['kw'])
     crumbs=' › '.join(ld['crumbs']) or '引言'
     qr=f'第{a}{"–"+str(b) if b!=a else ""}问'
     kws=''.join(f'<span class="chip {p[0]}">🔑 {esc(k)}</span>' for k in no['kw'])
     hero=f'''<section class="hero reveal" style="background:linear-gradient(135deg,color-mix(in srgb,{c} 32%,transparent),color-mix(in srgb,{c} 6%,transparent))"><div class="tags"><span class="chip {p[0]}">{p[3]} {esc(p[1])}</span><span class="chip">🧭 {esc(crumbs)}</span><span class="chip">❓ {qr} · 共{len(ld['qas'])}问</span></div>
-<h1>{LDI[n]} 主日 {n}　{esc(no['t'])}</h1>{callout('core','核心',md(th))}{callout('hook','记忆钩',f'<b style="font-family:var(--serif);font-size:1.1em">{esc(no["k"])}</b>')}<div class="tags">{kws}</div>
+<h1>{LDI[n]} 主日 {n}　{esc(no['t'])}</h1><p class="ldq"><span class="qi" aria-hidden="true">❓</span><span><b>本主日回答：</b>{esc(e7['q'])}</span></p>{callout('core','核心',md(th))}{callout('hook','记忆钩',f'<b style="font-family:var(--serif);font-size:1.1em">{esc(no["k"])}</b>')}<div class="tags">{kws}</div>
 <div class="chart" style="margin-top:14px">{svgs.ld_strip(n)}</div><div class="small muted">全书位置 {n}/52 · {qr}</div>
 <div class="btns" style="margin-top:14px"><button class="btn" id="reciteBtn">🙈 背诵模式 (R)</button><button class="btn" id="supBtn">🔢 脚注编号</button><button class="btn" data-marks>🖍️ 标记 (M)</button><a class="btn" href="../memory.html#marks" title="标记图例">🗂️ 图例</a><button class="btn" id="readAll">🎧 连续朗读</button><button class="btn pri" id="doneBtn" data-ld="{n}">☑️ 标记已学完</button></div></section>'''
     # 1. essence
@@ -42,7 +44,8 @@ def ld_page(ld):
     bridge=(f'<a class="node" href="{n-1:02d}.html">⬅ 承接<br><b>{esc(ld_label(n-1))}</b></a>' if n>1 else '<span class="node">🚪 全书开端</span>')+'<span class="arr">➜</span>'+f'<span class="node" style="border-color:{c}"><b>{esc(ld_label(n))}</b><br><span class="small">{esc(no["k"])}</span></span><span class="arr">➜</span>'+(f'<a class="node" href="{n+1:02d}.html">引出 ➡<br><b>{esc(ld_label(n+1))}</b></a>' if n<52 else '<span class="node">🙌 阿们：全书结束</span>')
     nrefs=sum(len(q['refs']) for q in ld['qas']); nx=len(no['bc'])+len(no['cd'])+len(no['wsc'])
     kpi=''.join(f'<div><b>{v}</b>{t}</div>' for v,t in [(len(ld['qas']),'问答'),(nrefs,'经文组'),(nx,'信条对照'),(len(no['kw']),'关键词')])
-    s0=sec('essence','💎',f'精华：主日{n}的骨架',f'''<div class="grid g2"><div class="card reveal"><h3 id="ess-core">📌 要义（本站概述，以原文为准）</h3><ol class="core">{"".join(f"<li>{K(x)}</li>" for x in no['core'])}</ol><div class="kpi mini">{kpi}</div>
+    wwa=f'<div class="wwa reveal"><div class="w1"><b class="wl">💡 为什么重要</b><p>{K(e7["so"])}</p></div><div class="w2"><b class="wl">🏃 本周操练</b><p>{K(e7["do"])}</p></div></div>'
+    s0=sec('essence','💎',f'精华：主日{n}的骨架',wwa+f'''<div class="grid g2"><div class="card reveal"><h3 id="ess-core">📌 要义（本站概述，以原文为准）</h3><ol class="core">{"".join(f"<li>{K(x)}</li>" for x in no['core'])}</ol><div class="kpi mini">{kpi}</div>
 {callout('gold','金句',f'“{esc(gold)}”<span class="src">　—— 原文第{goldq}问（逐字）</span>')}{callout('trap','易错',md(trap)+' '+''.join(f'<span class="chip err">❌ {esc(x)}</span>' for x in no['err']))}{callout('bible','核心经文',keyrefs)}</div>
 <div class="card reveal"><h3 id="ess-map">关联星图</h3><div class="chart">{svgs.ld_constellation(n,ld,no)}</div><p class="small muted" style="margin:6px 0 0">点节点跳到问答 / 信条；外圈为关键词与比利时信条、多特信经。</p></div></div>
 <div class="card reveal" style="margin-top:14px"><h3 id="ess-bridge">🔗 承上启下：在全书中的位置</h3><div class="chain bridge">{bridge}</div></div>''')
@@ -62,11 +65,14 @@ def ld_page(ld):
     W=[('big','w-bible','📖 整本圣经'),('cov','w-cov','🤝 圣约神学'),('story','w-story','📚 圣经画面'),('christ','w-christ','✝️ 指向基督')]
     PC={'big':'big','cov':'cov','story':'core','christ':'xref'}
     wc=''.join(f'<div class="card pan {PC[k]} reveal"><h3 id="{i}">{t}</h3><p>{K(F[k])}</p></div>' for k,i,t in W if F[k])
-    s2=sec('whole','🌍','整体：圣经神学 · 圣约神学 · 基督中心',zoom+f'<div style="height:14px"></div><div class="grid g2">{wc}</div>')
+    CH=[('📜','旧约 · 应许与预表','var(--intro)'),('✝️','基督 · 成全','var(--misery)'),('⛪','今天 · 教会与我','var(--grat)')]
+    cch='<div class="card reveal"><h3 id="w-chain">🧬 圣约链：应许 → 成全 → 今天</h3><ol class="cch">'+''.join(f'<li style="--c:{cc};--i:{i}"><span class="ci" aria-hidden="true">{ic}</span><b class="cl">{lab}</b><span class="ct">{K(t)}</span><span class="cr">📖 {esc(r)}</span></li>' for i,((ic,lab,cc),(t,r)) in enumerate(zip(CH,e7['ch'])))+'</ol><p class="small muted" style="margin:8px 0 0">同一位立约的神：旧约的应许在基督里成为“是的”，今天藉圣言与圣礼临到教会（林后1:20）。本站学习笔记。</p></div>'
+    s2=sec('whole','🌍','整体：圣经神学 · 圣约神学 · 基督中心',cch+'<div style="height:14px"></div>'+zoom+f'<div style="height:14px"></div><div class="grid g2">{wc}</div>')
     # 4. local
     lc=[]
     if F['why']: lc.append(f'<div class="card pan why reveal"><h3 id="why">🏛️ 背景：为什么这样写？</h3><p>{K(F["why"])}</p></div>')
     if F['hard']: lc.append(f'<div class="card pan hard reveal"><h3 id="hard">⚠️ 难点</h3>{callout("hard","难点",K(F["hard"]))}</div>')
+    if e7.get('deep'): lc.append(f'<div class="card pan core reveal" style="grid-column:1/-1"><h3 id="deep">🔬 深化：本主日的关键细节</h3><p>{K(e7["deep"])}</p></div>')
     s3=sec('local','🔍','局部：背景与难点','<div class="grid g2">'+''.join(lc)+'</div>') if lc else ''
     # 5. xref
     xs=[]

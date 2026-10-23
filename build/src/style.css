@@ -448,3 +448,20 @@ svg .bar-grow,svg .barx,svg .draw,.donut .seg,.scrub .dot g,.venn .vc,.const .cn
 .volcard .vno{position:absolute;right:14px;top:10px;font-weight:800;font-size:13px;color:var(--c);opacity:.85}
 /* v7: HC volumes are small (≈1.1k nodes) → lay out once, no scroll-time c-v relayout / scrollbar jumps */
 section.sec.ncv{content-visibility:visible}
+/* ---------- v7: per-LD question, why/practice row, covenant chain ---------- */
+.ldq{display:flex;gap:10px;align-items:flex-start;margin:6px 0 10px;font-size:17px;line-height:1.6;color:var(--fg)}
+.ldq .qi{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--gold) 22%,transparent);font-size:15px}
+.wwa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}
+.wwa>div{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;background:var(--card);border-left:4px solid var(--gold)}
+.wwa>.w2{border-left-color:var(--grat)}
+.wwa .wl{display:block;font-size:13.5px;letter-spacing:.02em;color:var(--muted);margin-bottom:4px}.wwa p{margin:0;line-height:1.75}
+@media (max-width:720px){.wwa{grid-template-columns:1fr}}
+.cch{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;counter-reset:c}
+.cch li{position:relative;border:1px solid color-mix(in srgb,var(--c) 45%,var(--bd));background:color-mix(in srgb,var(--c) 9%,var(--card));border-radius:14px;padding:12px 14px 10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cch li+li::before{content:"➜";position:absolute;left:-22px;top:50%;transform:translate3d(0,-50%,0);color:var(--muted);font-size:16px}
+.cch .ci{font-size:22px;line-height:1}.cch .cl{font-size:13px;color:var(--c)}.cch .ct{line-height:1.7}.cch .cr{font-size:12.5px;color:var(--muted)}
+@media (max-width:860px){.cch{grid-template-columns:1fr;gap:22px}.cch li+li::before{content:"⬇";left:50%;top:-20px;transform:translate3d(-50%,0,0)}}
+/* cheap entrance: opacity/transform only, once, when scrolled into view (and only in full mode) */
+html.full .cch li{opacity:0;transform:translate3d(0,10px,0);transition:opacity .45s var(--ease),transform .45s var(--ease);transition-delay:calc(var(--i)*.14s)}
+html.full .in .cch li,html.full .cch.in li{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html.full .cch li{opacity:1;transform:none;transition:none}}

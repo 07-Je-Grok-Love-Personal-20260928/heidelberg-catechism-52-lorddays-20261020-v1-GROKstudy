@@ -41,11 +41,12 @@ img{max-width:100%;height:auto}
 /* --- floating clouds: pre-blurred gradients, transform-only animation, own compositor layers --- */
 .sky{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:strict;background:radial-gradient(60vmax 50vmax at 0% 0%,var(--sky1),transparent 70%),radial-gradient(60vmax 50vmax at 100% 100%,var(--sky2),transparent 70%),var(--bg)}
 .sky i{display:none}
-html.anim .sky i{display:block;position:absolute;width:60vmax;height:60vmax;border-radius:50%;opacity:.45;will-change:transform;animation:drift 40s ease-in-out infinite alternate}
-html.anim .sky i:nth-child(1){left:-20vmax;top:-25vmax;background:radial-gradient(closest-side,var(--sky1),transparent)}
-html.anim .sky i:nth-child(2){right:-22vmax;bottom:-28vmax;background:radial-gradient(closest-side,var(--sky2),transparent);animation-duration:52s;animation-delay:-14s}
+/* v7: ONE composited layer carries both "clouds" (two gradients on one element); paused while scrolling / hidden */
+html.anim .sky i{display:block;position:absolute;left:-6vw;top:-6vh;width:112vw;height:112vh;opacity:.5;will-change:transform;pointer-events:none;
+ background:radial-gradient(38vmax 32vmax at 18% 16%,var(--sky1),transparent 70%),radial-gradient(40vmax 32vmax at 84% 86%,var(--sky2),transparent 70%);
+ animation:drift 48s ease-in-out infinite alternate}
 .sky.paused i{animation-play-state:paused}
-@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(7vw,5vh,0)}}
+@keyframes drift{from{transform:translate3d(-2.5vw,-2vh,0)}to{transform:translate3d(2.5vw,2.5vh,0)}}
 /* --- topbar (one of the few blurred elements) --- */
 .topbar{position:sticky;top:0;z-index:50;height:var(--top);display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg2);border-bottom:1px solid var(--bd)}
 html.glass .topbar{background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -419,3 +420,31 @@ svg .bar-grow,svg .barx,svg .draw,.donut .seg,.scrub .dot g,.venn .vc,.const .cn
 .kpi.mini{margin-top:12px;gap:8px;grid-template-columns:repeat(4,1fr)}.kpi.mini div{padding:8px 4px;font-size:12.5px;color:var(--muted)}.kpi.mini b{font-size:22px}
 .ldgrid.mini{grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:8px}.ldgrid.mini .ld{padding:9px 11px;min-height:0;display:flex;gap:8px;align-items:baseline}.ldgrid.mini .n{font-size:12px;white-space:nowrap;margin:0}.ldgrid.mini .t{font-size:13.5px;line-height:1.35}
 .co .chip{white-space:normal;max-width:100%;height:auto;line-height:1.45;margin:4px 4px 0 0}
+
+/* ---------- v7: native-feel cross-document navigation (View Transitions API) ---------- */
+@view-transition{navigation:auto}
+.topbar{view-transition-name:hc-top}
+@media (min-width:1025px){.side{view-transition-name:hc-side}}
+::view-transition-old(root){animation:vt-out .16s ease-in both}
+::view-transition-new(root){animation:vt-in .22s ease-out both}
+::view-transition-group(hc-top),::view-transition-group(hc-side){animation-duration:0s}
+@keyframes vt-out{to{opacity:0}}
+@keyframes vt-in{from{opacity:0;transform:translate3d(0,6px,0)}}
+@media (prefers-reduced-motion:reduce){@view-transition{navigation:none}}
+/* v7: zero-CLS — controls whose label JS rewrites keep a fixed box */
+#doneBtn{min-width:11.5em;justify-content:center}
+#readAll{min-width:7.6em}
+/* ---------- v7: HC reading volumes ---------- */
+.hcvol{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0 4px}
+.hcv{display:flex;flex-direction:column;gap:2px;padding:9px 12px;border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--fg);text-decoration:none;min-width:0;transition:border-color .15s,transform .15s}
+.hcv b{font-size:12px;color:var(--muted);font-weight:600}.hcv span{font-weight:700;font-size:14.5px;line-height:1.35}.hcv small{color:var(--muted);font-size:12px}
+.hcv:hover{border-color:var(--deliv);transform:translateY(-1px)}
+.hcv.on{border-color:var(--deliv);background:color-mix(in srgb,var(--deliv) 14%,var(--card));box-shadow:inset 0 -3px 0 var(--deliv)}
+.hcv.all{border-style:dashed}
+.ldjump{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}
+.ldc{display:flex;flex-direction:column;align-items:center;padding:6px 0;border-radius:10px;border:1px solid color-mix(in srgb,var(--c) 45%,var(--bd));background:color-mix(in srgb,var(--c) 10%,var(--card));color:var(--fg);text-decoration:none;font-size:13px;line-height:1.2}
+.ldc b{font-size:15px}.ldc:hover{background:color-mix(in srgb,var(--c) 22%,var(--card))}
+.volcard{position:relative;border-top:4px solid var(--c);text-decoration:none;color:var(--fg)}
+.volcard .vno{position:absolute;right:14px;top:10px;font-weight:800;font-size:13px;color:var(--c);opacity:.85}
+/* v7: HC volumes are small (≈1.1k nodes) → lay out once, no scroll-time c-v relayout / scrollbar jumps */
+section.sec.ncv{content-visibility:visible}

@@ -1,25 +1,56 @@
 from common import *
-tools='<div class="btns" style="margin-top:14px"><button class="btn" id="reciteBtn">🙈 背诵模式（点击答案显示）</button><button class="btn" id="supBtn">🔢 隐藏/显示脚注编号</button><button class="btn" onclick="window.print()">🖨️ 打印</button></div>'
+tools='<div class="btns" style="margin-top:14px"><button class="btn" id="reciteBtn">🙈 背诵模式（点击答案显示）</button><button class="btn" id="supBtn">🔢 隐藏/显示脚注编号</button><button class="btn" onclick="window.print()">🖨️ 打印</button><button class="btn" id="readAll">🎧 连续朗读</button></div>'
 def intro(ps): return ''.join(f'<p>{p}</p>' for p in ps)
-# HC
-b=[f'<section class="hero reveal"><span class="chip i">📜 干净阅读版 · 背诵版</span><h1>海德堡要理问答（全文）</h1><p class="lead">52 主日 · 129 问，全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/heidelberg-catechism" target="_blank" rel="noopener">ccifellowship.org</a>。可开启背诵模式遮住答案自测。</p>{tools}</section>']
-b.append(f'<section class="sec"><h2 id="intro"><span class="ico">ℹ️</span>简介（ccifellowship.org 原文）</h2><div class="card reading">{intro(D["hc_intro"])}</div></section>')
-cur=None; cursub=None
+# HC — v7: split into 5 reading volumes (each ≈ 1/5 of the DOM) + a light hub + opt-in single-page full text
+VOLS=[(1,10,'💜 安慰 · 愁苦 · 中保与父神','引言 · 第一部 · 第二部（救赎之道、父神）'),(11,22,'✝️ 子神与圣灵','第二部 · 使徒信经（子神、圣灵）'),
+      (23,31,'💧 称义与圣礼','第二部 · 称义 · 圣言与圣礼 · 洗礼 · 圣餐'),(32,44,'📜 感恩与十诫','第三部 · 归正 · 十诫'),(45,52,'🙏 祷告','第三部 · 主祷文')]
+LDQ={ld['n']:[qnum(q) for q in ld['qas']] for ld in D['hc']}
+def vol_of(n): return next(i for i,(s_,e_,_,_) in enumerate(VOLS,1) if s_<=n<=e_)
+def qrange(s_,e_): return LDQ[s_][0],LDQ[e_][-1]
 def subrange(top,sub):
     ns=[l['n'] for l in D['hc'] if l['crumbs'][:1]==[top] and l['crumbs'][1:2]==[sub]]
     return ns[0],ns[-1]
-for ld in D['hc']:
-    n=ld['n']; p=part(n); top=(ld['crumbs'][0] if ld['crumbs'] else '引言'); sub=ld['crumbs'][1] if len(ld['crumbs'])>1 else None
-    if top!=cur:
-        cur=top; cursub=None; b.append(f'<h2 id="p{n}" data-toc="{esc(part_label(p[0]))}" style="margin-top:40px;color:{p[2]}"><span class="ico">{PARTS[["i","m","d","g"].index(p[0])][1]}</span>{esc(top)}<span class="small muted">　{esc(part_label(p[0]).split("（")[1].rstrip("）"))}</span></h2>')
-    if sub!=cursub:
-        cursub=sub
-        if sub:
-            s_,e_=subrange(top,sub); ic=SUBI.get(sub,'📌')
-            b.append(f'<h3 id="sub{n}" data-lv="2" data-nonum data-toc="{ic} {esc(sub)}（主日{s_}{"–"+str(e_) if e_!=s_ else ""}）" class="subhd" style="color:{p[2]}">{ic} {esc(sub)}<span class="small muted">　主日 {s_}{"–"+str(e_) if e_!=s_ else ""}</span></h3>')
-    lv=3 if sub else 2
-    b.append(f'<section class="sec" style="margin:18px 0"><h3 id="ld{n}" data-lv="{lv}" data-fix="{n}" data-toc="{esc(ld_label(n))}" style="color:{p[2]}">{LDI[n]} 主日 {n} · {esc(N[n]["t"])} <a class="small" href="../ld/{n:02d}.html">→ 深度解析</a></h3>'+''.join(qa_html(q,p[2],lv=lv+1) for q in ld['qas'])+'</section>')
-page('texts/hc.html','海德堡要理问答 全文阅读版',''.join(b),'海德堡要理问答129问全文 干净阅读背诵版')
+def hc_body(lds,cv=True):
+    b=[];cur=None;cursub=None
+    for ld in lds:
+        n=ld['n']; p=part(n); top=(ld['crumbs'][0] if ld['crumbs'] else '引言'); sub=ld['crumbs'][1] if len(ld['crumbs'])>1 else None
+        if top!=cur:
+            cur=top; cursub=None; b.append(f'<h2 id="p{n}" data-toc="{esc(part_label(p[0]))}" style="margin-top:40px;color:{p[2]}"><span class="ico">{PARTS[["i","m","d","g"].index(p[0])][1]}</span>{esc(top)}<span class="small muted">　{esc(part_label(p[0]).split("（")[1].rstrip("）"))}</span></h2>')
+        if sub!=cursub:
+            cursub=sub
+            if sub:
+                s_,e_=subrange(top,sub); ic=SUBI.get(sub,'📌')
+                b.append(f'<h3 id="sub{n}" data-lv="2" data-nonum data-toc="{ic} {esc(sub)}（主日{s_}{"–"+str(e_) if e_!=s_ else ""}）" class="subhd" style="color:{p[2]}">{ic} {esc(sub)}<span class="small muted">　主日 {s_}{"–"+str(e_) if e_!=s_ else ""}</span></h3>')
+        lv=3 if sub else 2
+        b.append(f'<section class="sec{"" if cv else " ncv"}" style="margin:18px 0"><h3 id="ld{n}" data-lv="{lv}" data-fix="{n}" data-toc="{esc(ld_label(n))}" style="color:{p[2]}">{LDI[n]} 主日 {n} · {esc(N[n]["t"])} <a class="small" href="../ld/{n:02d}.html">→ 深度解析</a></h3>'+''.join(qa_html(q,p[2],lv=lv+1) for q in ld['qas'])+'</section>')
+    return ''.join(b)
+def volnav(cur):
+    out=[]
+    for i,(s_,e_,t,d) in enumerate(VOLS,1):
+        q0,q1=qrange(s_,e_)
+        out.append(f'<a class="hcv{" on" if i==cur else ""}" href="hc-{i}.html"{" aria-current=page" if i==cur else ""}><b>卷{i}</b><span>{t}</span><small>主日 {s_}–{e_} · 问 {q0}–{q1}</small></a>')
+    return '<nav class="hcvol" aria-label="要理问答分卷">'+''.join(out)+'<a class="hcv all" href="hc-all.html"><b>📄</b><span>单页全文</span><small>打印 · 页内搜索</small></a></nav>'
+hero=lambda sub: f'<section class="hero reveal"><span class="chip i">📜 干净阅读版 · 背诵版</span><h1>海德堡要理问答（全文）{sub}</h1><p class="lead">52 主日 · 129 问，全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/heidelberg-catechism" target="_blank" rel="noopener">ccifellowship.org</a>。可开启背诵模式遮住答案自测。</p>{tools}</section>'
+for i,(s_,e_,t,d) in enumerate(VOLS,1):
+    lds=[ld for ld in D['hc'] if s_<=ld['n']<=e_]; q0,q1=qrange(s_,e_)
+    pv=f'<a class="btn" id="prevLd" href="hc-{i-1}.html">◀ 卷{i-1} {VOLS[i-2][2]}</a>' if i>1 else '<a class="btn" href="hc.html">◀ 分卷目录</a>'
+    nx=f'<a class="btn pri" id="nextLd" href="hc-{i+1}.html">卷{i+1} {VOLS[i][2]} ▶</a>' if i<len(VOLS) else '<a class="btn pri" href="hc.html">分卷目录 ▶</a>'
+    body=hero(f'<span class="small muted"> · 卷{i}/5</span>')+volnav(i)+f'<p class="small muted" style="margin:6px 2px 0">{d} · 主日 {s_}–{e_} · 问 {q0}–{q1}（v7 起分卷加载，翻页更顺；需要整本打印或 Ctrl+F 全文搜索请用“单页全文”）</p>'+hc_body(lds,cv=False)+f'<div class="btns" style="justify-content:space-between;margin:28px 0 8px">{pv}{nx}</div>'
+    page(f'texts/hc-{i}.html',f'海德堡要理问答 卷{i}（主日{s_}–{e_}）',body,f'海德堡要理问答 主日{s_}–{e_} 问{q0}–{q1} 原文 背诵版')
+# single-page full text (opt-in)
+b=[hero('<span class="small muted"> · 单页全文</span>'),volnav(0),f'<section class="sec"><h2 id="intro"><span class="ico">ℹ️</span>简介（ccifellowship.org 原文）</h2><div class="card reading">{intro(D["hc_intro"])}</div></section>',hc_body(D['hc'])]
+page('texts/hc-all.html','海德堡要理问答 单页全文',''.join(b),'海德堡要理问答129问全文 单页版（打印/全文搜索）')
+# hub: light page + redirect of legacy deep links (#q60, #ld11, #sub34, #p32) to the right volume before first paint
+qv={q:vol_of(n) for n,qs in LDQ.items() for q in qs}
+QV=''.join(str(qv[q]) for q in range(1,130)); LV=''.join(str(vol_of(n)) for n in range(1,53))
+REDIR=f'<script>(function(){{var h=location.hash,m=/^#(q|ld|sub|p)(\\d+)$/.exec(h);if(!m)return;var k=+m[2],v=m[1]=="q"?"{QV}"[k-1]:"{LV}"[k-1];if(v)location.replace("hc-"+v+".html"+h)}})()</script>'
+grid=''.join(f'<a class="ldc" href="hc-{vol_of(n)}.html#ld{n}" title="{esc(N[n]["t"])}" style="--c:{part(n)[2]}"><b>{n}</b><span>{LDI[n]}</span></a>' for n in range(1,53))
+vc=''.join(f'<a class="card lift reveal volcard" href="hc-{i}.html" style="--c:{part(s_)[2]}"><span class="vno">卷{i}</span><h3 id="vol{i}" style="color:{part(s_)[2]}">{t}</h3><p class="small muted" style="margin:0">{d}</p><p class="small" style="margin:.5em 0 0">主日 {s_}–{e_} · 问 {qrange(s_,e_)[0]}–{qrange(s_,e_)[1]} · {sum(len(LDQ[n]) for n in range(s_,e_+1))} 问</p><svg viewBox="0 0 520 10" style="width:100%;height:10px;margin-top:8px" aria-hidden="true"><rect width="520" height="10" rx="5" fill="currentColor" opacity=".08"/><rect x="{(s_-1)/52*520:.0f}" width="{(e_-s_+1)/52*520:.0f}" height="10" rx="5" fill="{part(s_)[2]}"/></svg></a>' for i,(s_,e_,t,d) in enumerate(VOLS,1))
+hub=[f'<section class="hero reveal"><span class="chip i">📜 干净阅读版 · 背诵版</span><h1>海德堡要理问答（全文）</h1><p class="lead">52 主日 · 129 问，全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/heidelberg-catechism" target="_blank" rel="noopener">ccifellowship.org</a>。v7 起按内容分为 <b>5 卷</b>阅读（每卷只加载约五分之一，滚动更顺）；也可打开 <a href="hc-all.html">📄 单页全文</a> 打印或全文搜索。</p></section>',
+     sec('vols','📚','分卷阅读',f'<div class="grid g2">{vc}<a class="card lift reveal volcard" href="hc-all.html" style="--c:var(--gold)"><span class="vno">全</span><h3 id="vol-all" style="color:var(--gold)">📄 单页全文</h3><p class="small muted" style="margin:0">129 问一页呈现：适合打印、Ctrl+F 页内搜索、连续朗读全书</p></a></div>'),
+     sec('jump','🔢','按主日直达',f'<div class="ldjump">{grid}</div><p class="small muted">颜色：💜 引言 · 💔 愁苦 · ✝️ 得救 · 🌿 感恩。旧链接（如 hc.html#q60）会自动转到对应分卷。</p>'),
+     f'<section class="sec"><h2 id="intro"><span class="ico">ℹ️</span>简介（ccifellowship.org 原文）</h2><div class="card reading">{intro(D["hc_intro"])}</div></section>']
+page('texts/hc.html','海德堡要理问答 全文阅读版（分卷）',''.join(hub),'海德堡要理问答129问全文 干净阅读背诵版 分卷',head=REDIR)
 # BC
 b=[f'<section class="hero reveal"><span class="chip d">🛡️ 干净阅读版</span><h1>比利时信条（全文 37 条）</h1><p class="lead">又名《真基督教信条》，1561 年德布利（Guido de Brès）著。全文一字不改地引自 <a href="{CCI}/books/book-of-praise/confessions/the-belgic-confession" target="_blank" rel="noopener">ccifellowship.org</a>。</p>{tools}</section>']
 b.append(f'<section class="sec"><h2 id="intro"><span class="ico">ℹ️</span>简介（ccifellowship.org 原文）</h2><div class="card reading">{intro(D["bc_intro"])}</div></section>')

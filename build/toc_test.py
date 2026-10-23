@@ -26,7 +26,7 @@ async def main():
         await pg.mouse.move(b2['x']+6,y); await pg.mouse.down(); await pg.mouse.move(-500,y,steps=6); await pg.mouse.up()
         wmin=await pg.evaluate("document.getElementById('side').getBoundingClientRect().width")
         ok('min clamp = 220',abs(wmin-220)<=1,f'{wmin:.0f}')
-        await pg.goto(BASE+'texts/hc.html',wait_until='networkidle')
+        await pg.goto(BASE+'texts/hc-all.html',wait_until='networkidle')
         wp=await pg.evaluate("document.getElementById('side').getBoundingClientRect().width")
         ok('width persists across pages',abs(wp-220)<=1,f'{wp:.0f}')
         # keyboard resize
@@ -84,11 +84,11 @@ async def main():
 
         # ---- v4 ----
         ctx=await b.new_context(viewport={'width':1440,'height':900}); pg=await ctx.new_page()
-        await pg.goto(BASE+'texts/hc.html',wait_until='networkidle')
+        await pg.goto(BASE+'texts/hc-all.html',wait_until='networkidle')
         lab=await pg.evaluate("[...document.querySelectorAll('#toc li')].filter(li=>/^\\d+\\./.test(li.querySelector(':scope>.row>a').textContent)&&li.querySelector(':scope>.row>a').textContent.includes('主日')).map(li=>li.querySelector(':scope>.row>a').textContent)")
         import re as _re
         uniq=len(set(lab))==52 and all(_re.match(r'^(\d+)\.\S+ 主日\1 · \S',x) for x in lab)
-        ok('texts/hc: 52 unique LD entries "n.🔣 主日n · 标题"',uniq,lab[0]+' … '+lab[-1])
+        ok('texts/hc-all: 52 unique LD entries "n.🔣 主日n · 标题"',uniq,lab[0]+' … '+lab[-1])
         parts=await pg.evaluate("[...document.querySelectorAll('#toc li.l1>.row>a')].map(a=>a.textContent)")
         ok('part headings have icons',all(any(i in p for i in '💜💔✝️🌿') for p in parts[1:]),' | '.join(parts))
         nav=await pg.evaluate("[...document.querySelectorAll('.ldnav a')].map(a=>a.textContent)")
@@ -174,6 +174,38 @@ async def main():
         ok('v6 cross-reference heatmap 52x4',hr==208,str(hr))
         await pg.goto(BASE+'history.html',wait_until='networkidle'); gr=await pg.evaluate("document.querySelectorAll('section:has(#tl-gantt) svg rect').length")
         ok('v6 era gantt 5 bars',gr==5,str(gr))
+        # ---- v7 tests: architecture / smoothness ----
+        await pg.goto(BASE+'ld/01.html',wait_until='networkidle')
+        a7=await pg.evaluate("""(()=>{const css=[...document.styleSheets].map(s=>{try{return [...s.cssRules].map(r=>r.cssText).join('')}catch(e){return ''}}).join('');
+          return {link:document.querySelectorAll('link[rel=stylesheet]').length,inl:document.querySelectorAll('head style').length,vt:/@view-transition/.test(css),
+          spec:!!document.querySelector('script[type=speculationrules]'),specOK:HTMLScriptElement.supports&&HTMLScriptElement.supports('speculationrules'),sky:document.querySelectorAll('.sky i').length}})()""")
+        ok('v7 CSS inlined (no render-blocking stylesheet request)',a7['link']==0 and a7['inl']>=1,json.dumps(a7))
+        ok('v7 cross-document @view-transition rule present',a7['vt'],json.dumps(a7))
+        ok('v7 speculation rules (prefetch/prerender) present + supported',a7['spec'] and a7['specOK'],json.dumps(a7))
+        ok('v7 floating sky = one composited layer',a7['sky']==1,str(a7['sky']))
+        await pg.reload(wait_until='networkidle'); await pg.wait_for_timeout(400)
+        sw=await pg.evaluate("navigator.serviceWorker.getRegistration().then(r=>({reg:!!r,ctl:!!navigator.serviceWorker.controller,scope:r&&r.scope}))")
+        ok('v7 service worker registered + controlling',sw['reg'] and sw['ctl'],json.dumps(sw))
+        await pg.goto(BASE+'ld/02.html',wait_until='networkidle'); await pg.wait_for_timeout(300)
+        await ctx.set_offline(True)
+        try:
+            await pg.goto(BASE+'ld/01.html',wait_until='load'); off=await pg.evaluate("document.querySelector('h1')?.textContent||''")
+        except Exception as e: off='ERR '+str(e)[:80]
+        await ctx.set_offline(False)
+        ok('v7 offline repeat visit served by SW cache',len(off)>2 and not off.startswith('ERR'),off[:40])
+        cls=await pg.evaluate("""new Promise(r=>{let v=0;new PerformanceObserver(l=>{for(const e of l.getEntries())if(!e.hadRecentInput)v+=e.value}).observe({type:'layout-shift',buffered:true});setTimeout(()=>r(v),2500)})""")
+        ok('v7 ld/01 CLS = 0',cls<0.001,f'{cls:.4f}')
+        await pg.goto(BASE+'texts/hc.html#q60',wait_until='load'); await pg.wait_for_timeout(1500)
+        rd=await pg.evaluate("[location.pathname.split('/').pop(),location.hash,Math.round(document.getElementById('q60').getBoundingClientRect().top)]")
+        ok('v7 legacy deep link hc.html#q60 → volume 3, target in view',rd[0]=='hc-3.html' and rd[1]=='#q60' and 0<=rd[2]<200,json.dumps(rd))
+        vd=await pg.evaluate("[document.getElementsByTagName('*').length,document.querySelectorAll('.hcvol a').length,document.querySelectorAll('.qa').length]")
+        ok('v7 HC volume page is small (<1300 nodes) with 5 volumes + all-in-one nav',vd[0]<1300 and vd[1]==6,json.dumps(vd))
+        await pg.goto(BASE+'texts/hc-all.html',wait_until='networkidle'); await pg.wait_for_timeout(800)
+        await pg.evaluate("window.__m=0;new MutationObserver(ms=>{window.__m+=ms.length}).observe(document,{subtree:true,attributes:true,childList:true,characterData:true})")
+        await pg.mouse.move(800,450)
+        for i in range(40): await pg.mouse.wheel(0,200); await pg.wait_for_timeout(30)
+        await pg.wait_for_timeout(900); mu=await pg.evaluate("window.__m")
+        ok('v7 no DOM writes during scroll (≤ 20 mutations for a long scroll, all after scrollend)',mu<=20,str(mu))
         await ctx.close()
         await b.close()
     print('RESULT',sum(1 for r in R if r[1]),'/',len(R),'passed')

@@ -15,7 +15,7 @@ async def main():
         b=await p.chromium.launch(args=['--enable-gpu-rasterization','--ignore-gpu-blocklist'])
         for name,opt,rate in PROF:
             for u in PAGES:
-                ctx=await b.new_context(**opt); pg=await ctx.new_page()
+                ctx=await b.new_context(**opt,java_script_enabled=not __import__('os').environ.get('NOJS')); pg=await ctx.new_page()
                 if __import__('os').environ.get('INIT'): await pg.add_init_script(__import__('os').environ['INIT'])
                 cdp=await ctx.new_cdp_session(pg); await cdp.send('Emulation.setCPUThrottlingRate',{'rate':rate}); await cdp.send('Performance.enable')
                 await pg.goto(BASE+u+__import__('os').environ.get('Q',''),wait_until='load',timeout=120000); await pg.wait_for_timeout(2500)
@@ -40,7 +40,7 @@ async def main():
                        layout_ms=round((m1['LayoutDuration']-m0['LayoutDuration'])*1000),script_ms=round((m1['ScriptDuration']-m0['ScriptDuration'])*1000),
                        paint_ms=round(sum(paint.values())),layers=None,dom=await pg.evaluate('document.getElementsByTagName("*").length'),
                        scrolled=await pg.evaluate('scrollY'))
-                res[f'{name}/{u}']=r; print(name,u,r,flush=True)
+                r["pb"]={k:round(v) for k,v in paint.items()}; res[f"{name}/{u}"]=r; print(name,u,r,flush=True)
                 await ctx.close()
         await b.close()
     json.dump(res,open(OUT,'w'),indent=1)

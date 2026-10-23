@@ -100,7 +100,7 @@
   ""
  ],
  [
-  "texts/hc: 52 unique LD entries \"n.🔣 主日n · 标题\"",
+  "texts/hc-all: 52 unique LD entries \"n.🔣 主日n · 标题\"",
   true,
   "1.✝️ 主日1 · 唯一的安慰 … 52.⚔️ 主日52 · 第六个祈求、结语与“阿们”"
  ],
@@ -142,7 +142,7 @@
  [
   "LD game scores",
   true,
-  "得分 0 / 1 · 连对 0 · 最佳连对 0"
+  "得分 1 / 1 · 连对 1 · 最佳连对 1"
  ],
  [
   "v5 timeline: scrubber dots = events, era filter",
@@ -243,5 +243,55 @@
   "v6 era gantt 5 bars",
   true,
   "5"
+ ],
+ [
+  "v7 CSS inlined (no render-blocking stylesheet request)",
+  true,
+  "{\"link\": 0, \"inl\": 1, \"vt\": true, \"spec\": true, \"specOK\": true, \"sky\": 1}"
+ ],
+ [
+  "v7 cross-document @view-transition rule present",
+  true,
+  "{\"link\": 0, \"inl\": 1, \"vt\": true, \"spec\": true, \"specOK\": true, \"sky\": 1}"
+ ],
+ [
+  "v7 speculation rules (prefetch/prerender) present + supported",
+  true,
+  "{\"link\": 0, \"inl\": 1, \"vt\": true, \"spec\": true, \"specOK\": true, \"sky\": 1}"
+ ],
+ [
+  "v7 floating sky = one composited layer",
+  true,
+  "1"
+ ],
+ [
+  "v7 service worker registered + controlling",
+  true,
+  "{\"reg\": true, \"ctl\": true, \"scope\": \"http://localhost:8765/\"}"
+ ],
+ [
+  "v7 offline repeat visit served by SW cache",
+  true,
+  "✝️ 主日 1　唯一的安慰"
+ ],
+ [
+  "v7 ld/01 CLS = 0",
+  true,
+  "0.0000"
+ ],
+ [
+  "v7 legacy deep link hc.html#q60 → volume 3, target in view",
+  true,
+  "[\"hc-3.html\", \"#q60\", 72]"
+ ],
+ [
+  "v7 HC volume page is small (<1300 nodes) with 5 volumes + all-in-one nav",
+  true,
+  "[972, 6, 27]"
+ ],
+ [
+  "v7 no DOM writes during scroll (≤ 20 mutations for a long scroll, all after scrollend)",
+  true,
+  "9"
  ]
 ]

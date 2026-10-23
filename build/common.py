@@ -6,7 +6,7 @@ D=json.load(open(os.path.join(ROOT,'data.json')))
 SER=json.load(open(os.path.join(ROOT,'sermons.json')))
 from notes1 import N as _a; from notes2 import N as _b; from notes3 import N as _c
 N={**_a,**_b,**_c}
-VERSION='v6'; DATE='2026-10-21'
+VERSION='v7'; DATE='2026-10-23'
 REPO='heidelberg-catechism-52-lorddays-GROKstudy'
 CCI='https://ccifellowship.org'
 def esc(s): return html.escape(s,quote=True)
@@ -213,25 +213,53 @@ HEADJS=('try{var d=document.documentElement,L=localStorage,n=navigator,q=locatio
  'if(!lite&&c>=8&&!/[?&]noanim/.test(q))d.classList.add("anim");'
  'if(!lite&&(window.devicePixelRatio||1)<2)d.classList.add("glass");'
  'var w=JSON.parse(L.getItem("hc-side-w"));if(w)d.style.setProperty("--side",w+"px")}catch(e){}')
+# ===== v7: TOC rendered at build time (same structure the JS used to build) → no post-paint sidebar shift, less startup JS =====
+def build_toc(html_):
+    soup=BeautifulSoup(html_,'html.parser')
+    heads=[h for h in soup.find_all(attrs={'data-lv':True}) if not h.find_parent('template')]
+    root={'lv':0,'kids':[]};stack=[root];n=0
+    for h in heads:
+        lv=int(h['data-lv'])
+        while len(stack)>1 and stack[-1]['lv']>=lv: stack.pop()
+        label=h.get('data-toc')
+        if not label:
+            c=BeautifulSoup(str(h),'html.parser'); ic=c.select_one('.ico'); it=(ic.get_text().strip()+' ') if ic else ''
+            for x in c.select('.ico,.hn,.tools,small,.small,a'): x.decompose()
+            label=it+re.sub(r'\s+',' ',c.get_text()).strip()
+        no=h.get('data-no','') if not ('qa' in (h.get('class') or []) or h.find_parent(class_='qa')) else ''
+        node={'lv':lv,'id':h.get('id',''),'label':label,'no':no,'kids':[]}
+        stack[-1]['kids'].append(node);stack.append(node);n+=1
+    if not n: return ''
+    few=n<=14
+    def r(nodes):
+        out=[]
+        for x in nodes:
+            has=bool(x['kids']);cls='l'+str(x['lv'])+(' closed' if has and x['lv']!=1 and not few else '')
+            tw='<button class="tw" type="button" aria-label="展开/折叠">▾</button>' if has else ''
+            nos=f'<span class="no">{esc(x["no"])}</span>' if x['no'] else ''
+            tt=esc((x['no']+' ' if x['no'] else '')+x['label'])
+            out.append(f'<li class="{cls}"><div class="row">{tw}<a href="#{x["id"]}" title="{tt}">{nos}{esc(x["label"])}</a></div>'+(f'<ul>{r(x["kids"])}</ul>' if has else '')+'</li>')
+        return ''.join(out)
+    return '<ul>'+r(root['kids'])+'</ul>'
 def page(path,title,body,desc='',head=''):
     depth=path.count('/'); pre='../'*depth
     sect=path.split('/')[0] if '/' in path else path
     def on(h): return h==path or (h=='texts/index.html' and path.startswith('texts/')) or (h=='lorddays.html' and path.startswith('ld/'))
     navh=''.join(f'<a href="{pre}{h}" class="{"on" if on(h) else ""}" title="{t}"><span>{i}</span><span class="lb">{t}</span></a>' for h,i,t in NAV)
-    body=themeify(post(body))
+    body=themeify(post(body)); tochtml=build_toc(body)
     doc=f'''<!doctype html><html lang="zh-Hans" data-theme="night"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{esc(title)} | 海德堡要理问答 52 主日深度解析</title><meta name="description" content="{esc(desc or title)}"><meta name="theme-color" content="#0b1020"><script>{HEADJS}</script>
 <link rel="icon" href="data:image/svg+xml,{esc(LOGO.replace('class="logo" ','').replace('#','%23'))}">
-<link rel="stylesheet" href="{pre}assets/css/style.css">{head}</head><body>
-<div class="sky" aria-hidden="true"><i></i><i></i></div>
+<link rel="stylesheet" href="{pre}assets/css/style.css"><script type="speculationrules">{{"prefetch":[{{"where":{{"and":[{{"href_matches":"/*"}},{{"not":{{"selector_matches":"a[href^='#'],a[target=_blank],a[download]"}}}}]}},"eagerness":"moderate"}}],"prerender":[{{"where":{{"and":[{{"href_matches":"/*"}},{{"not":{{"selector_matches":"a[href^='#'],a[target=_blank],a[download]"}}}}]}},"eagerness":"conservative"}}]}}</script>{head}</head><body>
+<div class="sky" aria-hidden="true"><i></i></div>
 <header class="topbar"><button class="ibtn" id="tocBtn" title="显示/隐藏目录 (T)" aria-label="目录">☰</button><a class="brand" href="{pre}index.html">{LOGO}<b>海德堡要理问答 · 52主日</b></a><nav class="nav">{navh}</nav><a class="vbadge" href="{pre}changelog.html" title="版本更新记录">{VERSION} · {DATE}</a><button class="ibtn" id="marksBtn" data-marks title="显示/隐藏笔记标记 (M)" aria-label="标记" aria-pressed="true">🖍️</button>{THPICK}</header>
 <div class="progress"></div><div class="backdrop"></div>
-<div class="layout"><aside class="side" id="side"><div class="scroll"><input id="tocSearch" class="tocsearch" placeholder="🔍 过滤目录…" aria-label="过滤目录"><h4>📑 本页目录</h4><div class="tocbar"><button id="tocExpand" title="全部展开">⊞ 全部展开</button><button id="tocCollapse" title="全部折叠">⊟ 全部折叠</button></div><nav id="toc" class="toc" aria-label="本页目录"></nav><hr style="border:none;border-top:1px solid var(--bd);margin:14px 0">{gnav(pre,path)}<hr style="border:none;border-top:1px solid var(--bd);margin:14px 0"><h4>🖍️ 标记图例</h4><div class="legend-mini">{''.join(f'<span>{a}</span>' for a,b in LEGEND_ITEMS)}</div></div><div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="拖动调整目录宽度" tabindex="0" title="拖动调整宽度（双击恢复默认）"></div></aside>
+<div class="layout"><aside class="side" id="side"><div class="scroll"><input id="tocSearch" class="tocsearch" placeholder="🔍 过滤目录…" aria-label="过滤目录"><h4>📑 本页目录</h4><div class="tocbar"><button id="tocExpand" title="全部展开">⊞ 全部展开</button><button id="tocCollapse" title="全部折叠">⊟ 全部折叠</button></div><nav id="toc" class="toc" aria-label="本页目录">{tochtml}</nav><hr style="border:none;border-top:1px solid var(--bd);margin:14px 0">{gnav(pre,path)}<hr style="border:none;border-top:1px solid var(--bd);margin:14px 0"><h4>🖍️ 标记图例</h4><div class="legend-mini">{''.join(f'<span>{a}</span>' for a,b in LEGEND_ITEMS)}</div></div><div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="拖动调整目录宽度" tabindex="0" title="拖动调整宽度（双击恢复默认）"></div></aside>
 <main id="main"><div class="wrap">{body}
 <footer class="foot">📚 信条、信经原文一字不改地引自 <a href="{CCI}/books/book-of-praise">基督教华人网络团契 ccifellowship.org《中国改革宗敬拜手册》(2015)</a>，版权归原出版委员会所有，此处仅作学习引用并逐条注明出处。解读部分为本站原创学习笔记（未经神学家审阅），持守欧陆改革宗三项联合信条。· <a href="{pre}sources.html">资料与说明</a> · <a href="{pre}changelog.html">版本 {VERSION} · {DATE}</a> · <a href="https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}">GitHub 源码</a></footer>
 </div></main></div>
 <div class="fab"><button class="ibtn" id="topBtn" title="回到顶部" aria-label="回到顶部">⬆</button></div>
-<script src="{pre}assets/js/app.js" defer></script></body></html>'''
+<script src="{pre}assets/js/app.js" defer data-root="{pre}"></script></body></html>'''
     fp=os.path.join(SITE,path); os.makedirs(os.path.dirname(fp),exist_ok=True)
     open(fp,'w').write(doc)
 def mark_answer(n,paras):

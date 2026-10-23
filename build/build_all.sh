@@ -7,3 +7,4 @@ python3 prerender_mermaid.py
 /workspace/tools/node_modules/.bin/esbuild src/style.css --minify --target=chrome100,safari15,firefox100 --outfile=../site/assets/css/style.css --log-level=warning
 /workspace/tools/node_modules/.bin/esbuild src/app.js --minify --target=es2020 --outfile=../site/assets/js/app.js --log-level=warning
 ls -l ../site/assets/css/style.css ../site/assets/js/app.js | awk '{print $5, $9}'
+python3 finalize.py

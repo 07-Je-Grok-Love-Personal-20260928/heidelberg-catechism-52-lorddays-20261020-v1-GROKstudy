@@ -1,5 +1,7 @@
-/* v3 · app.js — passive listeners, IntersectionObserver, rAF-batched writes */
+/* v7 · app.js — passive listeners, IntersectionObserver, NO DOM writes while scrolling, idle-time init */
 (function(){
+const ROOT=(document.currentScript&&document.currentScript.dataset.root)||'';
+const idle=f=>('requestIdleCallback' in window)?requestIdleCallback(()=>f(),{timeout:700}):setTimeout(f,60);
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const LS={get:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v===null||v===undefined?d:v}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const root=document.documentElement;
@@ -18,10 +20,13 @@ ready(()=>{
  thb?.addEventListener('click',e=>{e.stopPropagation();const o=thp.classList.toggle('open');thb.setAttribute('aria-expanded',o)});
  document.addEventListener('click',e=>{const t=e.target.closest('[data-theme-set]');if(t){setTheme(t.dataset.themeSet);if(t.closest('#thp')){thp.classList.remove('open');thb.setAttribute('aria-expanded','false')}return}if(thp&&!e.target.closest('#thp'))thp.classList.remove('open')});
  addEventListener('keydown',e=>{if(e.key==='Escape'&&thp?.classList.contains('open')){thp.classList.remove('open');thb.focus()}});
- /* ---------- v6: background animation only when idle & visible (class on .sky only → tiny style recalc) ---------- */
- const sky=$('.sky');if(sky&&root.classList.contains('anim')){let st=0;const pause=on=>sky.classList.toggle('paused',on);
-  addEventListener('scroll',()=>{if(!st)pause(true);clearTimeout(st);st=setTimeout(()=>{st=0;if(!document.hidden)pause(false)},220)},{passive:true});
-  document.addEventListener('visibilitychange',()=>pause(document.hidden))}
+ /* ---------- v7: one scroll-state helper. During a scroll the ONLY work is a flag + timer; everything else waits for scrollend ---------- */
+ const sky=$('.sky');const SC={on:false,t:0,q:[]};const HAS_END='onscrollend' in window;
+ const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f())};
+ addEventListener('scroll',()=>{if(!SC.on){SC.on=true;if(sky)sky.classList.add('paused')}clearTimeout(SC.t);SC.t=setTimeout(scEnd,HAS_END?700:160)},{passive:true});
+ if(HAS_END)addEventListener('scrollend',()=>{clearTimeout(SC.t);SC.t=setTimeout(scEnd,140)},{passive:true});
+ const afterScroll=f=>{if(SC.on){if(!SC.q.includes(f))SC.q.push(f)}else f()};
+ document.addEventListener('visibilitychange',()=>{if(sky)sky.classList.toggle('paused',document.hidden||SC.on)});
  /* ---------- marks toggle ---------- */
  const setMarks=on=>{b.classList.toggle('nomarks',!on);$$('[data-marks]').forEach(x=>x.setAttribute('aria-pressed',on?'true':'false'))};
  setMarks(LS.get('hc-marks',true));
@@ -37,6 +42,8 @@ ready(()=>{
  /* ---------- hierarchical TOC ---------- */
  const toc=$('#toc');const heads=$$('main [data-lv]');const items=[];
  if(toc&&heads.length){
+  const pre=toc.firstElementChild; /* v7: TOC is rendered at build time; JS only hydrates it */
+  if(pre){$$('li',toc).forEach(li=>{const a=li.querySelector(':scope>.row>a');const h=document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));if(h)items.push({h,a,li})})}else{
   const rootUl=document.createElement('ul');const stack=[{lv:0,ul:rootUl,li:null}];
   heads.forEach(h=>{
    const lv=+h.dataset.lv;while(stack.length>1&&stack[stack.length-1].lv>=lv)stack.pop();
@@ -56,6 +63,7 @@ ready(()=>{
   // default: L1 open, deeper collapsed (except short lists)
   $$('li',toc).forEach(li=>{if(li.querySelector(':scope>ul')&&!li.classList.contains('l1'))li.classList.add('closed')});
   if(items.length<=14)$$('li',toc).forEach(li=>li.classList.remove('closed'));
+  }
   toc.addEventListener('click',e=>{const tw=e.target.closest('.tw');if(tw){tw.parentElement.parentElement.classList.toggle('closed');return}if(e.target.closest('a')&&mobile())b.classList.remove('toc-open')});
   $('#tocExpand')?.addEventListener('click',()=>$$('li',toc).forEach(li=>li.classList.remove('closed')));
   $('#tocCollapse')?.addEventListener('click',()=>{$$('li',toc).forEach(li=>{if(li.querySelector(':scope>ul'))li.classList.add('closed')});window.hcOpenCur&&hcOpenCur()});
@@ -64,16 +72,19 @@ ready(()=>{
    if(q){$$('li',toc).forEach(li=>{const hit=li.textContent.includes(q);li.style.display=hit?'':'none';if(hit)li.classList.remove('closed')})}
    $$('#gnav a').forEach(a=>a.style.display=!q||a.textContent.includes(q)?'':'none')});
   /* scrollspy via IntersectionObserver (no scroll handler, no layout reads) */
-  const vis=new Map();let curIt=null,raf=0;
-  const openPath=it=>{let li=it.li.parentElement.closest('li');while(li){li.classList.remove('closed');li.querySelector(':scope>.row>a').classList.add('par');li=li.parentElement.closest('li')}};
+  const vis=new Map();let curIt=null,raf=0,parSet=new Set();
+  const pathOf=it=>{const p=new Set();let li=it.li.parentElement.closest('li');while(li){p.add(li);li=li.parentElement.closest('li')}return p};
+  const lnk=li=>li.querySelector(':scope>.row>a');
+  const openPath=it=>{const p=pathOf(it);parSet.forEach(l=>{if(!p.has(l))lnk(l).classList.remove('par')});p.forEach(l=>{if(l.classList.contains('closed'))l.classList.remove('closed');const x=lnk(l);if(!x.classList.contains('par'))x.classList.add('par')});parSet=p};
   window.hcOpenCur=()=>{if(curIt)openPath(curIt)};
   const apply=()=>{raf=0;let best=null;for(const it of items){if(vis.has(it.h))best=it}if(!best)best=items[0];
-   if(!best||best===curIt)return;curIt?.a.classList.remove('on');$$('a.par',toc).forEach(x=>x.classList.remove('par'));
+   if(!best||best===curIt)return;curIt?.a.classList.remove('on');
    curIt=best;best.a.classList.add('on');openPath(best);
-   if(!b.classList.contains('resizing')){const sc=$('.side .scroll');const ar=best.a.getBoundingClientRect(),sr=sc.getBoundingClientRect();if(ar.top<sr.top+60||ar.bottom>sr.bottom-30)sc.scrollTo({top:sc.scrollTop+ar.top-sr.top-sr.height/3,behavior:'smooth'})}};
+   if(!b.classList.contains('resizing')&&!(mobile()&&!b.classList.contains('toc-open'))){const sc=$('.side .scroll');const ar=best.a.getBoundingClientRect(),sr=sc.getBoundingClientRect();if(ar.top<sr.top+60||ar.bottom>sr.bottom-30)sc.scrollTo({top:sc.scrollTop+ar.top-sr.top-sr.height/3,behavior:'smooth'})}};
+  const sched=()=>{if(raf)return;raf=1;afterScroll(()=>requestAnimationFrame(apply))};
   const spy=new IntersectionObserver(es=>{es.forEach(e=>{const r=e.boundingClientRect;if(e.isIntersecting||(r.height>0&&r.bottom<(e.rootBounds?e.rootBounds.top:0)+1))vis.set(e.target,1);else if(r.height>0)vis.delete(e.target)});
    // headings above viewport keep their (negative) top so the last one passed wins
-   if(!raf)raf=requestAnimationFrame(apply)},{rootMargin:'-'+(parseInt(getComputedStyle(root).getPropertyValue('--top'))||58)+'px 0px -70% 0px',threshold:0});
+   sched()},{rootMargin:'-'+(parseInt(getComputedStyle(root).getPropertyValue('--top'))||58)+'px 0px -70% 0px',threshold:0});
   items.forEach(it=>spy.observe(it.h));
  }
  /* ---------- sidebar toggle + resizer ---------- */
@@ -102,12 +113,13 @@ ready(()=>{
  const ANIM='.bar-grow,.barx,.draw,.seg,.dot,.ladder,.parr,.vc,.arc';const lazyA=e=>e.matches(ANIM)||!!e.querySelector(ANIM);
  if(root.classList.contains('lite')||!('IntersectionObserver' in window))rv.forEach(seen);
  else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){seen(e.target);io.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px'});rv.forEach(e=>lazyA(e)?io.observe(e):seen(e))}
+ const clean=box=>{const c=box.cloneNode(true);c.querySelectorAll('sup,details,.tools,button').forEach(x=>x.remove());return c.textContent.replace(/\s+\n/g,'\n').trim()};
+ idle(()=>{
  /* ---------- tabs ---------- */
  $$('.tabs').forEach(t=>{const bs=$$('button',t),ps=$$(':scope>.tabp',t.parentElement);bs.forEach((x,i)=>x.addEventListener('click',()=>{bs.forEach((y,j)=>y.classList.toggle('on',i===j));ps.forEach((p,j)=>p.classList.toggle('on',i===j))}))});
  /* ---------- recite / footnotes ---------- */
  $('#reciteBtn')?.addEventListener('click',()=>{b.classList.toggle('recite');$$('.qa .a.show').forEach(x=>x.classList.remove('show'));toast(b.classList.contains('recite')?'🙈 背诵模式：点击答案显示':'👀 阅读模式')});
  $('#supBtn')?.addEventListener('click',()=>{b.classList.toggle('nosup');toast(b.classList.contains('nosup')?'已隐藏经文脚注编号':'已显示经文脚注编号')});
- const clean=box=>{const c=box.cloneNode(true);c.querySelectorAll('sup,details,.tools,button').forEach(x=>x.remove());return c.textContent.replace(/\s+\n/g,'\n').trim()};
  document.addEventListener('click',e=>{
   const a=e.target.closest('.qa .a');if(a&&b.classList.contains('recite')){a.classList.toggle('show');return}
   const s=e.target.closest('[data-speak]');if(s){const box=s.closest('.qa,.art,.creed,[data-speakbox]');if(!('speechSynthesis' in window)){toast('此浏览器不支持朗读');return}if(speechSynthesis.speaking){speechSynthesis.cancel();toast('⏹ 已停止');return}const u=new SpeechSynthesisUtterance(clean(box));u.lang='zh-CN';u.rate=.95;speechSynthesis.speak(u);toast('🔊 朗读中…再次点击停止');return}
@@ -115,6 +127,7 @@ ready(()=>{
   const f=e.target.closest('.fc');if(f)f.classList.toggle('flip')});
  /* ---------- quiz ---------- */
  document.addEventListener('click',e=>{const o=e.target.closest('.quiz .opt');if(!o)return;const q=o.closest('.quiz');if(q.dataset.done)return;const os=$$('.opt',q),i=os.indexOf(o),ans=+q.dataset.ans;q.dataset.done=1;o.classList.add(i===ans?'ok':'no');os[ans].classList.add('ok');const r=$('.res',q);if(r)r.textContent=i===ans?'✅ 答对了！':'❌ 再想想：正确答案已标绿';const sc=LS.get('hc-quiz',{});sc[q.dataset.id]=i===ans;LS.set('hc-quiz',sc)});
+ });
  /* ---------- v6: paginated lists (items live in <template>, only one page is in the DOM) ---------- */
  $$('.paged').forEach(box=>{const tpl=$(':scope>template',box),out=$('.pg-out',box),ctl=$('.pgctl',box),size=+box.dataset.size||12,unit=box.dataset.unit||'';
   const all=[...tpl.content.children];let list=all,pg=0,flt='all';
@@ -128,12 +141,13 @@ ready(()=>{
  /* ---------- done markers ---------- */
  const done=LS.get('hc-done',{});
  $$('[data-ld-card]').forEach(c=>{if(done[c.dataset.ldCard])c.classList.add('done')});
- const db=$('#doneBtn');if(db){const n=db.dataset.ld;const upd=()=>db.textContent=done[n]?'✅ 已学完（点击取消）':'☑️ 标记本主日为已学完';upd();db.addEventListener('click',()=>{done[n]=!done[n];LS.set('hc-done',done);upd();toast(done[n]?'🎉 已记录学习进度':'已取消')})}
+ const db=$('#doneBtn');if(db){const n=db.dataset.ld;const upd=()=>db.textContent=done[n]?'✅ 已学完（取消）':'☑️ 标记已学完';upd();db.addEventListener('click',()=>{done[n]=!done[n];LS.set('hc-done',done);upd();toast(done[n]?'🎉 已记录学习进度':'已取消')})}
  const pc=$('#progressCount');if(pc){const k=Object.values(done).filter(Boolean).length;pc.textContent=k;const bar=$('#progressBar');if(bar)bar.style.transform='scaleX('+(k/52)+')'}
  const tidy=()=>$$('.ldgrid').forEach(g=>{const any=[...g.children].some(c=>c.style.display!=='none');const box=g.closest('.grp')||g;box.style.display=any?'':'none'});
  const lf=$('#ldFilter');if(lf){lf.addEventListener('input',()=>{const q=lf.value.trim();$$('[data-ld-card]').forEach(c=>c.style.display=!q||c.textContent.includes(q)||c.dataset.ldCard===q?'':'none');tidy()})}
  $$('[data-part]').forEach(btn=>btn.addEventListener('click',()=>{const p=btn.dataset.part;$$('[data-part]').forEach(x=>x.classList.toggle('pri',x===btn));$$('[data-ld-card]').forEach(c=>c.style.display=p==='all'||c.dataset.p===p?'':'none');tidy()}));
 
+ idle(()=>{
  /* ---------- v4: drag-to-order challenge (pointer events + FLIP, transform only) ---------- */
  const flip=(list,fn)=>{const kids=[...list.children];const f=new Map(kids.map(k=>[k,k.getBoundingClientRect().top]));fn();kids.forEach(k=>{const d=f.get(k)-k.getBoundingClientRect().top;if(d&&!k.classList.contains('drag')){k.style.transition='none';k.style.transform=`translate3d(0,${d}px,0)`;requestAnimationFrame(()=>{k.style.transition='transform .22s cubic-bezier(.22,.8,.24,1)';k.style.transform=''})}})};
  $$('.sortbox').forEach(box=>{const list=$('.sortq',box),res=$('.res',box);
@@ -162,6 +176,7 @@ ready(()=>{
   $('[data-clozeshow]',box).addEventListener('click',()=>{if(!$('input.cz',out))build();$$('input.cz',out).forEach(i=>{if(norm(i.value)!==norm(i.dataset.ans)){i.value=i.dataset.ans;i.classList.add('shown')}})});
   out.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input.cz')){const a=$$('input.cz',out);const i=a.indexOf(e.target);(a[i+1]||a[0]).focus()}});
  });
+ });
  /* ---------- v4: "which Lord's Day?" game ---------- */
  const gm=$('#ldgame');if(gm){const Q=JSON.parse($('#ldgame-data').textContent);let sc=0,tot=0,streak=0,best=LS.get('hc-game-best',0);
   const qel=$('.gq',gm),opts=$('.gopts',gm),st=$('.gstat',gm);
@@ -173,8 +188,9 @@ ready(()=>{
  /* ---------- v4: progress ring + per-part bars ---------- */
  const ring=$('#ring');if(ring){const k=Object.values(done).filter(Boolean).length;const C=2*Math.PI*52;const arc=$('.arc',ring);arc.style.strokeDasharray=C;arc.style.strokeDashoffset=C*(1-k/52);$('.rk',ring).textContent=k;
   $$('[data-pbar]').forEach(b=>{const [a,z]=b.dataset.pbar.split('-').map(Number);let c=0;for(let i=a;i<=z;i++)if(done[i])c++;$('.barx',b).style.transform='scaleX('+(c/(z-a+1))+')';$('.pc',b).textContent=c+' / '+(z-a+1)})}
+ idle(()=>{
  /* ---------- v4: count-up KPIs (one rAF loop, text only) ---------- */
- const kp=$$('.kpi b');if(kp.length&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const vals=kp.map(b=>+b.textContent);const kio=new IntersectionObserver(es=>{if(!es.some(e=>e.isIntersecting))return;kio.disconnect();const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/900),e=1-Math.pow(1-p,3);kp.forEach((b,i)=>b.textContent=Math.round(vals[i]*e));if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});kio.observe(kp[0])}
+ const kp=$$('.kpi b');if(kp.length&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const vals=kp.map(b=>+b.textContent);const kio=new IntersectionObserver(es=>{if(!es.some(e=>e.isIntersecting))return;kio.disconnect();afterScroll(()=>{const t0=performance.now();const step=t=>{const p=SC.on?1:Math.min(1,(t-t0)/900),e=1-Math.pow(1-p,3);kp.forEach((b,i)=>b.textContent=Math.round(vals[i]*e));if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)})});kio.observe(kp[0])}
 
  /* ---------- v5: history — era filter, fly-to, scrubber ---------- */
  $$('.erab [data-era]').forEach(btn=>btn.addEventListener('click',()=>{const e=btn.dataset.era;$$('.erab [data-era]').forEach(x=>x.classList.toggle('pri',x===btn));
@@ -184,9 +200,8 @@ ready(()=>{
 
  /* ---------- v5: continuous read-aloud player ---------- */
  (()=>{const items=$$('main .qa:not(.fc .qa), main .art, main .creed').filter(x=>!x.closest('details:not([open])'));
-  if(items.length<2||!('speechSynthesis' in window))return;
-  const host=$('.hero .btns')||$('.hero');if(!host)return;
-  const tb=document.createElement('button');tb.className='btn';tb.id='readAll';tb.innerHTML='🎧 连续朗读';host.appendChild(tb);
+  const rb0=$('#readAll');if(items.length<2||!('speechSynthesis' in window)){if(rb0)rb0.addEventListener('click',()=>toast('此浏览器不支持朗读'));return}
+  let tb=$('#readAll');if(!tb){const fab=$('.fab');if(!fab)return;tb=document.createElement('button');tb.className='ibtn';tb.id='readAll';tb.title='连续朗读';tb.setAttribute('aria-label','连续朗读');tb.textContent='🎧';fab.prepend(tb)}
   const bar=document.createElement('div');bar.id='player';bar.setAttribute('role','region');bar.setAttribute('aria-label','朗读播放器');
   bar.innerHTML='<button data-p="prev" title="上一段" aria-label="上一段">⏮</button><button data-p="play" title="播放/暂停" aria-label="播放/暂停">▶️</button><button data-p="next" title="下一段" aria-label="下一段">⏭</button><span class="pl"></span><select aria-label="语速"><option value=".75">0.75×</option><option value=".95" selected>1×</option><option value="1.2">1.25×</option><option value="1.5">1.5×</option></select><button data-p="stop" title="关闭" aria-label="关闭">✖</button><i class="pbarx"></i>';
   document.body.appendChild(bar);
@@ -216,6 +231,13 @@ ready(()=>{
  const all=$$('.mermaid');const mms=all.filter(e=>e.offsetParent!==null);all.filter(e=>e.offsetParent===null).forEach(e=>e.classList.remove('mermaid'));
  const loadM=()=>{if(window._mmL)return;window._mmL=1;const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js';s.async=true;s.onload=()=>{mermaid.initialize({startOnLoad:false,theme:root.dataset.theme==='dark'?'dark':'default',securityLevel:'loose',flowchart:{useMaxWidth:true,htmlLabels:true},themeVariables:{fontFamily:'PingFang SC, Microsoft YaHei, Noto Sans SC, sans-serif'}});mermaid.run({nodes:mms}).then(()=>{requestAnimationFrame(()=>{const m=$$('.mermaid svg').map(svg=>{const vb=svg.viewBox&&svg.viewBox.baseVal;return [svg,vb,svg.parentElement.clientWidth]});m.forEach(([svg,vb,cw])=>{if(!vb||!vb.width)return;const need=vb.width*.8;if(cw<need){svg.style.maxWidth='none';svg.style.width=need+'px';svg.style.height=(vb.height*.8)+'px';svg.removeAttribute('height')}})})})};document.head.appendChild(s)};
  if(mms.length){const mio=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){mio.disconnect();loadM()}},{rootMargin:'600px'});mms.forEach(m=>mio.observe(m))}
+ /* ---------- v7: service worker (instant repeat loads + offline) & hover/touch prefetch fallback ---------- */
+ if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)&&!/[?&]nosw/.test(location.search))navigator.serviceWorker.register(new URL(ROOT+'sw.js',location.href)).catch(()=>{});
+ if(!(window.HTMLScriptElement&&HTMLScriptElement.supports&&HTMLScriptElement.supports('speculationrules'))){const got=new Set([location.href.split('#')[0]]);
+  const pf=e=>{const a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a||a.target==='_blank'||a.origin!==location.origin||a.hasAttribute('download'))return;const u=a.href.split('#')[0];if(got.has(u))return;got.add(u);
+   if(navigator.serviceWorker&&navigator.serviceWorker.controller)fetch(u,{credentials:'same-origin'}).catch(()=>{});else{const l=document.createElement('link');l.rel='prefetch';l.href=u;document.head.appendChild(l)}};
+  document.addEventListener('pointerover',pf,{passive:true});document.addEventListener('touchstart',pf,{passive:true});document.addEventListener('focusin',pf)}
  window.hcReady=true;
+ });
 });
 })();

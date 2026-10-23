@@ -3,8 +3,9 @@ from common import VERSION,DATE,REPO
 V=json.load(open('versions.json'))
 import os
 J=lambda f:json.load(open(f)) if os.path.exists(f) else {}
-a=J('perf6_v7b.json');b=J('perf6_v8.json')
-MAP=[('index.html','index.html',''),('ld/01.html','ld/01.html',''),('ld/34.html','ld/34.html',''),('texts/hc-2.html','texts/hc-2.html',''),('history.html','history.html','（v8 双地图）'),('memory.html','memory.html',''),('history.html','maps.html','（v8 新页；左列为 v7 history）')]
+a=J('perf6_v8_base.json');b=J('perf6_v9.json');CF=J('cpuf_v9.json')
+PG=['index.html','ld/01.html','ld/34.html','texts/hc-2.html','history.html','memory.html','maps.html','geo-bible.html','marks.html','compare.html','bible.html','lorddays.html']
+MAP=[(u,u,'') for u in PG]
 rows=[]
 pk=lambda r,k:round(1000*r[k]/max(r['scrolled'],1))
 for prof in ['mobile','desktop2x']:
@@ -12,6 +13,12 @@ for prof in ['mobile','desktop2x']:
         x,y=a.get(f'{prof}/{u6}'),b.get(f'{prof}/{u7}')
         if not x or not y: continue
         rows.append(f"| {prof} · {u7}{note} | {x['fps']} → **{y['fps']}** | {x['p95']} → **{y['p95']}** | {x['long50']} → {y['long50']} | {pk(x,'task_ms')} → **{pk(y,'task_ms')}** | {pk(x,'paint_ms')} → **{pk(y,'paint_ms')}** | {x['dom']} → {y['dom']} |")
+crow=[]
+for prof in ['mobile','desktop2x']:
+    for u in PG:
+        k=f'{prof}/{u}'
+        if k in CF: x=CF[k]; crow.append(f"| {prof} · {u} | {x['v8']} → **{x['v9']}** | {x['v8cpu']} → **{x['v9cpu']}** | {x['v8long']} → {x['v9long']} |")
+cpuft='| 设备 · 页面 | 估算 FPS（6×） | 主线程 CPU ms（×6） | 长任务 >50ms |\n|---|---|---|---|\n'+'\n'.join(crow)
 perf='| 设备 · 页面 | 滚动 FPS | p95 帧 ms | 长任务(>50ms) | 主线程任务 ms / 1000px | 绘制 ms / 1000px | DOM |\n|---|---|---|---|---|---|---|\n'+'\n'.join(rows)
 def lht(f6,f7):
     A,B=J(f6),J(f7); out=[]
@@ -25,28 +32,35 @@ W5,W6=J('wc_v6.json').get('summary',{}),J('wc_v7.json').get('summary',{})  # unc
 wct='| 范围 | v6 | v7 | 变化 |\n|---|---|---|---|\n'+f"| 52 主日解说合计 | {W5['ld_total']:,} | {W6['ld_total']:,} | {100*(W6['ld_total']-W5['ld_total'])/W5['ld_total']:+.1f}% |\n| 平均每主日 | {W5['ld_avg']:,} | {W6['ld_avg']:,} | |\n"+''.join(f"| {k} | {W5['overview'][k]:,} | {W6['overview'][k]:,} | {100*(W6['overview'][k]-W5['overview'][k])/W5['overview'][k]:+.1f}% |\n" for k in W5['overview'])+f"| 概览页合计 | {W5['overview_total']:,} | {W6['overview_total']:,} | {100*(W6['overview_total']-W5['overview_total'])/W5['overview_total']:+.1f}% |"
 toc=json.load(open('toc_test_result.json'))
 tt='\n'.join(f"- {'✅' if r[1] else '❌'} {r[0]} {('（'+r[2]+'）') if r[2] and len(r[2])<60 else ''}" for r in toc)
+V9T=open('v9_test_result.txt').read().strip() if os.path.exists('v9_test_result.txt') else ''
 V8T=open('v8_test_result.txt').read().strip() if os.path.exists('v8_test_result.txt') else ''
 REL='https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/'
 L=lambda key:'\n'.join(f'| {t} | {u} |' for t,u in V[key])
-md=f'''# heidelberg-catechism-52-lorddays-20261023-v8-GROKstudy
+md=f'''# heidelberg-catechism-52-lorddays-20261023-v9-GROKstudy
 
 > 《海德堡要理问答》52 主日全景深度解析：简体中文深度学习网站，共 129 问，持守欧陆改革宗立场（三项联合信条 + 三大普世信经）。
 
-## 🌐 当前在线访问（v8）
+## 🌐 当前在线访问（v9）
 
 | 平台 | 链接 |
 |---|---|
 | GitHub Pages | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
-| Surge | https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh |
-| Netlify | https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.netlify.app |
+| Surge | https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.surge.sh |
+| Netlify | https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.netlify.app |
 
 📦 源码仓库：https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}
-🏷️ Release：[v8]({REL}v8) · [v7]({REL}v7) · [v6]({REL}v6) · [v5]({REL}v5) · [v4]({REL}v4) · [v3]({REL}v3) · [v2]({REL}v2) · [v1]({REL}v1)
+🏷️ Release：[v9]({REL}v9) · [v8]({REL}v8) · [v7]({REL}v7) · [v6]({REL}v6) · [v5]({REL}v5) · [v4]({REL}v4) · [v3]({REL}v3) · [v2]({REL}v2) · [v1]({REL}v1)
 📝 更新记录页：`changelog.html`（站内顶栏版本徽章）
 
-## 🆕 更新说明（v8 · {DATE}）
+## 🆕 更新说明（v9 · {DATE}）
+
+''' + '\n'.join(f'- {x}' for x in V['changes_v9']) + f'''
+
+<details><summary>v8 更新说明</summary>
 
 ''' + '\n'.join(f'- {x}' for x in V['changes_v8']) + f'''
+
+</details>
 
 ### 🗺️ 地图来源与回退链（v8）
 
@@ -66,13 +80,17 @@ md=f'''# heidelberg-catechism-52-lorddays-20261023-v8-GROKstudy
 
 </details>
 
-### ⚡ 流畅度对比（v7 → v8）
+### ⚡ 流畅度对比（v8 → v9）
 
-测量方法：`build/perf6.py`，Playwright 无头 Chromium，CDP **6 倍 CPU 降速**；`mobile` = 375×812、DPR 3、触屏，`desktop2x` = 1440×900、DPR 2。加载后用 rAF 记录连续滚动的帧时间，并用 DevTools trace 统计主线程任务与绘制。v7（`v7` 标签的 `site/`）与 v8 在**同一台机器、同一会话**中依次测量（`perf6_v7b.json` / `perf6_v8.json`）。“每 1000px”数值按滚动距离归一化。maps.html 是 v8 新页（左列为 v7 history.html，仅供参考）。
+测量方法：`build/perf6.py`，Playwright 无头 Chromium，CDP **6 倍 CPU 降速**；`mobile` = 375×812、DPR 3、触屏，`desktop2x` = 1440×900、DPR 2；加载 2.5 秒后，用 90 次滚轮（每次 160px，间隔 33ms）连续滚动，rAF 记录帧间隔。v8（`v8` 标签的 `site/`）与 v9 在同一台机器上测量（`perf6_v8_base.json` / `perf6_v9.json`）。“每 1000px”按滚动距离归一化。
 
 {perf}
 
-### 🔦 Lighthouse（移动端预设，performance）
+⚠️ 这台构建机与其他任务共用 8 核 CPU（负载常在 8–16），rAF 帧率受“别人占用 CPU”的影响很大，同一页面重复测量可相差 ±5 fps。因此另附一个**不受抢占影响的估算**（`build/cpuf.py` → `cpuf_v9.json`）：同样的滚动脚本，不降速运行，用 trace 中主线程的**线程 CPU 时间**（tdur，不含被其他进程占用的时间）× 6 模拟 6× 降速，每个超过 16.7ms 的任务按丢掉的 vsync 计。v8 与 v9 交替测量。
+
+{cpuft}
+
+### 🔦 Lighthouse（移动端预设，performance；以下为 v8 发布时的测量，v9 未改动加载路径）
 
 本地（`build/lh.py`，模拟 4× CPU + 慢速 4G，同一本地服务器，每页 3 次取中位数；`lh_v7b.json` / `lh_v8.json`）：
 
@@ -89,6 +107,10 @@ v8 新页（本地，同上方法；`lh_v8.json`）：
 ### 📝 字数（v6 → v7，`build/wordcount.py`，只计解说文字：汉字 + 英文词；原文问答 / 信条 / 金句不计）
 
 {wct}
+
+### 🧪 v9 主题 / 标记 / 滚动测试（`build/v9_test.py`，Playwright）
+
+{V9T}
 
 ### 🧪 v8 地图与导航测试（`build/v8_test.py`，Playwright）
 
@@ -107,10 +129,10 @@ v8 新页（本地，同上方法；`lh_v8.json`）：
 | 预取 | `<script type="speculationrules">`：悬停 moderate 预取 + 按下 conservative 预渲染；不支持时 pointerover / touchstart 兜底 |
 | 离线与秒开 | `site/sw.js`（构建哈希作为缓存名）：核心页预缓存 · 同源 stale-while-revalidate · CDN cache-first · 离线回退首页 · `?nosw` 关闭 |
 | 首屏 | 每页内联压缩 CSS（约 44 KB）；目录构建时生成；主题 / 标记状态在首屏绘制前由 head 脚本应用 |
-| 滚动 | 被动监听只设标志；目录高亮差异更新、scrollend 后执行；背景单层合成并在滚动中暂停 |
+| 滚动（v9） | 滚轮 / 触摸 / scroll 被动监听只记时间；380 ms 真正静止才算“滚动结束”；滚动中透明护罩挡住悬停重算、暂停 SMIL 与背景漂移、路线动画直接定格；图表展开与描线一律等到静止后；空闲时逐段预排版 content-visibility 区块 |
 | 初始化 | 标签、测验、卡片、播放器、键盘、SW 注册等放进 `requestIdleCallback` |
 
-## 🖍️ 标记图例（v8：四层 + 聚焦）
+## 🖍️ 标记图例（v9：标记 3.0）
 
 | 层级 | 样式 | 含义 | “仅核心”模式 |
 |---|---|---|---|
@@ -125,14 +147,15 @@ v8 新页（本地，同上方法；`lh_v8.json`）：
 | ④ 史地层（v8） | 紫色粗体 | 人物 | 隐藏 |
 | ④ 史地层（v8） | 青色点线 | 地点 | 隐藏 |
 | ④ 史地层（v8） | 琥珀色胶囊 | 年代 | 隐藏 |
+| ① 核心层（v9） | 着重号（字下圆点） | 要义里最该背的关键词 | 保留 |
 | 附 | 经文药丸 | 圣经出处 | 保留 |
 | 提示框 | 💎核心 · ⚠️难点 · 🚫易错 · ✨金句（逐字原文） · 🪝记忆钩 · 📖核心经文 · 🏛️历史 · 🗺️地理（v8） | 每个主日与总览页 | 保留 |
 
 三态：🖍️ 全部 → ⭐ 仅核心 → 🧽 关（顶栏 🖍️ 或 M 键循环；图例中的分段按钮可直接选择；保存在 localStorage `hc-marks`）。v8：`marks.html` 是完整说明页；图例每一行可点击“聚焦”只突出这一种标记（Esc 取消）；桌面端悬停标记显示含义。主日页原文区的“本主日笔记标记”图例显示每种标记在本页出现的次数（构建时统计）。标记只包在样式层的 `<span>` 中，原文文字不改。
 
-## 🎨 配色主题
+## 🎨 配色主题（v9：十套）
 
-🌌 深夜星空 · 🌅 晨曦米白 · 🌲 翡翠森林 · 🍇 葡萄紫金 · 🌊 海洋蓝 —— 顶栏 🎨 切换，自动保存（`hc-theme`），首屏绘制前应用。v7 为每套主题加入焦点环、选中文字与滚动条颜色。`build/contrast.py` → `build/contrast_v7.json`：正文、弱化文字、强调色、标记色、色块标签全部 ≥ 4.5:1，焦点环 ≥ 3:1，**0 项不达 WCAG AA**。
+🌌 深夜星空 · 🌅 晨曦米白 · 🌲 翡翠森林 · 🍇 葡萄紫金 · 🌊 海洋蓝 · 🌸 樱花粉霞（v9）· 🍋 柠檬薄荷（v9）· 🔥 暮光琥珀（v9，深色）· 🌠 极光青紫（v9，深色）· 🖋️ 水墨朱砂（v9）—— 顶栏 🎨 打开色板预览，一键切换，自动保存（`hc-theme`），首屏绘制前应用（无闪烁）。`build/contrast.py` → `build/contrast_v9.json`（十套主题）：正文、弱化文字、强调色、标记色、色块标签全部 ≥ 4.5:1，焦点环 ≥ 3:1，**0 项不达 WCAG AA**。
 
 ## 📚 网站结构
 
@@ -161,7 +184,7 @@ v8 新页（本地，同上方法；`lh_v8.json`）：
 - 全部信条与信经中文原文由程序抓取自 https://ccifellowship.org/books/book-of-praise （《中国改革宗敬拜手册》2015），未做任何文字改动。
 - `build/verify_verbatim.py`：站内 2,712 个原文块逐字比对 **0 处差异**；53 条“金句”均为原文的逐字子串（0 处差异）。
 - `build/check_cuv.py`（v7，v8 扩展到地图集与圣经地理）：学习笔记中带出处的经文引语 138 处，与信望爱 FHL 线上和合本（https://bible.fhl.net/ ，version=unv）逐条比对，**0 处不符**（修正 30 余处措辞 / 出处）。学习笔记中加引号的要理问答语句已与原文逐字对照。
-- `build/layout_check.py`（v8）：全部 73 个页面（含 52 主日、5 个分卷与 v8 新增的 maps / geo-bible / marks）× 375 / 768 / 1024 / 1440 四种宽度 × 🌌🌅🌲🍇🌊 五套主题，横向溢出与顶栏截断 **0 个问题**。
+- `build/layout_check.py`（v8）：全部 73 个页面（含 52 主日、5 个分卷与 v8 新增的 maps / geo-bible / marks）× 375 / 768 / 1024 / 1440 四种宽度 × 十套主题（v9），横向溢出与顶栏截断 **0 个问题**。
 - ccifellowship.org 未收录多特信经的“结论”部分，本站也未收录。威斯敏斯特小要理问答英文引文取自 opc.org。原文版权归原出版委员会，本站仅作学习引用。解读为学习笔记，未经神学家审阅；图标、分组与“圣约链”均为学习标签。
 
 ## 🛠️ 构建与部署
@@ -177,13 +200,20 @@ python3 build/perf6.py URL out.json     # 流畅度测量（6× CPU）
 python3 build/lh.py URL out.json 3      # Lighthouse
 git subtree push --prefix site origin gh-pages
 python3 build/v8_test.py URL OUTDIR     # v8 地图回退 + 导航簇测试
-surge site heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh
-netlify deploy --prod --dir site --site {open('netlify_v8_id.txt').read().strip() if __import__('os').path.exists('netlify_v8_id.txt') else '<v8-site-id>'}
+python3 build/v9_test.py URL OUTDIR     # v9 主题 / 标记 / 滚动测试
+python3 build/cpuf.py "URL_A|URL_B" desktop2x pages 1   # 不受抢占影响的帧率估算
+surge site heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.surge.sh
+netlify deploy --prod --dir site --site {open('netlify_v9_id.txt').read().strip() if __import__('os').path.exists('netlify_v9_id.txt') else '<v9-site-id>'}
 ```
 
 ## 🗂️ 版本历史
 
-### v8 · {DATE} · [Release]({REL}v8)
+### v9 · {DATE} · [Release]({REL}v9)
+| 平台 | 链接 |
+|---|---|
+{L('V9')}
+
+### v8 · 2026-10-23 · [Release]({REL}v8)
 | 平台 | 链接 |
 |---|---|
 {L('V8')}

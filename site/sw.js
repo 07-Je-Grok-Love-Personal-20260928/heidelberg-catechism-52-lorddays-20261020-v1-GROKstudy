@@ -1,5 +1,5 @@
-/* v8 service worker — instant repeat loads + offline reading. Cache: hc-v9-cfbf4449a6 */
-const V="hc-v9-cfbf4449a6",CORE=["./", "index.html", "lorddays.html", "texts/hc.html", "texts/index.html", "memory.html", "assets/js/app.js"];
+/* v8 service worker — instant repeat loads + offline reading. Cache: hc-v9-d10bc41ba2 */
+const V="hc-v9-d10bc41ba2",CORE=["./", "index.html", "lorddays.html", "texts/hc.html", "texts/index.html", "memory.html", "assets/js/app.js"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("hc-")&&k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 const put=(c,r,res)=>{if(res&&res.ok&&(res.type==="basic"||res.type==="cors"))c.put(r,res.clone()).catch(()=>{});return res};

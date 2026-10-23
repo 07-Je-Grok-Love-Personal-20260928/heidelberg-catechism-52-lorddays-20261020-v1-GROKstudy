@@ -28,9 +28,12 @@ ready(()=>{
  const afterScroll=f=>{if(SC.on){if(!SC.q.includes(f))SC.q.push(f)}else f()};
  document.addEventListener('visibilitychange',()=>{if(sky)sky.classList.toggle('paused',document.hidden||SC.on)});
  /* ---------- marks toggle ---------- */
- const setMarks=on=>{b.classList.toggle('nomarks',!on);$$('[data-marks]').forEach(x=>x.setAttribute('aria-pressed',on?'true':'false'))};
- setMarks(LS.get('hc-marks',true));
- document.addEventListener('click',e=>{if(!e.target.closest('[data-marks]'))return;const on=b.classList.contains('nomarks');setMarks(on);LS.set('hc-marks',on);toast(on?'🖍️ 已显示笔记标记':'🧽 已隐藏笔记标记（纯净阅读）')});
+ const MKS=['all','core','off'],MKT={all:'🖍️ 标记：全部',core:'⭐ 标记：仅核心（荧光核心词 + 经文）',off:'🧽 标记：关（纯净阅读）'};
+ const getMk=()=>root.classList.contains('mkoff')?'off':root.classList.contains('mkcore')?'core':'all';
+ const syncMk=m=>{$$('[data-mk-set]').forEach(x=>x.setAttribute('aria-checked',x.dataset.mkSet===m?'true':'false'));$$('[data-marks]').forEach(x=>{x.dataset.mk=m;x.title=MKT[m]+' · M 切换'})};
+ const setMarks=(m,say)=>{root.classList.toggle('mkcore',m==='core');root.classList.toggle('mkoff',m==='off');LS.set('hc-marks',m);syncMk(m);if(say)toast(MKT[m])};
+ syncMk(getMk());
+ document.addEventListener('click',e=>{const s=e.target.closest('[data-mk-set]');if(s){setMarks(s.dataset.mkSet,1);return}if(!e.target.closest('[data-marks]'))return;setMarks(MKS[(MKS.indexOf(getMk())+1)%3],1)});
  /* ---------- anchor jumps that survive content-visibility size estimates ---------- */
  const jump=(el,push)=>{if(!el)return;const far=Math.abs(el.getBoundingClientRect().top)>innerHeight*1.5;el.scrollIntoView({block:'start',behavior:far?'instant':'smooth'});
   if(push)history.pushState(null,'','#'+el.id);let k=0,stable=0;const want=()=>parseFloat(getComputedStyle(el).scrollMarginTop)||0;

@@ -178,13 +178,14 @@ LEGEND_ITEMS=[('<span class="mk-k">高亮</span>','核心词句'),('<span class=
 MKLV=[('① 核心层 · 先背这里',[('mk-k','荧光底 + 粗体','核心词句（答案主干，背诵首选）')]),
  ('② 重点层 · 有颜色的粗体',[('mk-b','金色粗体','重点概念 / 论题关键词'),('mk-g','绿色粗体','恩典 · 应许 · 安慰'),('mk-r','红色粗体','警示 · 审判 · 严重后果')]),
  ('③ 语义线 · 线型代表含义',[('mk-u','蓝色实线','定义 / 术语（盟约、称义…）'),('mk-w','橙色波浪线','难点：需要细想'),('mk-d','红色虚线','对比 / 错误立场（罗马教、抗辩派…）'),('mk-ref','经文药丸','圣经出处')])]
+MKSEG='<span class="mkseg" role="radiogroup" aria-label="笔记标记"><button type="button" role="radio" aria-checked="false" data-mk-set="all">🖍️ 全部</button><button type="button" role="radio" aria-checked="false" data-mk-set="core">⭐ 仅核心</button><button type="button" role="radio" aria-checked="false" data-mk-set="off">🧽 关</button></span>'
 def legend_html(full=True):
     if not full:
-        it=''.join(f'<span class="it"><span class="{c}">{l}</span><span class="muted small">{d.split("（")[0]}</span></span>' for _,rows in MKLV for c,l,d in rows)
-        return f'<div class="legend nomk">{it}<button class="btn" data-marks style="padding:3px 12px;font-size:13px">🖍️ 开/关 (M)</button></div>'
+        it=''.join(f'<span class="it"><span class="{c}">{l}</span><span class="muted small">{d.split("（")[0]}</span><b class="mkn" data-mkc="{c}"></b></span>' for _,rows in MKLV for c,l,d in rows)
+        return f'<div class="legend nomk">{it}'+MKSEG+'<span class="small muted">(M 键循环)</span></div>'
     lv=''.join(f'<div class="lv"><h5>{h}</h5>'+''.join(f'<div class="rw"><span class="s"><span class="{c}">{l}</span></span><span class="small">{esc(d)}</span></div>' for c,l,d in rows)+'</div>' for h,rows in MKLV)
     co='<div class="grid g4" style="margin-top:10px">'+''.join(f'<div class="co {c} sample" style="margin:0"><b class="lab">{l}</b><span class="small">{d}</span></div>' for c,l,d in [('co-core','核心','一句话论题'),('co-hard','难点','需要细想的地方'),('co-trap','易错','常见误解'),('co-gold','金句','原文逐字摘录'),('co-hook','记忆钩','一句口诀'),('co-bible','核心经文','原文脚注首条')])+'</div>'
-    return f'<div class="mklg nomk">{lv}</div>{co}<div class="btns" style="margin-top:10px"><button class="btn" data-marks>🖍️ 显示 / 隐藏全部标记 (M)</button></div><p class="small muted" style="margin:8px 0 0">规则：一种样式只表达一种含义；原文引文只加样式标签，文字一字不改（逐字校验 0 差异）；五套配色下颜色自动适配。</p>'
+    return f'<div class="mklg nomk">{lv}</div>{co}<div class="btns" style="margin-top:10px;align-items:center">'+MKSEG+'<span class="small muted">M 键循环：全部 → 仅核心（只留荧光核心词与经文） → 关</span></div><p class="small muted" style="margin:8px 0 0">规则：一种样式只表达一种含义；原文引文只加样式标签，文字一字不改（逐字校验 0 差异）；五套配色下颜色自动适配。</p>'
 def callout(kind,label,html_):
     return f'<div class="co co-{kind} nolv"><b class="lab">{label}</b>{html_}</div>'
 def gnav(pre,path):
@@ -204,6 +205,7 @@ def theme_buttons(cls=''):
 THPICK='<div class="thp" id="thp"><button class="ibtn" id="themeBtn" aria-haspopup="true" aria-expanded="false" aria-controls="thpop" title="配色主题（5 套）" aria-label="配色主题">🎨</button><div class="thpop" id="thpop" role="radiogroup" aria-label="配色主题"><h5>🎨 配色主题 · 自动保存</h5>'+theme_buttons()+'</div></div>'
 _TC=json.dumps({k:tc for k,_,_,_,_,_,tc in THEMES})
 HEADJS=('try{var d=document.documentElement,L=localStorage,n=navigator,q=location.search,M=function(x){return matchMedia(x).matches};'
+ 'var mk=JSON.parse(L.getItem("hc-marks"));mk=mk===false?"off":(mk==="core"||mk==="off")?mk:"all";if(mk!=="all")d.classList.add(mk==="off"?"mkoff":"mkcore");'
  'var t=JSON.parse(L.getItem("hc-theme"));t={dark:"night",light:"dawn"}[t]||t;'
  'if(!/^(night|dawn|forest|grape|ocean)$/.test(t||""))t=M("(prefers-color-scheme: light)")?"dawn":"night";d.dataset.theme=t;'
  'var TC='+_TC+';document.querySelector("meta[name=theme-color]").content=TC[t];'
@@ -252,7 +254,7 @@ def page(path,title,body,desc='',head=''):
 <link rel="icon" href="data:image/svg+xml,{esc(LOGO.replace('class="logo" ','').replace('#','%23'))}">
 <link rel="stylesheet" href="{pre}assets/css/style.css"><script type="speculationrules">{{"prefetch":[{{"where":{{"and":[{{"href_matches":"/*"}},{{"not":{{"selector_matches":"a[href^='#'],a[target=_blank],a[download]"}}}}]}},"eagerness":"moderate"}}],"prerender":[{{"where":{{"and":[{{"href_matches":"/*"}},{{"not":{{"selector_matches":"a[href^='#'],a[target=_blank],a[download]"}}}}]}},"eagerness":"conservative"}}]}}</script>{head}</head><body>
 <div class="sky" aria-hidden="true"><i></i></div>
-<header class="topbar"><button class="ibtn" id="tocBtn" title="显示/隐藏目录 (T)" aria-label="目录">☰</button><a class="brand" href="{pre}index.html">{LOGO}<b>海德堡要理问答 · 52主日</b></a><nav class="nav">{navh}</nav><a class="vbadge" href="{pre}changelog.html" title="版本更新记录">{VERSION} · {DATE}</a><button class="ibtn" id="marksBtn" data-marks title="显示/隐藏笔记标记 (M)" aria-label="标记" aria-pressed="true">🖍️</button>{THPICK}</header>
+<header class="topbar"><button class="ibtn" id="tocBtn" title="显示/隐藏目录 (T)" aria-label="目录">☰</button><a class="brand" href="{pre}index.html">{LOGO}<b>海德堡要理问答 · 52主日</b></a><nav class="nav">{navh}</nav><a class="vbadge" href="{pre}changelog.html" title="版本更新记录">{VERSION} · {DATE}</a><button class="ibtn" id="marksBtn" data-marks title="笔记标记：全部 / 仅核心 / 关 (M)" aria-label="笔记标记（循环切换）">🖍️</button>{THPICK}</header>
 <div class="progress"></div><div class="backdrop"></div>
 <div class="layout"><aside class="side" id="side"><div class="scroll"><input id="tocSearch" class="tocsearch" placeholder="🔍 过滤目录…" aria-label="过滤目录"><h4>📑 本页目录</h4><div class="tocbar"><button id="tocExpand" title="全部展开">⊞ 全部展开</button><button id="tocCollapse" title="全部折叠">⊟ 全部折叠</button></div><nav id="toc" class="toc" aria-label="本页目录">{tochtml}</nav><hr style="border:none;border-top:1px solid var(--bd);margin:14px 0">{gnav(pre,path)}<hr style="border:none;border-top:1px solid var(--bd);margin:14px 0"><h4>🖍️ 标记图例</h4><div class="legend-mini">{''.join(f'<span>{a}</span>' for a,b in LEGEND_ITEMS)}</div></div><div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="拖动调整目录宽度" tabindex="0" title="拖动调整宽度（双击恢复默认）"></div></aside>
 <main id="main"><div class="wrap">{body}

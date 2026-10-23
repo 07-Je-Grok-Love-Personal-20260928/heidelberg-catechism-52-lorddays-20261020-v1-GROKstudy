@@ -55,7 +55,7 @@ def ld_page(ld):
         qt=re.sub(r'^\d+[．.]\s*问：','',q['q'])
         if i: chain.append('<span class="arr">➜</span>')
         chain.append(f'<div class="node" style="--c:{c}"><b>Q{qnum(q)}</b> {esc(qt)}</div>')
-    s1=sec('text','📜','原文：中文《海德堡要理问答》',f'<p class="src">逐字引自 <a href="{ld["url"]}" target="_blank" rel="noopener">ccifellowship.org · 主日{n}</a>；上标＝经文出处，标记可按 M 关闭。</p><div class="card reveal nolv" style="margin-bottom:12px"><b class="small muted">🔗 问题推进</b><div class="chain" style="margin-top:6px">{"".join(chain)}</div></div>'+''.join(qa_html(q,c,lv=2) for q in ld['qas']))
+    s1=sec('text','📜','原文：中文《海德堡要理问答》',f'<p class="src">逐字引自 <a href="{ld["url"]}" target="_blank" rel="noopener">ccifellowship.org · 主日{n}</a>；上标＝经文出处。</p><details class="mklgd card" style="margin:0 0 12px;padding:8px 12px"><summary class="small">🖍️ 本主日笔记标记（数字＝本页出现次数）· 全部 / 仅核心 / 关（M）</summary>'+legend_html(False)+f'</details><div class="card reveal nolv" style="margin-bottom:12px"><b class="small muted">🔗 问题推进</b><div class="chain" style="margin-top:6px">{"".join(chain)}</div></div>'+''.join(qa_html(q,c,lv=2) for q in ld['qas']))
     # 3. whole
     act=ld_act(n)
     acts=''.join(f'<span class="act{" on" if k==act else ""}">{i} {t}</span>' for k,i,t in ACTS)

@@ -152,16 +152,16 @@ mark{background:var(--mk-hl);color:inherit;padding:0 2px;border-radius:3px}
 /* 概念块：浅色底框 / 经文：小号药丸 */
 .mk-bg{background:var(--mk-hl2);border-radius:5px;padding:0 4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .mk-ref{color:var(--mk-ref);font-size:.86em;white-space:nowrap;padding:0 6px;border-radius:999px;border:1px solid color-mix(in srgb,var(--mk-ref) 45%,transparent);font-family:var(--font);font-weight:600}
-body.nomarks .mk-k,body.nomarks .mk-bg{background:none;padding:0;font-weight:inherit}
-body.nomarks .mk-b,body.nomarks .mk-r,body.nomarks .mk-g{font-weight:inherit;color:inherit}
-body.nomarks .mk-u,body.nomarks .mk-d,body.nomarks .mk-w{text-decoration:none}
-body.nomarks .mk-ref{color:inherit;font-size:inherit;border:0;padding:0;font-weight:inherit}
+.mkoff .mk-k,.mkoff .mk-bg{background:none;padding:0;font-weight:inherit}
+.mkoff .mk-b,.mkoff .mk-r,.mkoff .mk-g{font-weight:inherit;color:inherit}
+.mkoff .mk-u,.mkoff .mk-d,.mkoff .mk-w{text-decoration:none}
+.mkoff .mk-ref{color:inherit;font-size:inherit;border:0;padding:0;font-weight:inherit}
 /* block callouts */
 .co{position:relative;margin:12px 0;padding:12px 14px 12px 50px;border-radius:14px;border:1px solid color-mix(in srgb,var(--cc) 40%,var(--bd));border-left:5px solid var(--cc);background:color-mix(in srgb,var(--cc) 9%,var(--card));overflow-wrap:anywhere}
 .co::before{content:var(--ci);position:absolute;left:14px;top:12px;font-size:20px;line-height:1}
 .co>b.lab{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--ink);background:var(--cc);margin-right:8px;padding:1px 9px;border-radius:999px}
 .co-core{--cc:var(--grat);--ci:"💎"}.co-hard{--cc:var(--hard);--ci:"⚠️";border-style:dashed;border-left-style:solid}.co-trap{--cc:var(--misery);--ci:"🚫"}.co-gold{--cc:var(--gold);--ci:"✨";font-family:var(--serif);font-size:1.06em}.co-hook{--cc:var(--intro);--ci:"🪝"}.co-bible{--cc:var(--teal);--ci:"📖"}
-body.nomarks .co{background:var(--card);border-color:var(--bd);border-left-color:var(--cc)}
+.mkoff .co{background:var(--card);border-color:var(--bd);border-left-color:var(--cc)}
 .legend{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
 .legend span.it{display:inline-flex;align-items:center;gap:6px;font-size:14px}
 /* Q&A */
@@ -477,3 +477,17 @@ html.full .in .cch li,html.full .cch.in li{opacity:1;transform:none}
 ::selection{background:var(--sel);color:var(--fg)}
 html{scrollbar-color:var(--bd) var(--bg)}
 .side,.tocbox{scrollbar-color:var(--bd) transparent}
+
+/* v7 marks: 3 states — 全部 (default) · 仅核心 (.mkcore: only L1 highlight + scripture pills) · 关 (.mkoff) */
+.mkcore .mk-b,.mkcore .mk-r,.mkcore .mk-g{font-weight:inherit;color:inherit}
+.mkcore .mk-u,.mkcore .mk-d,.mkcore .mk-w{text-decoration:none}
+.mkcore .mk-bg{background:none;padding:0}
+.mkcore .mk-k{background:linear-gradient(transparent 30%,var(--mk-hl) 30% 94%,transparent 94%)}
+.mkseg{display:inline-flex;border:1px solid var(--bd);border-radius:999px;overflow:hidden;background:var(--card2)}
+.mkseg button{border:0;background:none;color:var(--fg);font:inherit;font-size:13px;padding:4px 12px;cursor:pointer;min-height:30px}
+.mkseg button+button{border-left:1px solid var(--bd)}
+.mkseg button[aria-checked=true]{background:var(--deliv);color:var(--ink);font-weight:700}
+.mkn{display:inline-block;min-width:1.6em;margin-left:4px;padding:0 5px;border-radius:999px;background:var(--card2);color:var(--muted);font-size:11px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.mkn:empty{display:none}
+#marksBtn[data-mk=core]{box-shadow:inset 0 -3px 0 var(--gold)}#marksBtn[data-mk=off]{opacity:.55}
+@media(max-width:640px){.chain .node{flex:0 0 auto}}

@@ -70,7 +70,7 @@
   "{\"ws\": \"nowrap\", \"to\": \"ellipsis\", \"title\": true}"
  ],
  [
-  "marks toggle hides marks",
+  "marks toggle hides marks (all → core → off)",
   true,
   "[True, 'none']"
  ],
@@ -142,7 +142,7 @@
  [
   "LD game scores",
   true,
-  "得分 1 / 1 · 连对 1 · 最佳连对 1"
+  "得分 0 / 1 · 连对 0 · 最佳连对 0"
  ],
  [
   "v5 timeline: scrubber dots = events, era filter",
@@ -220,9 +220,29 @@
   "[true, \"none\"]"
  ],
  [
+  "v7 marks 仅核心: L1 highlight kept, L2 colour removed, radio checked, saved",
+  true,
+  "{\"core\": true, \"off\": false, \"k\": \"linear-gradient(rgba(0, 0, 0, 0) 30%, rgba(251, 191, 36, 0.32) 30%, rgba(251, 191, 36, 0.32) 94%, rgba(0, 0, 0, 0) 94%)\", \"bc\": \"\", \"pc\": \"\", \"chk\": \"true\", \"ls\": \"\\\"core\\\"\"}"
+ ],
+ [
+  "v7 marks state applied before paint on next page (html class from head script)",
+  true,
+  ""
+ ],
+ [
+  "v7 legacy marks=false maps to 关",
+  true,
+  ""
+ ],
+ [
+  "v7 legend counts are static and match the DOM",
+  true,
+  "{\"mk-k\": [6, 6], \"mk-b\": [8, 8], \"mk-g\": [4, 4], \"mk-r\": [2, 2], \"mk-u\": [17, 17], \"mk-w\": [2, 2], \"mk-d\": [3, 3], \"mk-ref\": [7, 7]}"
+ ],
+ [
   "v6 memory deck paginated (12/page, next, part filter, jump)",
   true,
-  "{\"cards\": 12, \"first\": \"1\", \"lab\": \" 1 / 11 页 · 129 项 \", \"dom\": 969, \"lg\": 8} next=13 g=True jump=True"
+  "{\"cards\": 12, \"first\": \"1\", \"lab\": \" 1 / 11 页 · 129 项 \", \"dom\": 973, \"lg\": 8} next=13 g=True jump=True"
  ],
  [
   "v6 three-level marks legend (8 rows)",

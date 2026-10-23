@@ -10,6 +10,15 @@ for d,_,fs in os.walk(SITE):
         p=os.path.join(d,f);rel=os.path.relpath(p,SITE).replace(os.sep,'/')
         if f.endswith('.html'):
             s=open(p).read()
+            if 'data-mkc="' in s:   # v7: static per-page mark counts in the legend (no JS, zero CLS)
+                from bs4 import BeautifulSoup
+                sp=BeautifulSoup(s,'html.parser'); cnt={}
+                for el in sp.select('[class*="mk-"]'):
+                    if el.find_parent(class_='nomk'): continue
+                    for c in el.get('class',[]):
+                        if c.startswith('mk-'): cnt[c]=cnt.get(c,0)+1
+                s=re.sub(r'<b class="mkn" data-mkc="(mk-[\w]+)"></b>',lambda m:f'<b class="mkn" data-mkc="{m.group(1)}" title="本页 {cnt.get(m.group(1),0)} 处">{cnt.get(m.group(1),0)}</b>',s)
+                open(p,'w').write(s)
             s2=re.sub(r'<link rel="stylesheet" href="(?:\.\./)*assets/css/style\.css">',lambda m:'<style>'+css+'</style>',s,count=1)
             if s2!=s: n+=1; open(p,'w').write(s2); s=s2
             pages.append(rel)

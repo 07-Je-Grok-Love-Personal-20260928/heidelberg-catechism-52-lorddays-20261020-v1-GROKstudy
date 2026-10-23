@@ -4,7 +4,7 @@ css=open('src/style.css').read()
 def block(sel):
     i=css.index(sel); j=css.index('}',i); return dict(re.findall(r'--([\w-]+):(#[0-9a-fA-F]{6})',css[i:j]))
 base=block(':root{'); T={'night':base}
-for t in ['dawn','forest','grape','ocean']: T[t]={**base,**block(f'html[data-theme={t}]')}
+for t in ['dawn','forest','grape','ocean','sakura','citrus','ember','aurora','sumi']: T[t]={**base,**block(f'html[data-theme={t}]')}
 def L(h):
     c=[int(h[i:i+2],16)/255 for i in (1,3,5)]; c=[x/12.92 if x<=.03928 else ((x+.055)/1.055)**2.4 for x in c]
     return .2126*c[0]+.7152*c[1]+.0722*c[2]
@@ -20,6 +20,8 @@ for t,v in T.items():
     for acc in ['intro','misery','deliv','grat','gold','hard','teal']: r[f'ink/{acc}']=cr(v['ink'],v[acc])
     for surf in ['bg','card','card2']: r[f'focus/{surf}*']=cr(v['focus'],v[surf])
     r['fg/sel']=cr(v['fg'],v['sel'])
+    for h in ['mk-hl','mk-hl2']:
+        if h in v: r[f'fg/{h}']=cr(v['fg'],v[h])
     res[t]={k:round(x,2) for k,x in r.items()}
     for k,x in r.items():
         lim=3 if k.endswith('*') else 4.5

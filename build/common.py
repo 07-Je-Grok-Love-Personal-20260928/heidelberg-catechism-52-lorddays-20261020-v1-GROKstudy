@@ -210,15 +210,19 @@ def gnav(pre,path):
             out.append(f'<a href="{pre}ld/{n:02d}.html" class="{"on" if n==cur else ""}" title="{n}. {esc(ld_label(n))}"><span class="no">{n}.</span> {esc(ld_label(n))}</a>')
     out.append('</div></details>')
     return ''.join(out)
-THEMES=[('night','🌌','深夜星空','#0b1020','#60a5fa','#fbbf24','#0b1020'),('dawn','🌅','晨曦米白','#f6f1e7','#1d4ed8','#a15c07','#f6f1e7'),('forest','🌲','翡翠森林','#08160f','#6ee7b7','#fde047','#08160f'),('grape','🍇','葡萄紫金','#140c22','#d8b4fe','#fbbf24','#140c22'),('ocean','🌊','海洋蓝','#eaf4fa','#0461a8','#0e7490','#eaf4fa')]
+THEMES=[('night','🌌','深夜星空','#0b1020','#60a5fa','#fbbf24','#0b1020'),('dawn','🌅','晨曦米白','#f6f1e7','#1d4ed8','#a15c07','#f6f1e7'),('forest','🌲','翡翠森林','#08160f','#6ee7b7','#fde047','#08160f'),('grape','🍇','葡萄紫金','#140c22','#d8b4fe','#fbbf24','#140c22'),('ocean','🌊','海洋蓝','#eaf4fa','#0461a8','#0e7490','#eaf4fa'),
+ ('sakura','🌸','樱花粉霞','#fdf2f5','#a3195b','#7c3aed','#fdf2f5'),('citrus','🍋','柠檬薄荷','#f4f9ec','#166534','#d9e021','#f4f9ec'),('ember','🔥','暮光琥珀','#170d08','#fdba74','#fb7185','#170d08'),('aurora','🌠','极光青紫','#05161b','#67e8f9','#c4b5fd','#05161b'),('sumi','🖋️','水墨朱砂','#f4f2ec','#1c1b19','#b91c1c','#f4f2ec')]
+THEME_DARK={'night','forest','grape','ember','aurora'}
+THEME_CARD={'night':'#131c36','dawn':'#fffdf8','forest':'#11281e','grape':'#22173a','ocean':'#ffffff','sakura':'#fffafc','citrus':'#ffffff','ember':'#28180f','aurora':'#0b2830','sumi':'#fcfbf7'}
+THEME_FG={'night':'#e9edf8','dawn':'#2b2418','forest':'#e4f3ea','grape':'#f3edfc','ocean':'#0e2436','sakura':'#2e1520','citrus':'#17240f','ember':'#fbeee4','aurora':'#e3f7f8','sumi':'#1c1b19'}
 def theme_buttons(cls=''):
-    return ''.join(f'<button type="button" role="radio" aria-checked="false" data-theme-set="{k}"{cls}><span class="sw" style="--a:{a};--b:{b};--c2:{c}"></span>{i} {t}</button>' for k,i,t,a,b,c,_ in THEMES)
-THPICK='<div class="thp" id="thp"><button class="ibtn" id="themeBtn" aria-haspopup="true" aria-expanded="false" aria-controls="thpop" title="配色主题（5 套）" aria-label="配色主题">🎨</button><div class="thpop" id="thpop" role="radiogroup" aria-label="配色主题"><h5>🎨 配色主题 · 自动保存</h5>'+theme_buttons()+'</div></div>'
+    return ''.join(f'<button type="button" role="radio" aria-checked="false" data-theme-set="{k}"{cls}><span class="sw" style="--a:{a};--b:{b};--c2:{c};--cd:{THEME_CARD[k]};--tf:{THEME_FG[k]}"><b>Aa</b><i></i><i></i></span><span class="tn">{i} {t}</span></button>' for k,i,t,a,b,c,_ in THEMES)
+THPICK='<div class="thp" id="thp"><button class="ibtn" id="themeBtn" aria-haspopup="true" aria-expanded="false" aria-controls="thpop" title="配色主题（10 套）" aria-label="配色主题">🎨</button><div class="thpop" id="thpop" role="radiogroup" aria-label="配色主题"><h5>🎨 配色主题 · 自动保存</h5>'+theme_buttons()+'</div></div>'
 _TC=json.dumps({k:tc for k,_,_,_,_,_,tc in THEMES})
 HEADJS=('try{var d=document.documentElement,L=localStorage,n=navigator,q=location.search,M=function(x){return matchMedia(x).matches};'
  'var mk=JSON.parse(L.getItem("hc-marks"));mk=mk===false?"off":(mk==="core"||mk==="off")?mk:"all";if(mk!=="all")d.classList.add(mk==="off"?"mkoff":"mkcore");'
  'var t=JSON.parse(L.getItem("hc-theme"));t={dark:"night",light:"dawn"}[t]||t;'
- 'if(!/^(night|dawn|forest|grape|ocean)$/.test(t||""))t=M("(prefers-color-scheme: light)")?"dawn":"night";d.dataset.theme=t;'
+ 'if(!/^('+'|'.join(t[0] for t in THEMES)+')$/.test(t||""))t=M("(prefers-color-scheme: light)")?"dawn":"night";d.dataset.theme=t;'
  'var TC='+_TC+';document.querySelector("meta[name=theme-color]").content=TC[t];'
  'var c=n.hardwareConcurrency||4,m=n.deviceMemory||8,sd=n.connection&&n.connection.saveData;'
  'var lite=/[?&]full/.test(q)?false:(/[?&]lite/.test(q)||M("(max-width:1024px)")||M("(pointer:coarse)")||M("(prefers-reduced-motion: reduce)")||sd||c<=4||m<=4);'

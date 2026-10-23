@@ -42,7 +42,7 @@ const my=l=>Math.log(Math.tan(Math.PI/4+l*Math.PI/360)),iy=y=>(2*Math.atan(Math.
 const curve=(pts,bend=.16)=>{const o=[];for(let i=0;i<pts.length-1;i++){const[x1,y1]=[pts[i][0],my(pts[i][1])*57.3],[x2,y2]=[pts[i+1][0],my(pts[i+1][1])*57.3];
  const cx=(x1+x2)/2+(y2-y1)*bend,cy=(y1+y2)/2-(x2-x1)*bend;for(let t=0;t<=1.0001;t+=1/24){const a=(1-t)*(1-t),b=2*(1-t)*t,c=t*t;o.push([a*x1+b*cx+c*x2,iy((a*y1+b*cy+c*y2)/57.3)])}}return o};
 const DASH={solid:null,dash:[2.2,1.6],dot:[.4,1.4]};
-const themeDark=()=>/^(night|forest|grape)$/.test(R.dataset.theme||'night');
+const themeDark=()=>/^(night|forest|grape|ember|aurora)$/.test(R.dataset.theme||'night');
 const baseLayers=()=>[
  {id:'bg',type:'background',paint:{'background-color':cv('--sea2')}},
  {id:'w',type:'fill',source:'base',filter:['==',['get','k'],'w'],paint:{'fill-color':cv('--land1')}},

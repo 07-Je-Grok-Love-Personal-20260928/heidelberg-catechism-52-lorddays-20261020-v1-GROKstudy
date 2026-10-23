@@ -12,9 +12,9 @@ ready(()=>{
  const b=document.body;const mobile=()=>innerWidth<=1024;
  if(new URLSearchParams(location.search).has('cv0'))b.classList.add('cv-off');
  /* ---------- v6: theme picker (5 themes, persisted, applied pre-paint by the head script) ---------- */
- const TN={night:'🌌 深夜星空',dawn:'🌅 晨曦米白',forest:'🌲 翡翠森林',grape:'🍇 葡萄紫金',ocean:'🌊 海洋蓝'};
+ const TN={night:'🌌 深夜星空',dawn:'🌅 晨曦米白',forest:'🌲 翡翠森林',grape:'🍇 葡萄紫金',ocean:'🌊 海洋蓝',sakura:'🌸 樱花粉霞',citrus:'🍋 柠檬薄荷',ember:'🔥 暮光琥珀',aurora:'🌠 极光青紫',sumi:'🖋️ 水墨朱砂'};
  const syncTheme=()=>$$('[data-theme-set]').forEach(x=>x.setAttribute('aria-checked',x.dataset.themeSet===root.dataset.theme?'true':'false'));
- const setTheme=t=>{if(!TN[t])return;root.dataset.theme=t;LS.set('hc-theme',t);syncTheme();const mc=$('meta[name=theme-color]');if(mc)mc.content=getComputedStyle(root).getPropertyValue('--bg').trim();document.dispatchEvent(new CustomEvent('hctheme',{detail:t}));toast('🎨 '+TN[t])};
+ const setTheme=t=>{if(!TN[t])return;if(document.startViewTransition&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!setTheme._vt){setTheme._vt=1;try{document.startViewTransition(()=>setTheme(t)).finished.finally(()=>{setTheme._vt=0})}catch(e){setTheme._vt=0;setTheme(t)}return}root.dataset.theme=t;LS.set('hc-theme',t);syncTheme();const mc=$('meta[name=theme-color]');if(mc)mc.content=getComputedStyle(root).getPropertyValue('--bg').trim();document.dispatchEvent(new CustomEvent('hctheme',{detail:t}));toast('🎨 '+TN[t])};
  window.hcSetTheme=setTheme;syncTheme();
  const thp=$('#thp'),thb=$('#themeBtn');
  thb?.addEventListener('click',e=>{e.stopPropagation();const o=thp.classList.toggle('open');thb.setAttribute('aria-expanded',o)});

@@ -7,22 +7,22 @@ def strip_tags(s): return re.sub('<[^>]+>','',s)
 def first(s,k=1):
     parts=[x for x in re.split(r'(?<=[。！？])',s) if x.strip()]
     return ''.join(parts[:k])
-def kwmark(s,kws):
+def kwmark(s,kws,cls='mk-b'):
     for k in kws:
-        if k and k in s: s=s.replace(esc(k),f'<span class="mk-b">{esc(k)}</span>',1)
+        if k and k in s: s=s.replace(esc(k),f'<span class="{cls}">{esc(k)}</span>',1)
     return s
 def _sents(x): return [y for y in re.split(r'(?<=[。！？；])',x) if y.strip()]
 def _bg(x): x=re.sub(r'[^\u4e00-\u9fff]','',re.sub(r'[=*_~!]','',x)); return {x[i:i+2] for i in range(len(x)-1)}
 DSTAT=[0,0]
 def distill(no,st,ch,th,trap,ex=()):
-    """v6: drop a commentary sentence when >=62% of its content already appears in a sentence shown elsewhere on the page."""
+    """v6/v9: drop a commentary sentence when >=55% of its content already appears in a sentence shown elsewhere on the page."""
     shown=[z for z in (_bg(y) for t in [th,trap]+list(no['core'])+list(no['app'][:1])+list(ex) for y in _sents(t)) if z]
     out={}
     for k,v in [('big',no['big']),('cov',no['cov']),('story',st),('christ',ch),('why',no['why']),('hard',no['hard'])]:
         keep=[]
         for y in _sents(v):
             a=_bg(y); DSTAT[0]+=1
-            if (len(a)>=8 or len(a)<8 and any(a==b for b in shown)) and any(len(a&b)/len(a)>=.62 for b in shown): DSTAT[1]+=1; continue
+            if (len(a)>=8 or len(a)<8 and any(a==b for b in shown)) and any(len(a&b)/len(a)>=.55 for b in shown): DSTAT[1]+=1; continue
             keep.append(y); shown.append(a)
         out[k]=''.join(keep).strip()
     return out
@@ -47,6 +47,7 @@ def ld_page(ld):
     F=distill(no,st,ch,th,trap,[x for x in [e7['so'],e7['do'],e7.get('deep','')]+[a for a,_ in e7['ch']] if x])
     goldq=next(qnum(q) for q in ld['qas'] if any(gold in x for x in q['a']))
     K=lambda s:kwmark(esc(s),no['kw'])
+    KE=lambda s:kwmark(esc(s),no['kw'],'mk-e')
     crumbs=' › '.join(ld['crumbs']) or '引言'
     qr=f'第{a}{"–"+str(b) if b!=a else ""}问'
     kws=''.join(f'<span class="chip {p[0]}">🔑 {esc(k)}</span>' for k in no['kw'])
@@ -60,7 +61,7 @@ def ld_page(ld):
     nrefs=sum(len(q['refs']) for q in ld['qas']); nx=len(no['bc'])+len(no['cd'])+len(no['wsc'])
     kpi=''.join(f'<div><b>{v}</b>{t}</div>' for v,t in [(len(ld['qas']),'问答'),(nrefs,'经文组'),(nx,'信条对照'),(len(no['kw']),'关键词')])
     wwa=f'<div class="wwa reveal"><div class="w1"><b class="wl">💡 为什么重要</b><p>{K(e7["so"])}</p></div><div class="w2"><b class="wl">🏃 本周操练</b><p>{K(e7["do"])}</p></div></div>'
-    s0=sec('essence','💎',f'精华：主日{n}的骨架',wwa+f'''<div class="grid g2"><div class="card reveal"><h3 id="ess-core">📌 要义（本站概述，以原文为准）</h3><ol class="core">{"".join(f"<li>{K(x)}</li>" for x in no['core'])}</ol><div class="kpi mini">{kpi}</div>
+    s0=sec('essence','💎',f'精华：主日{n}的骨架',wwa+f'''<div class="grid g2"><div class="card reveal"><h3 id="ess-core">📌 要义（本站概述，以原文为准）</h3><ol class="core">{"".join(f"<li>{KE(x)}</li>" for x in no['core'])}</ol><div class="kpi mini">{kpi}</div>
 {callout('gold','金句',f'“{esc(gold)}”<span class="src">　—— 原文第{goldq}问（逐字）</span>')}{callout('trap','易错',md(trap)+' '+''.join(f'<span class="chip err">❌ {esc(x)}</span>' for x in no['err']))}{callout('bible','核心经文',keyrefs)}</div>
 <div class="card reveal"><h3 id="ess-map">关联星图</h3><div class="chart">{svgs.ld_constellation(n,ld,no)}</div><p class="small muted" style="margin:6px 0 0">点节点跳到问答 / 信条；外圈为关键词与比利时信条、多特信经。</p></div></div>
 {kw_matrix(ld,no,c)}<div class="card reveal" style="margin-top:14px"><h3 id="ess-bridge">🔗 承上启下：在全书中的位置</h3><div class="chain bridge">{bridge}</div></div>''')

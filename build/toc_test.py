@@ -146,7 +146,7 @@ async def main():
         await pg.goto(BASE+'index.html',wait_until='networkidle')
         nb=await pg.evaluate("[...document.querySelectorAll('body *')].filter(e=>{const s=getComputedStyle(e);return (s.backdropFilter&&s.backdropFilter!=='none')||(s.webkitBackdropFilter&&s.webkitBackdropFilter!=='none')}).map(e=>e.className)")
         ok('v6 backdrop-filter only on topbar (if any)',all('topbar' in (c or '') for c in nb),json.dumps(nb))
-        n5=await pg.evaluate("document.querySelectorAll('#thpop [data-theme-set]').length"); ok('v6 picker lists 5 themes',n5==5,str(n5))
+        n5=await pg.evaluate("document.querySelectorAll('#thpop [data-theme-set]').length"); ok('v6 picker lists 10 themes',n5==10,str(n5))
         await pg.click('#themeBtn'); await pg.click('#thpop [data-theme-set="forest"]')
         t=await pg.evaluate("[document.documentElement.dataset.theme,localStorage.getItem('hc-theme'),document.querySelector('meta[name=theme-color]').content,document.querySelector('.thstrip [data-theme-set=forest]').getAttribute('aria-checked')]")
         ok('v6 theme switch applies + persists + syncs strip',t[0]=='forest' and 'forest' in t[1] and t[3]=='true',json.dumps(t))

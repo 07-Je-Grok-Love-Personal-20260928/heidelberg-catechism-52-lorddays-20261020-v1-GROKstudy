@@ -722,14 +722,15 @@ main p+p{margin-top:.55em}
 .mkoff .mk-g,.mkcore .mk-g{background:none}
 .mkbar.mk-e{--mkc:var(--mk-bold)}
 html[data-mkf] .mk-e{opacity:.38}html[data-mkf=mk-e] .mk-e{opacity:1;box-shadow:0 0 0 2px color-mix(in srgb,var(--key) 55%,transparent);border-radius:4px}
-main .mk-e{position:relative}main .mk-e:hover::after{content:"逐字背诵"}
+main .mk-e{position:relative}main .mk-e:hover::after{content:"背诵关键字"}
 /* callouts — tinted gradient, icon medallion, refined label */
 .co{padding:14px 16px 14px 56px;border-left-width:4px;background:linear-gradient(135deg,color-mix(in srgb,var(--cc) 14%,var(--card)) 0,color-mix(in srgb,var(--cc) 5%,var(--card)) 70%);line-height:1.9}
 .co::before{left:12px;top:11px;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;font-size:17px;background:color-mix(in srgb,var(--cc) 20%,var(--card));box-shadow:0 0 0 1px color-mix(in srgb,var(--cc) 35%,transparent)}
 .co>b.lab{letter-spacing:.12em;padding:1px 10px 1px 11px;vertical-align:.1em}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s;animation-timing-function:var(--ease)}
 /* v9 smoothness: while scrolling, no hit-testing/hover restyles; hover transitions only when the pointer can really hover */
-html.scr main,html.scr .side,html.scr .topbar{pointer-events:none}
+#scrshield{position:fixed;inset:0;z-index:2147483000;display:none;background:transparent}
+@media(hover:hover){html.scr #scrshield{display:block}}
 .kwm table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
 .kwm :is(th,td){padding:6px 8px;text-align:center;border-bottom:1px solid var(--bd);white-space:nowrap}
 .kwm thead th{font-size:12.5px;color:var(--muted);font-weight:700;background:var(--card2)}
@@ -744,3 +745,4 @@ html.scr main,html.scr .side,html.scr .topbar{pointer-events:none}
 .tbar .tt i{display:block;min-width:2px}
 .tleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:10px}
 .tleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.cmap.go.done :is(.rt-l,.rt-g){animation:none!important}

@@ -23,9 +23,18 @@ ready(()=>{
  /* ---------- v7: one scroll-state helper. During a scroll the ONLY work is a flag + timer; everything else waits for scrollend ---------- */
  const sky=$('.sky');const SC={on:false,t:0,q:[]};const HAS_END='onscrollend' in window;
  const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;root.classList.remove('scr');const nvc=document.getElementById('navc');if(nvc)nvc.classList.remove('dim');if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f())};
- addEventListener('scroll',()=>{if(!SC.on){SC.on=true;root.classList.add('scr');if(sky)sky.classList.add('paused')}clearTimeout(SC.t);SC.t=setTimeout(scEnd,HAS_END?700:160)},{passive:true});
- if(HAS_END)addEventListener('scrollend',()=>{clearTimeout(SC.t);SC.t=setTimeout(scEnd,140)},{passive:true});
+ const shield=document.createElement('div');shield.id='scrshield';shield.setAttribute('aria-hidden','true');document.body.appendChild(shield);
+ const unshield=()=>root.classList.remove('scr');let px=-1,py=-1;shield.addEventListener('pointermove',e=>{if(px<0){px=e.clientX;py=e.clientY;return}if(Math.abs(e.clientX-px)+Math.abs(e.clientY-py)>4)unshield()},{passive:true});shield.addEventListener('pointerdown',unshield,{passive:true});
+ const arm=d=>{clearTimeout(SC.t);SC.t=setTimeout(()=>{const q=performance.now()-SC.last;if(q<380)arm(400-q);else scEnd()},d)};
+ addEventListener('scroll',()=>{SC.last=performance.now();if(!SC.on){SC.on=true;px=-1;root.classList.add('scr');document.querySelectorAll('svg.cmap.go:not(.done)').forEach(s=>{s.classList.add('done');try{s.setCurrentTime(60)}catch(_){}});if(sky)sky.classList.add('paused')}arm(HAS_END?700:420)},{passive:true});
+ if(HAS_END)addEventListener('scrollend',()=>arm(160),{passive:true});
  const afterScroll=f=>{if(SC.on){if(!SC.q.includes(f))SC.q.push(f)}else f()};
+ /* v9: idle pre-layout — render content-visibility sections one at a time while the reader is NOT scrolling, nearest-below first,
+    so a scroll never has to lay out a fresh section mid-gesture (the main source of 40–90 ms frames at 6× CPU) */
+ const preLay=()=>{const ss=[...document.querySelectorAll('main section.sec:not(.ncv)')];if(!ss.length)return;const vh=innerHeight;
+  let best=null,bd=1e9;for(const s of ss){const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}
+  best.classList.add('ncv');const next=()=>afterScroll(()=>idle(preLay));if('requestIdleCallback' in window)requestIdleCallback(next,{timeout:2000});else setTimeout(next,120)};
+ addEventListener('load',()=>setTimeout(()=>afterScroll(()=>idle(preLay)),900),{once:true});
  document.addEventListener('visibilitychange',()=>{if(sky)sky.classList.toggle('paused',document.hidden||SC.on)});
  /* ---------- marks toggle ---------- */
  const MKS=['all','core','off'],MKT={all:'🖍️ 标记：全部',core:'⭐ 标记：仅核心（荧光核心词 + 经文）',off:'🧽 标记：关（纯净阅读）'};
@@ -262,7 +271,7 @@ ready(()=>{
  /* ---------- v8: concept maps — draw routes once on view, toggle routes, highlight stops (events also drive the live map) ---------- */
  const cms=$$('svg.cmap[data-cm]');
  if(cms.length){const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const play=svg=>{svg.classList.remove('go');void svg.getBBox;requestAnimationFrame(()=>{svg.classList.add('go');if(!RM&&!svg.classList.contains('sm'))svg.querySelectorAll('animateMotion').forEach((a,i)=>{try{a.beginElementAt(.35+i*.5)}catch(_){}})})};
+  const play=svg=>{svg.classList.remove('go','done');void svg.getBBox;requestAnimationFrame(()=>{svg.classList.add('go');if(!RM&&!svg.classList.contains('sm'))svg.querySelectorAll('animateMotion').forEach((a,i)=>{try{a.beginElementAt(.35+i*.5)}catch(_){}})})};
   if(RM||!('IntersectionObserver' in window))cms.forEach(s=>s.classList.add('go','done'));
   else{const cio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){cio.unobserve(e.target);afterScroll(()=>play(e.target))}}),{rootMargin:'0px 0px -12% 0px'});cms.forEach(s=>cio.observe(s))}
   const svgOf=id=>$$('svg.cmap[data-cm="'+id+'"]');

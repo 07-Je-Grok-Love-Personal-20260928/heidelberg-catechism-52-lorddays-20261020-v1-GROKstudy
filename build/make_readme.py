@@ -19,6 +19,8 @@ def lht(f6,f7):
         if u6 in A and u7 in B and u7!='maps.html':
             x,y=A[u6],B[u7]; out.append(f"| {u7}{note} | {x['score']} → **{y['score']}** | {x['tbt']} → **{y['tbt']}** | {x['cls']} → **{y['cls']}** | {x['lcp']} → {y['lcp']} | {x['fcp']} → {y['fcp']} |")
     return '| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |\n|---|---|---|---|---|---|\n'+'\n'.join(out)
+def newp():
+    B=J('lh_v8.json');return '| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |\n|---|---|---|---|---|---|\n'+'\n'.join(f"| {u} | {B[u]['score']} | {B[u]['tbt']} | {B[u]['cls']} | {B[u]['lcp']} | {B[u]['fcp']} |" for u in ['maps.html','geo-bible.html','marks.html'] if u in B)
 W5,W6=J('wc_v6.json').get('summary',{}),J('wc_v7.json').get('summary',{})  # unchanged in v8 (word count is v6→v7)
 wct='| 范围 | v6 | v7 | 变化 |\n|---|---|---|---|\n'+f"| 52 主日解说合计 | {W5['ld_total']:,} | {W6['ld_total']:,} | {100*(W6['ld_total']-W5['ld_total'])/W5['ld_total']:+.1f}% |\n| 平均每主日 | {W5['ld_avg']:,} | {W6['ld_avg']:,} | |\n"+''.join(f"| {k} | {W5['overview'][k]:,} | {W6['overview'][k]:,} | {100*(W6['overview'][k]-W5['overview'][k])/W5['overview'][k]:+.1f}% |\n" for k in W5['overview'])+f"| 概览页合计 | {W5['overview_total']:,} | {W6['overview_total']:,} | {100*(W6['overview_total']-W5['overview_total'])/W5['overview_total']:+.1f}% |"
 toc=json.load(open('toc_test_result.json'))
@@ -75,6 +77,10 @@ md=f'''# heidelberg-catechism-52-lorddays-20261023-v8-GROKstudy
 本地（`build/lh.py`，模拟 4× CPU + 慢速 4G，同一本地服务器，每页 3 次取中位数；`lh_v7b.json` / `lh_v8.json`）：
 
 {lht('lh_v7b.json','lh_v8.json')}
+
+v8 新页（本地，同上方法；`lh_v8.json`）：
+
+{newp()}
 
 线上 Netlify（v7 站 vs v8 站，同一会话连续测量；`lh_v7_netlify8.json` / `lh_v8_netlify.json`）：
 

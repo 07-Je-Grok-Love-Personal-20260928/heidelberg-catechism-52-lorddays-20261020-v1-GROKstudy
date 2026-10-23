@@ -1,0 +1,66 @@
+{
+ "index.html": {
+  "score": 99,
+  "fcp": 1659,
+  "lcp": 1680,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1659
+ },
+ "ld/01.html": {
+  "score": 99,
+  "fcp": 1748,
+  "lcp": 1748,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1748
+ },
+ "ld/34.html": {
+  "score": 99,
+  "fcp": 1731,
+  "lcp": 1731,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1731
+ },
+ "history.html": {
+  "score": 98,
+  "fcp": 1685,
+  "lcp": 1951,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1685
+ },
+ "memory.html": {
+  "score": 98,
+  "fcp": 1936,
+  "lcp": 1987,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1936
+ },
+ "maps.html": {
+  "score": 94,
+  "fcp": 2338,
+  "lcp": 2551,
+  "tbt": 0,
+  "cls": 0,
+  "si": 2338
+ },
+ "marks.html": {
+  "score": 100,
+  "fcp": 1395,
+  "lcp": 1395,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1395
+ },
+ "geo-bible.html": {
+  "score": 98,
+  "fcp": 1730,
+  "lcp": 1952,
+  "tbt": 0,
+  "cls": 0,
+  "si": 1730
+ }
+}

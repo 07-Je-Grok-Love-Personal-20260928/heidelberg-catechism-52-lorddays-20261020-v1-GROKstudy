@@ -1,0 +1,25 @@
+- ✅ live map loads with online tiles + 12 markers
+- ✅ tiles blocked → site-hosted vector base (no blank)
+- ✅ engine blocked → static illustration visible
+- ✅ no WebGL → static illustration visible
+- ✅ history: “在地图上查看” flies live map + highlights concept map (20. 多德雷赫特 Dordrecht1)
+- ✅ history: era filter dims both maps [22, 19]
+- ✅ desktop: cluster expanded ['back', 'fwd', 'home', 'nb ld pv', 'nb ld nx', 'top', 'bottom', 'help']
+- ✅ desktop: cluster never overlaps content {'left': 1369, 'mainRight': 1361, 'hit': 0}
+- ✅ bottom button [8250, 8250]
+- ✅ top button 0
+- ✅ key G → bottom
+- ✅ key g → top
+- ✅ key . → next Lord's Day http://localhost:8780/ld/06.html
+- ✅ key [ → back http://localhost:8780/ld/05.html?nosw
+- ✅ forward button http://localhost:8780/ld/06.html
+- ✅ back button http://localhost:8780/ld/05.html?nosw
+- ✅ next-LD button in cluster http://localhost:8780/ld/06.html
+- ✅ ? → shortcut help
+- ✅ home button http://localhost:8780/index.html
+- ✅ mobile: collapsed to one button (1)
+- ✅ mobile: tap opens cluster (9)
+- ✅ mobile: cluster auto-collapses after an action (1)
+- ✅ mobile: at page end the cluster does not cover the footer {'navTop': 752, 'footBottom': 702}
+- ✅ marks: legend focus filter
+FAILS 0 []

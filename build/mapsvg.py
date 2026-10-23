@@ -31,7 +31,7 @@ def base_paths(P,world=False):
     pad=(P.x1-P.x0)*.06
     clip=box(P.x0-pad,max(P.y0-pad,-80),P.x1+pad,min(P.y1+pad,80))
     land=[];riv=[];lak=[]
-    tol=1.2/P.k   # ~1.2 px
+    tol=1.7/P.k   # ~1.7 px (v8 perf)
     for k,g in SH:
         if k not in (('w',) if world else ('l','a','r')) : continue
         if not g.intersects(clip): continue
@@ -124,7 +124,7 @@ def concept(m,W=640,small=False,uid=None):
        f'<defs><linearGradient id="ld-{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--land1)"/><stop offset="1" style="stop-color:var(--land2)"/></linearGradient>'
        f'<radialGradient id="sg-{uid}" cx=".5" cy=".4" r=".8"><stop offset="0" style="stop-color:var(--sea1)"/><stop offset="1" style="stop-color:var(--sea2)"/></radialGradient>'
        f'<marker id="ah-{uid}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:context-stroke"/></marker></defs>',
-       f'<g id="cmg-{uid}">', layer(m,P,uid,small)]
+       f'<g id="cmg-{uid}" class="cmg">', layer(m,P,uid,small)]
     ins=m.get('inset')
     if ins and not small:
         ib=ins['bbox']; iw=round(W*ins.get('w',.36)); IP=Proj(ib,iw); ih=IP.H

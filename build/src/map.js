@@ -66,7 +66,7 @@ function build(box){
   st.m=m;m.touchZoomRotate.disableRotation();m.addControl(new gl.NavigationControl({showCompass:false}),'top-right');m.addControl(new gl.ScaleControl({unit:'metric'}),'bottom-left');
   m.on('error',e=>{if(e&&e.sourceId==='ras'){st.errs++;if(st.errs>=8&&st.oks<2)rasFail(st)}});
   m.on('data',e=>{if(e.sourceId==='ras'&&e.tile&&e.dataType==='source')st.oks++});
-  m.on('load',()=>{overlays(st,gl);box.classList.add('ok');box.classList.remove('fail');setMode(st,st.mode)});
+  m.on('load',()=>{overlays(st,gl);['dragstart','zoomstart'].forEach(ev=>m.on(ev,e=>{if(e.originalEvent)st.touched=1}));if(window.ResizeObserver){let rw=inner.clientWidth;new ResizeObserver(()=>{if(!st.m||Math.abs(inner.clientWidth-rw)<4)return;rw=inner.clientWidth;m.resize();if(!st.touched)m.fitBounds([[x0,y0],[x1,y1]],{padding:12,duration:0})}).observe(inner)}box.classList.add('ok');box.classList.remove('fail');setMode(st,st.mode)});
  }).catch(err=>{status(box,'🖼️ 示意图模式：实时地图引擎未能加载（'+(err&&err.message||err)+'），已显示同一幅示意图','fallback');box.classList.add('fail')});
 }
 function overlays(st,gl){
@@ -76,8 +76,9 @@ function overlays(st,gl){
  m.addLayer({id:'reg-l',type:'line',source:'reg',paint:{'line-color':['get','c'],'line-width':1.5,'line-dasharray':[2,2]}});
  const P=Object.fromEntries(def.places.map(p=>[p.k,p]));
  const rf=def.routes.map(r=>({type:'Feature',properties:{k:r.k,c:cv(r.cv),s:r.s},geometry:{type:'LineString',coordinates:curve(r.pts.map(k=>P[k].c))}}));
- if(def.world_pts.length){const h=[8.69,49.41];def.world_pts.forEach((w,i)=>rf.push({type:'Feature',properties:{k:'_w',c:cv('--teal'),s:'dot'},geometry:{type:'LineString',coordinates:curve([h,w.c],.2)}}))}
+ const wf=[];if(def.world_pts.length){const h=[8.69,49.41];def.world_pts.forEach((w,i)=>wf.push({type:'Feature',properties:{k:'_w',c:cv('--teal')},geometry:{type:'LineString',coordinates:curve([h,w.c],.2)}}))}
  st.rfc={type:'FeatureCollection',features:rf};m.addSource('rt',{type:'geojson',data:st.rfc});
+ if(wf.length){m.addSource('rtw',{type:'geojson',data:{type:'FeatureCollection',features:wf}});m.addLayer({id:'rt-w',type:'line',source:'rtw',maxzoom:3.6,layout:{'line-cap':'round'},paint:{'line-color':['get','c'],'line-width':2,'line-opacity':.7,'line-dasharray':[.1,2.2]}})}
  m.addLayer({id:'rt-glow',type:'line',source:'rt',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':['get','c'],'line-width':9,'line-opacity':.18}});
  for(const s in DASH){const L={id:'rt-'+s,type:'line',source:'rt',filter:['==',['get','s'],s],layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':['get','c'],'line-width':3.2}};if(DASH[s])L.paint['line-dasharray']=DASH[s];m.addLayer(L)}
  const mk=(p,c,i,small)=>{const e=D.createElement('button');e.type='button';e.className='mkr'+(small?' s':'');e.style.setProperty('--c',c);e.innerHTML='<b>'+(i||'')+'</b><span>'+p.n+'</span>';e.title=p.n+(p.y?' · '+p.y:'');e.setAttribute('aria-label',e.title);
@@ -107,8 +108,14 @@ async function setMode(st,mode){st.mode=mode;const b=st.box.nextElementSibling;i
  if(p){setRas(st,p);status(st.box,'🗺️ 在线底图：'+p.name+'（失败时自动回退）','raster:'+p.id)}else{setRas(st,null);status(st.box,'🎨 在线底图不可达 → 站内主题底图（Natural Earth，离线可用）','local')}}
 function drop(box){const st=live.get(box);if(!st)return;try{st.m&&st.m.remove()}catch(e){}live.delete(box);$('.lm-in',box).innerHTML='';box.classList.remove('ok','fail');status(box,'🗺️ 已暂停以节省内存，滚动回来即重新加载','idle')}
 /* --- lazy create, keep ≤3 alive (least-recently-visible dropped) --- */
+/* v8 perf: never construct a WebGL map while the page is scrolling — wait until scrolling settles (450 ms), then build one map per idle slot */
+let lastSc=0,tq=0;addEventListener('scroll',()=>{lastSc=performance.now()},{passive:true});
+const ric=window.requestIdleCallback||(f=>setTimeout(f,60));
+function queue(){if(tq)return;tq=setTimeout(pump,120)}
+function pump(){tq=0;const wait=450-(performance.now()-lastSc);if(wait>0){tq=setTimeout(pump,wait+20);return}
+ const b=useOrder.slice().reverse().find(x=>vis.has(x)&&!live.has(x));if(!b)return;ric(()=>{if(performance.now()-lastSc<400){queue();return}if(vis.has(b)&&!live.has(b))build(b);queue()},{timeout:1200})}
 const vis=new Set();
-const io=new IntersectionObserver(es=>{es.forEach(e=>{const b=e.target;if(e.isIntersecting){vis.add(b);useOrder=useOrder.filter(x=>x!==b);useOrder.push(b);if(!live.has(b))build(b)}else vis.delete(b)});
+const io=new IntersectionObserver(es=>{es.forEach(e=>{const b=e.target;if(e.isIntersecting){vis.add(b);useOrder=useOrder.filter(x=>x!==b);useOrder.push(b);if(!live.has(b))queue(b)}else vis.delete(b)});
  while(live.size>3){const old=useOrder.find(b=>live.has(b)&&!vis.has(b));if(!old)break;useOrder=useOrder.filter(x=>x!==old);drop(old)}},{rootMargin:'250px 0px'});
 boxes.forEach(b=>io.observe(b));
 const stOf=id=>[...live.values()].find(s=>s.id===id);

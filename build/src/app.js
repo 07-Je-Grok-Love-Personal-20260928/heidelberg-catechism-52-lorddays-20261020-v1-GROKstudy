@@ -32,7 +32,7 @@ ready(()=>{
  /* v9: idle pre-layout — render content-visibility sections one at a time while the reader is NOT scrolling, nearest-below first,
     so a scroll never has to lay out a fresh section mid-gesture (the main source of 40–90 ms frames at 6× CPU) */
  let PL=0;const preLay=()=>{PL=0;const vh=innerHeight;let best=null,bd=1e9;
-  for(const s of document.querySelectorAll('main section.sec:not(.ncv):not(.nopl)')){if(s.querySelector('svg.cmap,.mapbox,canvas')||s.querySelectorAll('svg').length>3){s.classList.add('nopl');continue}
+  for(const s of document.querySelectorAll('main section.sec:not(.ncv)')){
    const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}
   if(!best)return;best.classList.add('ncv');schedPL()};
  const schedPL=()=>{if(PL)return;PL=1;const next=()=>afterScroll(()=>idle(preLay));if('requestIdleCallback' in window)requestIdleCallback(next,{timeout:2000});else setTimeout(next,120)};

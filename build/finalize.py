@@ -23,7 +23,7 @@ for d,_,fs in os.walk(SITE):
             if s2!=s: n+=1; open(p,'w').write(s2); s=s2
             pages.append(rel)
         if rel!='sw.js': h.update(rel.encode()); h.update(open(p,'rb').read())
-ver='hc-v8-'+h.hexdigest()[:10]
+ver='hc-v9-'+h.hexdigest()[:10]
 core=['./','index.html','lorddays.html','texts/hc.html','texts/index.html','memory.html','assets/js/app.js']
 sw=f'''/* v8 service worker — instant repeat loads + offline reading. Cache: {ver} */
 const V="{ver}",CORE={json.dumps(core)};

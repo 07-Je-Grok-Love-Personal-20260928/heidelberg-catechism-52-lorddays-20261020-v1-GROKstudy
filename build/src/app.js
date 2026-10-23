@@ -22,8 +22,8 @@ ready(()=>{
  addEventListener('keydown',e=>{if(e.key==='Escape'&&thp?.classList.contains('open')){thp.classList.remove('open');thb.focus()}});
  /* ---------- v7: one scroll-state helper. During a scroll the ONLY work is a flag + timer; everything else waits for scrollend ---------- */
  const sky=$('.sky');const SC={on:false,t:0,q:[]};const HAS_END='onscrollend' in window;
- const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;const nvc=document.getElementById('navc');if(nvc)nvc.classList.remove('dim');if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f())};
- addEventListener('scroll',()=>{if(!SC.on){SC.on=true;if(sky)sky.classList.add('paused')}clearTimeout(SC.t);SC.t=setTimeout(scEnd,HAS_END?700:160)},{passive:true});
+ const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;root.classList.remove('scr');const nvc=document.getElementById('navc');if(nvc)nvc.classList.remove('dim');if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f())};
+ addEventListener('scroll',()=>{if(!SC.on){SC.on=true;root.classList.add('scr');if(sky)sky.classList.add('paused')}clearTimeout(SC.t);SC.t=setTimeout(scEnd,HAS_END?700:160)},{passive:true});
  if(HAS_END)addEventListener('scrollend',()=>{clearTimeout(SC.t);SC.t=setTimeout(scEnd,140)},{passive:true});
  const afterScroll=f=>{if(SC.on){if(!SC.q.includes(f))SC.q.push(f)}else f()};
  document.addEventListener('visibilitychange',()=>{if(sky)sky.classList.toggle('paused',document.hidden||SC.on)});
@@ -115,7 +115,7 @@ ready(()=>{
  const seen=e=>e.classList.add(e.matches('section.sec')?'seen':'in');
  const ANIM='.bar-grow,.barx,.draw,.seg,.dot,.ladder,.parr,.vc,.arc,.cch';const lazyA=e=>e.matches(ANIM)||!!e.querySelector(ANIM);
  if(root.classList.contains('lite')||!('IntersectionObserver' in window))rv.forEach(seen);
- else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){seen(e.target);io.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px'});rv.forEach(e=>lazyA(e)?io.observe(e):seen(e))}
+ else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const t=e.target;io.unobserve(t);afterScroll(()=>requestAnimationFrame(()=>seen(t)))}}),{rootMargin:'0px 0px -6% 0px'});rv.forEach(e=>lazyA(e)?io.observe(e):seen(e))}
  const clean=box=>{const c=box.cloneNode(true);c.querySelectorAll('sup,details,.tools,button').forEach(x=>x.remove());return c.textContent.replace(/\s+\n/g,'\n').trim()};
  idle(()=>{
  /* ---------- tabs ---------- */

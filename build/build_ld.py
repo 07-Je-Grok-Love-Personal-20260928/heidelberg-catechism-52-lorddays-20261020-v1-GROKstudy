@@ -26,6 +26,20 @@ def distill(no,st,ch,th,trap,ex=()):
             keep.append(y); shown.append(a)
         out[k]=''.join(keep).strip()
     return out
+def kw_matrix(ld,no,c):
+    """v9: keyword × question matrix — where each key word actually occurs in the verbatim answers (memory map, data-driven)."""
+    qs=ld['qas']; kws=[k for k in no['kw'] if k]
+    if not kws or not qs: return ''
+    def cnt(k,q): return sum(strip_tags(x).count(k) for x in [q['q']]+q['a'])
+    M=[[cnt(k,q) for q in qs] for k in kws]
+    if not any(any(r) for r in M): return ''
+    mx=max(max(r) for r in M) or 1
+    head='<tr><th scope="col">关键词</th>'+''.join(f'<th scope="col"><a href="#q{qnum(q)}">Q{qnum(q)}</a></th>' for q in qs)+'<th scope="col">合计</th></tr>'
+    rows=''
+    for k,r in zip(kws,M):
+        cells=''.join((f'<td><i style="--v:{.35+.65*v/mx:.2f}" title="{esc(k)} · Q{qnum(q)} · {v} 次">{v}</i></td>' if v else '<td><span aria-hidden="true">·</span></td>') for v,q in zip(r,qs))
+        rows+=f'<tr><th scope="row">{esc(k)}</th>{cells}<td><b>{sum(r)}</b></td></tr>'
+    return f'<div class="card reveal" style="margin-top:14px"><h3 id="ess-kwm">🔑 关键词 × 问答：每个关键词出现在哪一问</h3><div class="tbl kwm" style="--c:{c}"><table><thead>{head}</thead><tbody>{rows}</tbody></table></div><p class="small muted" style="margin:6px 0 0">按原文逐字统计（问句 + 答句）；圆点越大越浓＝出现越多。背诵时先抓“多处出现”的词，它们是本主日的骨架。</p></div>'
 def ld_page(ld):
     n=ld['n']; no=N[n]; p=part(n); c=p[2]; a,b=qrange(ld); th,trap,gold=T[n]
     st,ch,pr,dq=X[n]
@@ -49,7 +63,7 @@ def ld_page(ld):
     s0=sec('essence','💎',f'精华：主日{n}的骨架',wwa+f'''<div class="grid g2"><div class="card reveal"><h3 id="ess-core">📌 要义（本站概述，以原文为准）</h3><ol class="core">{"".join(f"<li>{K(x)}</li>" for x in no['core'])}</ol><div class="kpi mini">{kpi}</div>
 {callout('gold','金句',f'“{esc(gold)}”<span class="src">　—— 原文第{goldq}问（逐字）</span>')}{callout('trap','易错',md(trap)+' '+''.join(f'<span class="chip err">❌ {esc(x)}</span>' for x in no['err']))}{callout('bible','核心经文',keyrefs)}</div>
 <div class="card reveal"><h3 id="ess-map">关联星图</h3><div class="chart">{svgs.ld_constellation(n,ld,no)}</div><p class="small muted" style="margin:6px 0 0">点节点跳到问答 / 信条；外圈为关键词与比利时信条、多特信经。</p></div></div>
-<div class="card reveal" style="margin-top:14px"><h3 id="ess-bridge">🔗 承上启下：在全书中的位置</h3><div class="chain bridge">{bridge}</div></div>''')
+{kw_matrix(ld,no,c)}<div class="card reveal" style="margin-top:14px"><h3 id="ess-bridge">🔗 承上启下：在全书中的位置</h3><div class="chain bridge">{bridge}</div></div>''')
     # 2. text
     chain=[]
     for i,q in enumerate(ld['qas']):

@@ -696,3 +696,51 @@ h2 .ico{background:linear-gradient(135deg,color-mix(in srgb,var(--intro) 30%,var
 .mcard,.lmap{contain:layout paint}
 .lmap .lm-fb{contain:strict}
 @media (max-width:600px){.lmap .lm-st{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 8px}}
+/* =================== v9 · typography · marks 3.0 · callouts =================== */
+body{font-kerning:normal;text-spacing-trim:trim-start;text-autospace:normal;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.qa .q{text-wrap:balance}
+main :is(p,li,dd,.qa .a,.co){text-wrap:pretty;line-break:strict}
+main :is(p,li){line-height:1.9}
+.qa .a,.reading p,.reading .art>div{max-width:42em}
+.qa .a{line-height:2.05;letter-spacing:.012em}
+main h3{letter-spacing:.02em}
+main h4{font-size:16px;letter-spacing:.06em;color:var(--deliv);display:flex;align-items:center;gap:8px}
+main h4::before{content:"";flex:none;width:.42em;height:.42em;border-radius:2px;transform:rotate(45deg);background:currentColor;opacity:.8}
+main p+p{margin-top:.55em}
+/* marks 3.0 — refined: marker-pen highlight, ink underlines, 着重号 */
+.mk-k{background:linear-gradient(100deg,transparent 0 .1em,var(--mk-hl) .28em calc(100% - .28em),transparent calc(100% - .1em)) 0 78%/100% 62% no-repeat;padding:0 .2em;margin:0 .04em;border-radius:.35em .2em .4em .25em;font-weight:700}
+.mk-b{font-weight:800;color:var(--mk-bold);letter-spacing:.01em}
+.mk-g{font-weight:800;color:var(--mk-grace);background:linear-gradient(transparent 74%,color-mix(in srgb,var(--mk-grace) 20%,transparent) 0);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.mk-r{font-weight:800;color:var(--mk-warn);text-decoration:underline double color-mix(in srgb,var(--mk-warn) 55%,transparent);text-decoration-thickness:1px;text-underline-offset:.32em}
+.mk-u{text-decoration:underline solid var(--mk-def);text-decoration-thickness:.11em;text-underline-offset:.32em;text-decoration-skip-ink:auto}
+.mk-w{text-decoration:underline wavy var(--mk-hard);text-decoration-thickness:.075em;text-underline-offset:.34em}
+.mk-d{text-decoration:underline dashed var(--mk-con);text-decoration-thickness:.1em;text-underline-offset:.32em}
+.mk-bg{background:color-mix(in srgb,var(--mk-hl2) 92%,transparent);box-shadow:inset 0 -.12em 0 color-mix(in srgb,var(--intro) 35%,transparent);border-radius:.35em;padding:.02em .32em}
+.mk-e{-webkit-text-emphasis:filled dot var(--mk-bold);text-emphasis:filled dot var(--mk-bold);-webkit-text-emphasis-position:under right;text-emphasis-position:under right;font-weight:700}
+.mkoff .mk-r,.mkcore .mk-r{text-decoration:none}
+.mkoff .mk-e,.mkcore .mk-e{-webkit-text-emphasis:none;text-emphasis:none;font-weight:inherit}
+.mkoff .mk-g,.mkcore .mk-g{background:none}
+.mkbar.mk-e{--mkc:var(--mk-bold)}
+html[data-mkf] .mk-e{opacity:.38}html[data-mkf=mk-e] .mk-e{opacity:1;box-shadow:0 0 0 2px color-mix(in srgb,var(--key) 55%,transparent);border-radius:4px}
+main .mk-e{position:relative}main .mk-e:hover::after{content:"逐字背诵"}
+/* callouts — tinted gradient, icon medallion, refined label */
+.co{padding:14px 16px 14px 56px;border-left-width:4px;background:linear-gradient(135deg,color-mix(in srgb,var(--cc) 14%,var(--card)) 0,color-mix(in srgb,var(--cc) 5%,var(--card)) 70%);line-height:1.9}
+.co::before{left:12px;top:11px;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;font-size:17px;background:color-mix(in srgb,var(--cc) 20%,var(--card));box-shadow:0 0 0 1px color-mix(in srgb,var(--cc) 35%,transparent)}
+.co>b.lab{letter-spacing:.12em;padding:1px 10px 1px 11px;vertical-align:.1em}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.32s;animation-timing-function:var(--ease)}
+/* v9 smoothness: while scrolling, no hit-testing/hover restyles; hover transitions only when the pointer can really hover */
+html.scr main,html.scr .side,html.scr .topbar{pointer-events:none}
+.kwm table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.kwm :is(th,td){padding:6px 8px;text-align:center;border-bottom:1px solid var(--bd);white-space:nowrap}
+.kwm thead th{font-size:12.5px;color:var(--muted);font-weight:700;background:var(--card2)}
+.kwm tbody th{text-align:left;font-weight:800;color:var(--c,var(--deliv));font-family:var(--serif)}
+.kwm td i{display:inline-grid;place-items:center;width:calc(16px + 12px * var(--v));height:calc(16px + 12px * var(--v));border-radius:50%;font-style:normal;font-size:11px;font-weight:800;color:var(--fg);border:2px solid var(--c,var(--deliv));background:color-mix(in srgb,var(--c,var(--deliv)) calc(var(--v) * 30%),transparent)}
+.kwm td span{color:var(--muted);opacity:.5}
+.kwm tbody tr:hover{background:color-mix(in srgb,var(--c,var(--deliv)) 7%,transparent)}
+.tbars{display:grid;gap:7px}
+.tbar{display:grid;grid-template-columns:3.6em 1fr 2.6em;align-items:center;gap:10px}
+.tbar .tw{font-family:var(--serif);text-align:right}
+.tbar .tt{display:flex;height:16px;border-radius:999px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--bd);transition-delay:calc(var(--i) * 30ms)}
+.tbar .tt i{display:block;min-width:2px}
+.tleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:10px}
+.tleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}

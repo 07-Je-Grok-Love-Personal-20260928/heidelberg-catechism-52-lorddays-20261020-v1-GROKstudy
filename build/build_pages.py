@@ -145,6 +145,24 @@ lds=f'''<section class="hero reveal"><span class="chip">📅 52 主日 · 129 �
 <input id="ldFilter" class="tocsearch" style="margin-top:12px;font-size:16px" placeholder="🔍 输入关键词或主日编号（如：圣餐、称义、12）"></section>'''
 lds+=sec('grid','🗂️','全部主日（按 17 个主题分组）',ldgrid_groups())
 rows=''.join(f'<tr><td><a href="ld/{ld["n"]:02d}.html">{LDI[ld["n"]]} 主日{ld["n"]}</a></td><td>Q{qrange(ld)[0]}–{qrange(ld)[1]}</td><td><span class="chip {part(ld["n"])[0]}">{part(ld["n"])[1]}</span></td><td>{esc(" › ".join(ld["crumbs"][1:]) or "—")}</td><td>{"、".join(str(x) for x in N[ld["n"]]["bc"]) or "—"}</td><td>{len(N[ld["n"]]["cd"]) or "—"}</td><td>{"、".join(str(x) for x in N[ld["n"]]["wsc"]) or "—"}</td></tr>' for ld in D['hc'])
+def term_bars():
+    """v9: where each core doctrine word is concentrated — counted in the verbatim Q&A text, stacked by the catechism's 4 parts."""
+    TERMS=['基督','信','恩典','罪','圣灵','安慰','律法','祷告','赦免','永生','福音','悔改','感恩','圣礼','洗礼','圣餐','称义','顺服','邻舍','国度','爱','救赎']
+    PC={'i':'var(--intro)','m':'var(--misery)','d':'var(--deliv)','g':'var(--grat)'}
+    rows=[]
+    for t in TERMS:
+        c={k:0 for k in PC}
+        for ld in D['hc']:
+            k=part(ld['n'])[0]
+            for q in ld['qas']: c[k]+=sum(re.sub('<[^>]+>','',x).count(t) for x in [q['q']]+q['a'])
+        rows.append((t,c))
+    rows=[r for r in rows if sum(r[1].values())]; rows.sort(key=lambda r:-sum(r[1].values()))
+    mx=max(sum(c.values()) for _,c in rows)
+    lab={k:f'{ic} {nm}' for k,ic,nm,_,_,_ in PARTS}
+    out=''.join(f'<div class="tbar" style="--i:{i}"><b class="tw">{esc(t)}</b><span class="tt barx" style="width:{100*sum(c.values())/mx:.1f}%">'+''.join(f'<i style="flex:{v};background:{PC[k]}" title="{esc(t)} · {lab[k]} {v} 次"></i>' for k,v in c.items() if v)+f'</span><span class="tn small muted">{sum(c.values())}</span></div>' for i,(t,c) in enumerate(rows))
+    leg=''.join(f'<span><i style="background:{PC[k]}"></i>{lab[k]}</span>' for k in PC)
+    return f'<div class="card reveal"><div class="tleg small">{leg}</div><div class="tbars">{out}</div><p class="small muted" style="margin:8px 0 0">统计范围：129 问的问句 + 答句原文（逐字，不含脚注经文）。读法：第二部篇幅最长（27 个主日），多数词自然集中在那里；但“律法”在第一部最多（用律法认罪），“邻舍”“祷告”“顺服”几乎都在第三部（感恩的生活），“基督”“信”贯穿全书——“罪 · 恩 · 谢”的骨架在用词上也看得见。</p></div>'
+lds+=sec('terms','📊','核心词分布：22 个教义词在全书各部分的出现次数',term_bars())
 lds+=sec('heat','🔥','交叉引用热力图：哪些主日与其他信条联系最密',f'<div class="card reveal"><div class="chart mm">{xheat()}</div><p class="small muted" style="margin:6px 0 0">颜色越深＝本站为该主日列出的对照越多（比利时信条条数 / 多特信经段落 / 威斯敏斯特问数）；点击格子进入主日。</p></div>')
 _qr=''.join(f'<tr><td><a href="ld/{n:02d}.html">{LDI[n]} {n}</a></td><td><span class="chip {part(n)[0]}" style="font-size:11px">{part(n)[1]}</span> {esc(E7[n]["q"])}</td>'+''.join(f'<td class="small">{esc(E7[n]["ch"][i][1])}</td>' for i in range(3))+'</tr>' for n in range(1,53))
 lds+=sec('qchain','❓','52 个问题 · 圣约链一览',f'<p class="muted small">每个主日回答一个问题；右边三栏是该主日“圣约链”的经文：📜 旧约应许 → ✝️ 在基督里成全 → ⛪ 今天的教会与我（本站学习笔记）。</p><div class="tbl qct"><table><thead><tr><th>主日</th><th>本主日回答的问题</th><th>📜 应许</th><th>✝️ 成全</th><th>⛪ 今天</th></tr></thead><tbody>{_qr}</tbody></table></div>')

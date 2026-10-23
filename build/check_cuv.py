@@ -44,7 +44,7 @@ ALLOW={'耶和华拯救':'name gloss (太1:21), not a quote','一次献上':'来
 import glob
 pat=re.compile(r'“([^”]{4,60})”[^“”]{0,6}?[（(\[]\s*([一-龥]{1,3})\s?(\d+)[:：](\d+)(?:[-–](\d+))?')
 gb=[];n=0
-for f in sorted(glob.glob('notes*.py')+['build_pages.py','build_ld.py','history_data.py']):
+for f in sorted(glob.glob('notes*.py')+['build_pages.py','build_ld.py','history_data.py','maps_data.py','build_maps.py','build_marks.py','build_history.py']):
     for q,b,c,a,z in pat.findall(open(f).read()):
         c,a=int(c),int(a);z=int(z) if z else a
         try: t=text(b,c,a,z)
@@ -53,6 +53,13 @@ for f in sorted(glob.glob('notes*.py')+['build_pages.py','build_ld.py','history_
         if q in ALLOW: continue
         parts=[p for p in re.split(r'……|…',q) if N(p)]
         if not all(N(p) in N(t) for p in parts): gb.append((f,q,f'{b}{c}:{a}-{z}',t))
+# v8: atlas quotes (maps_data.MAPS[*].quotes = (text, book, ch, v1, v2))
+import maps_data
+for m in maps_data.MAPS:
+    for q,b,c,a,z in m.get('quotes',[]):
+        t=text(b,c,a,z); n+=1
+        parts=[p for p in re.split(r'……|…',q) if N(p)]
+        if not all(N(p) in N(t) for p in parts): gb.append(('maps_data:'+m['id'],q,f'{b}{c}:{a}-{z}',t))
 json.dump(cache,open(C,'w'),ensure_ascii=False)
 for x in gb: print('G-MISMATCH',x)
 print('generic checked',n,'mismatch',len(gb))

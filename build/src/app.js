@@ -22,7 +22,7 @@ ready(()=>{
  addEventListener('keydown',e=>{if(e.key==='Escape'&&thp?.classList.contains('open')){thp.classList.remove('open');thb.focus()}});
  /* ---------- v7: one scroll-state helper. During a scroll the ONLY work is a flag + timer; everything else waits for scrollend ---------- */
  const sky=$('.sky');const SC={on:false,t:0,q:[]};const HAS_END='onscrollend' in window;
- const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f())};
+ const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;const nvc=document.getElementById('navc');if(nvc)nvc.classList.remove('dim');if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f())};
  addEventListener('scroll',()=>{if(!SC.on){SC.on=true;if(sky)sky.classList.add('paused')}clearTimeout(SC.t);SC.t=setTimeout(scEnd,HAS_END?700:160)},{passive:true});
  if(HAS_END)addEventListener('scrollend',()=>{clearTimeout(SC.t);SC.t=setTimeout(scEnd,140)},{passive:true});
  const afterScroll=f=>{if(SC.on){if(!SC.q.includes(f))SC.q.push(f)}else f()};
@@ -204,7 +204,7 @@ ready(()=>{
  /* ---------- v5: continuous read-aloud player ---------- */
  (()=>{const items=$$('main .qa:not(.fc .qa), main .art, main .creed').filter(x=>!x.closest('details:not([open])'));
   const rb0=$('#readAll');if(items.length<2||!('speechSynthesis' in window)){if(rb0)rb0.addEventListener('click',()=>toast('此浏览器不支持朗读'));return}
-  let tb=$('#readAll');if(!tb){const fab=$('.fab');if(!fab)return;tb=document.createElement('button');tb.className='ibtn';tb.id='readAll';tb.title='连续朗读';tb.setAttribute('aria-label','连续朗读');tb.textContent='🎧';fab.prepend(tb)}
+  let tb=$('#readAll');if(!tb){const fab=$('#nvItems')||$('.fab');if(!fab)return;tb=document.createElement('button');tb.className='nb';tb.id='readAll';tb.title='连续朗读';tb.setAttribute('aria-label','连续朗读');tb.textContent='🎧';fab.prepend(tb)}
   const bar=document.createElement('div');bar.id='player';bar.setAttribute('role','region');bar.setAttribute('aria-label','朗读播放器');
   bar.innerHTML='<button data-p="prev" title="上一段" aria-label="上一段">⏮</button><button data-p="play" title="播放/暂停" aria-label="播放/暂停">▶️</button><button data-p="next" title="下一段" aria-label="下一段">⏭</button><span class="pl"></span><select aria-label="语速"><option value=".75">0.75×</option><option value=".95" selected>1×</option><option value="1.2">1.25×</option><option value="1.5">1.5×</option></select><button data-p="stop" title="关闭" aria-label="关闭">✖</button><i class="pbarx"></i>';
   document.body.appendChild(bar);
@@ -227,9 +227,52 @@ ready(()=>{
   addEventListener('pagehide',()=>speechSynthesis.cancel());
   window.hcPlayer={items,get i(){return i}};
  })();
+ /* ---------- v8: floating nav cluster (back · forward · home · prev/next 主日 · top · bottom) ---------- */
+ const nv=$('#navc'),nvi=$('#nvItems'),nvt=$('#nvTg'),NAVI=window.navigation;
+ const toBottom=()=>{const h=root.scrollHeight;scrollTo({top:h,behavior:Math.abs(h-scrollY)>innerHeight*4?'instant':'smooth'})};
+ const toTop=()=>scrollTo({top:0,behavior:scrollY>innerHeight*4?'instant':'smooth'});
+ const canBack=()=>NAVI&&'canGoBack' in NAVI?NAVI.canGoBack:(history.length>1||!!document.referrer);
+ const canFwd=()=>NAVI&&'canGoForward' in NAVI?NAVI.canGoForward:true;
+ const nvSync=()=>{if(!nvi)return;const b=$('[data-nv=back]',nvi),f=$('[data-nv=fwd]',nvi);if(b)b.disabled=!canBack();if(f)f.disabled=!canFwd()};
+ const back=()=>{if(canBack())history.back();else location.href=ROOT+'index.html'};
+ if(nv){const pv=$('#prevLd'),nx=$('#nextLd');const mk=(a,t,lab,cls)=>{const x=document.createElement('a');x.className='nb ld '+cls;x.href=a.href;x.textContent=t;x.title=lab;x.setAttribute('aria-label',lab);return x};
+  const hm=$('[data-nv=home]',nvi);if(pv)hm.after(mk(pv,'‹',' 上一主日 ( , )'.trim()+'：'+pv.textContent.replace(/\s+/g,' ').trim(),'pv'));if(nx)(nvi.querySelector('.pv')||hm).after(mk(nx,'›','下一主日 ( . )：'+nx.textContent.replace(/\s+/g,' ').trim(),'nx'));
+  const MOB=matchMedia('(max-width:1024px)');const st=LS.get('hc-navc',null);if(st!==null&&!(MOB.matches&&st))nv.classList.add(st?'open':'shut');nvt.setAttribute('aria-expanded',String(getComputedStyle(nvi).display!=='none'));
+  const tg=()=>{const vis=getComputedStyle(nvi).display!=='none';nv.classList.toggle('open',!vis);nv.classList.toggle('shut',vis);nvt.setAttribute('aria-expanded',String(!vis));LS.set('hc-navc',!vis)};
+  nvt.addEventListener('click',tg);nv._tg=tg;nvSync();
+  nvi.addEventListener('click',e=>{if(MOB.matches&&e.target.closest('a,button')&&nv.classList.contains('open')){nv.classList.remove('open');nvt.setAttribute('aria-expanded','false')}const b=e.target.closest('[data-nv]');if(!b)return;const k=b.dataset.nv;if(k==='back')back();else if(k==='fwd')history.forward();else if(k==='bottom')toBottom();else if(k==='help')help();});
+  addEventListener('pageshow',nvSync);NAVI&&NAVI.addEventListener&&NAVI.addEventListener('currententrychange',nvSync);
+  let lastY=scrollY;addEventListener('scroll',()=>{if(!SC.on)return;const y=scrollY;if(y>lastY+40&&!nv.classList.contains('dim')){nv.classList.add('dim')}lastY=y},{passive:true});}
+ const HELP=[['[ / ]','后退 / 前进'],['H','主页'],['G / Shift+G','到顶部 / 到底部'],[', / .','上一 / 下一主日（← → 亦可）'],['T','目录'],['M','笔记标记：全部 / 仅核心 / 关'],['N','展开 / 收起快捷导航'],['Esc','关闭弹窗 · 取消标记聚焦'],['?','本说明']];
+ const help=()=>{let d=$('#kbHelp');if(!d){d=document.createElement('div');d.id='kbHelp';d.className='kbhelp';d.setAttribute('role','dialog');d.setAttribute('aria-label','快捷键');d.innerHTML='<h5>⌨️ 快捷键</h5>'+HELP.map(([k,t])=>'<div><kbd>'+k+'</kbd><span>'+t+'</span></div>').join('')+'<button type="button" class="btn" data-close>关闭</button>';document.body.appendChild(d);d.addEventListener('click',e=>{if(e.target.closest('[data-close]'))d.classList.remove('show')})}d.classList.toggle('show')};
  /* ---------- keyboard ---------- */
- addEventListener('keydown',e=>{if(e.target.matches('input,textarea')||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key;if(k==='t')tocBtn?.click();else if(k==='r')$('#reciteBtn')?.click();else if(k==='m')$('#marksBtn')?.click();else if(k==='ArrowLeft'&&$('#prevLd'))location.href=$('#prevLd').href;else if(k==='ArrowRight'&&$('#nextLd'))location.href=$('#nextLd').href});
- $('#topBtn')?.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+ addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select')||e.target.isContentEditable||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key;
+  if(k==='Escape'){$('#kbHelp')?.classList.remove('show');if(root.dataset.mkf){mkFocus(null)}return}
+  const go=a=>{const x=$(a);if(x)location.href=x.href};
+  if(k==='t')tocBtn?.click();else if(k==='r')$('#reciteBtn')?.click();else if(k==='m')$('#marksBtn')?.click();
+  else if(k==='ArrowLeft'||k===',')go('#prevLd');else if(k==='ArrowRight'||k==='.')go('#nextLd');
+  else if(k==='[')back();else if(k===']')history.forward();else if(k==='h')location.href=ROOT+'index.html';
+  else if(k==='g')toTop();else if(k==='G')toBottom();else if(k==='n')nv?._tg?.();else if(k==='?')help();else return;
+ });
+ $('#topBtn')?.addEventListener('click',toTop);
+ /* ---------- v8: marks — legend focus filter + live counts ---------- */
+ const MKN={'mk-k':'核心','mk-b':'重点','mk-g':'恩典','mk-r':'警示','mk-u':'术语','mk-w':'难点','mk-d':'对比','mk-bg':'要点','mk-p':'人物','mk-l':'地点','mk-t':'年代','mk-ref':'经文'};
+ const mkFocus=c=>{if(c&&root.dataset.mkf!==c){root.dataset.mkf=c;toast('🔦 聚焦：'+(MKN[c]||c)+' · 其余标记淡化（Esc 取消）')}else{delete root.dataset.mkf;toast('🖍️ 已取消聚焦')}$$('[data-mkf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mkf===root.dataset.mkf)))};
+ document.addEventListener('click',e=>{const b=e.target.closest('button[data-mkf]');if(b)mkFocus(b.dataset.mkf)});
+ /* ---------- v8: concept maps — draw routes once on view, toggle routes, highlight stops (events also drive the live map) ---------- */
+ const cms=$$('svg.cmap[data-cm]');
+ if(cms.length){const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const play=svg=>{svg.classList.remove('go');void svg.getBBox;requestAnimationFrame(()=>{svg.classList.add('go');if(!RM&&!svg.classList.contains('sm'))svg.querySelectorAll('animateMotion').forEach((a,i)=>{try{a.beginElementAt(.35+i*.5)}catch(_){}})})};
+  if(RM||!('IntersectionObserver' in window))cms.forEach(s=>s.classList.add('go','done'));
+  else{const cio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){cio.unobserve(e.target);afterScroll(()=>play(e.target))}}),{rootMargin:'0px 0px -12% 0px'});cms.forEach(s=>cio.observe(s))}
+  const svgOf=id=>$$('svg.cmap[data-cm="'+id+'"]');
+  const hl=(id,k,fly)=>{svgOf(id).forEach(s=>s.querySelectorAll('.pm').forEach(g=>g.classList.toggle('hl',g.dataset.pk===k)));$$('[data-pk^="'+id+':"]').forEach(b=>b.classList.toggle('on',b.dataset.pk===id+':'+k));if(fly)dispatchEvent(new CustomEvent('hcplace',{detail:{map:id,key:k}}))};
+  document.addEventListener('click',e=>{
+   const p=e.target.closest('button[data-pk]');if(p){const [id,k]=p.dataset.pk.split(':');hl(id,k,1);return}
+   const g=e.target.closest('svg.cmap[data-cm] .pm');if(g){const id=g.closest('svg').dataset.cm;hl(id,g.dataset.pk,1);return}
+   const r=e.target.closest('button[data-rt]');if(r){const [id,k]=r.dataset.rt.split(':');const on=r.getAttribute('aria-pressed')!=='true';r.setAttribute('aria-pressed',String(on));r.classList.toggle('on',on);svgOf(id).forEach(s=>s.querySelector('.rt[data-rk="'+k+'"]')?.classList.toggle('off',!on));dispatchEvent(new CustomEvent('hcroute',{detail:{map:id,key:k,on}}));return}
+   const pl=e.target.closest('button[data-play]');if(pl){svgOf(pl.dataset.play).forEach(play);dispatchEvent(new CustomEvent('hcplay',{detail:{map:pl.dataset.play}}))}});
+  window.hcHL=hl}
  /* ---------- lazy mermaid ---------- */
  const all=$$('.mermaid');const mms=all.filter(e=>e.offsetParent!==null);all.filter(e=>e.offsetParent===null).forEach(e=>e.classList.remove('mermaid'));
  const loadM=()=>{if(window._mmL)return;window._mmL=1;const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js';s.async=true;s.onload=()=>{mermaid.initialize({startOnLoad:false,theme:root.dataset.theme==='dark'?'dark':'default',securityLevel:'loose',flowchart:{useMaxWidth:true,htmlLabels:true},themeVariables:{fontFamily:'PingFang SC, Microsoft YaHei, Noto Sans SC, sans-serif'}});mermaid.run({nodes:mms}).then(()=>{requestAnimationFrame(()=>{const m=$$('.mermaid svg').map(svg=>{const vb=svg.viewBox&&svg.viewBox.baseVal;return [svg,vb,svg.parentElement.clientWidth]});m.forEach(([svg,vb,cw])=>{if(!vb||!vb.width)return;const need=vb.width*.8;if(cw<need){svg.style.maxWidth='none';svg.style.width=need+'px';svg.style.height=(vb.height*.8)+'px';svg.removeAttribute('height')}})})})};document.head.appendChild(s)};

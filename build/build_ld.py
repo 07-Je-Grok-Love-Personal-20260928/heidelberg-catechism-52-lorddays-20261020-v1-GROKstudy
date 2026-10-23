@@ -2,6 +2,7 @@ from common import *
 from notes4 import X
 from notes7 import E
 import svgs, random
+from build_maps import ld_block
 def strip_tags(s): return re.sub('<[^>]+>','',s)
 def first(s,k=1):
     parts=[x for x in re.split(r'(?<=[。！？])',s) if x.strip()]
@@ -114,7 +115,7 @@ def ld_page(ld):
     s7=sec('more','🎧','延伸：ccifellowship.org 要理问答证道',f'<div class="card reveal"><ul class="clean">{"".join(f"<li>🗣️ <a href=\"{s["url"]}\" target=\"_blank\" rel=\"noopener\">{esc(s["title"])}</a></li>" for s in sers)}</ul><p class="small muted">证道作者 Clarence Stam（加拿大改革宗教会牧师），中文译本由 ccifellowship.org 提供。</p></div>')
     prev=f'<a id="prevLd" href="{n-1:02d}.html">⬅ {esc(ld_label(n-1))}</a>' if n>1 else '<a href="../lorddays.html">⬅ 52主日总览</a>'
     nxt=f'<a id="nextLd" class="r" href="{n+1:02d}.html">{esc(ld_label(n+1))} ➡</a>' if n<52 else '<a class="r" href="../memory.html">🧠 去速记中心 ➡</a>'
-    body=hero+s0+s1+s2+s3+s4+s5+s6+s7+f'<div class="pager">{prev}{nxt}</div>'
+    body=hero+s0+s1+s2+s3+s4+ld_block(n)+s5+s6+s7+f'<div class="pager">{prev}{nxt}</div>'
     page(f'ld/{n:02d}.html',f'主日{n} {no["t"]}',body,desc=f'海德堡要理问答主日{n}：{no["t"]}——{no["k"]}')
 for ld in D['hc']: ld_page(ld)
 print('LD pages done')

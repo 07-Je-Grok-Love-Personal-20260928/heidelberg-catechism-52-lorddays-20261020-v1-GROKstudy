@@ -6,7 +6,7 @@ D=json.load(open(os.path.join(ROOT,'data.json')))
 SER=json.load(open(os.path.join(ROOT,'sermons.json')))
 from notes1 import N as _a; from notes2 import N as _b; from notes3 import N as _c
 N={**_a,**_b,**_c}
-VERSION='v7'; DATE='2026-10-23'
+VERSION='v8'; DATE='2026-10-23'
 REPO='heidelberg-catechism-52-lorddays-GROKstudy'
 CCI='https://ccifellowship.org'
 def esc(s): return html.escape(s,quote=True)
@@ -51,8 +51,8 @@ LOGO='<svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGrad
 
 from notes5 import KQ,T
 from bs4 import BeautifulSoup, NavigableString
-NAV=[('index.html','🏠','首页'),('bible.html','📖','圣经与圣约'),('history.html','🗺️','历史地理'),('lorddays.html','📅','52主日'),('texts/index.html','📜','原文'),('compare.html','⚖️','对比'),('memory.html','🧠','速记'),('search.html','🔎','搜索')]
-GNAV=[('index.html','🏠 首页'),('bible.html','📖 圣经与圣约'),('history.html','🗺️ 历史地理'),('lorddays.html','📅 52主日总览'),('texts/index.html','📜 原文中心'),('texts/hc.html','　📜 海德堡要理问答'),('texts/bc.html','　🛡️ 比利时信条'),('texts/cd.html','　🌷 多特信经'),('texts/creeds.html','　⛪ 三大普世信经'),('compare.html','⚖️ 三项信条对比'),('memory.html','🧠 速记中心'),('search.html','🔎 全文搜索'),('sources.html','🔗 资料与说明'),('changelog.html','🆕 版本更新')]
+NAV=[('index.html','🏠','首页'),('bible.html','📖','圣经与圣约'),('history.html','🏰','历史'),('maps.html','🗺️','地图'),('lorddays.html','📅','52主日'),('texts/index.html','📜','原文'),('compare.html','⚖️','对比'),('memory.html','🧠','速记'),('search.html','🔎','搜索')]
+GNAV=[('index.html','🏠 首页'),('bible.html','📖 圣经与圣约'),('history.html','🏰 历史地理'),('maps.html','🗺️ 历史地图集'),('geo-bible.html','　🏜️ 圣经地理'),('lorddays.html','📅 52主日总览'),('texts/index.html','📜 原文中心'),('texts/hc.html','　📜 海德堡要理问答'),('texts/bc.html','　🛡️ 比利时信条'),('texts/cd.html','　🌷 多特信经'),('texts/creeds.html','　⛪ 三大普世信经'),('compare.html','⚖️ 三项信条对比'),('memory.html','🧠 速记中心'),('marks.html','🖍️ 笔记标记系统'),('search.html','🔎 全文搜索'),('sources.html','🔗 资料与说明'),('changelog.html','🆕 版本更新')]
 
 # ---------- v4: ONE canonical title + icon table for all 52 Lord's Days ----------
 LDI={1:'✝️',2:'🪞',3:'🍎',4:'⚖️',5:'🤝',6:'👑',7:'🔑',8:'🔺',9:'🌍',10:'🛡️',11:'🌟',12:'🫒',13:'👶',14:'🌱',15:'🩸',16:'⚰️',17:'🌅',18:'☁️',19:'🏛️',20:'🕊️',21:'⛪',22:'🌄',23:'📜',24:'🎁',25:'📖',26:'💧',27:'👪',28:'🍞',29:'🍷',30:'🚫',31:'🗝️',32:'🌿',33:'🔄',34:'🪨',35:'🗿',36:'🗣️',37:'🤚',38:'🕯️',39:'👨‍👩‍👧',40:'❤️‍🩹',41:'💍',42:'💰',43:'🗨️',44:'💭',45:'🙏',46:'👨‍👧',47:'✨',48:'🏰',49:'🧭',50:'🌾',51:'🤲',52:'⚔️'}
@@ -76,7 +76,7 @@ def sec(id,ico,title,inner,cls=''):
     title=re.sub(r'^[一二三四五六七八九十]+、','',title)
     return f'<section class="sec {cls}"><h2 id="{id}"><span class="ico">{ico}</span>{title}</h2>{inner}</section>'
 # ---------- marking system ----------
-MD=[(r'\*\*(.+?)\*\*','mk-b'),(r'==(.+?)==','mk-k'),(r'~~(.+?)~~','mk-w'),(r'__(.+?)__','mk-u'),(r'::(.+?)::','mk-d'),(r'!!(.+?)!!','mk-r')]
+MD=[(r'\*\*(.+?)\*\*','mk-b'),(r'==(.+?)==','mk-k'),(r'~~(.+?)~~','mk-w'),(r'__(.+?)__','mk-u'),(r'::(.+?)::','mk-d'),(r'!!(.+?)!!','mk-r'),(r'@@(.+?)@@','mk-p'),(r'##(.+?)##','mk-l'),(r'%%(.+?)%%','mk-t'),(r'\^\^(.+?)\^\^','mk-bg')]
 def md(s):
     s=esc(s)
     for pat,c in MD: s=re.sub(pat,lambda m:f'<span class="{c}">{m.group(1)}</span>',s)
@@ -85,29 +85,38 @@ GLOSS=[(t,'mk-u') for t in ['恩典之约','行为之约','救赎之约','生命
       [(t,'mk-d') for t in ['罗马天主教','罗马教','特伦托','重洗派','路德宗','路德派','亚米念','阿民念','抗辩派','伯拉纠','苏西尼','亚流','变质说','弥撒','普救论','完美主义','律法主义','反律主义','神秘主义','自由主义','成功神学']]+\
       [(t,'mk-k') for t in ['唯独恩典','唯独信心','唯独基督','唯独圣经','唯一的安慰']]+\
       [(t,'mk-g') for t in ['安慰','赦罪','永生','应许','白白','平安','得救的确据']]
+HIST=[(t,'mk-p') for t in ['乌尔西努','俄利维亚努','腓特烈三世','腓德烈三世','加尔文','路德','慈运理','布灵格','布塞','墨兰顿','贝扎','拉斯基','达提努斯','阿米念','亚米念','戈马尔','博格曼','拉斯科','约翰·拉斯科','亚伯拉罕','摩西','保罗']]+\
+     [(t,'mk-l') for t in ['海德堡','普法尔茨','巴拉丁','维滕堡','苏黎世','日内瓦','斯特拉斯堡','特里尔','布雷斯劳','埃姆登','多特','多德雷赫特','伦敦','法兰克福','韦塞尔','美因茨','奥格斯堡','荷兰','尼德兰','莱茵河','西奈','耶路撒冷','哥林多','以弗所','罗马','安提阿','腓立比','雅典']]
+HRE=re.compile('|'.join(sorted({re.escape(t) for t,_ in HIST},key=len,reverse=True))+r'|(?<!\d)1[5-6]\d\d(?:[–-]\d{2,4})?年(?:代)?')
+HCL=dict(HIST)
 GRE=re.compile('|'.join(sorted({re.escape(t) for t,_ in GLOSS},key=len,reverse=True)))
 GCL=dict(GLOSS)
 REFRE=re.compile(r'(?<![\u4e00-\u9fa5])(?:创|出|利|民|申|书|士|得|撒上|撒下|王上|王下|代上|代下|拉|尼|斯|伯|诗|箴|传|歌|赛|耶|哀|结|但|何|珥|摩|俄|拿|弥|鸿|哈|番|该|亚|玛|太|可|路|约|徒|罗|林前|林后|加|弗|腓|西|帖前|帖后|提前|提后|多|门|来|雅|彼前|彼后|约壹|约贰|约叁|犹|启)\s?\d+[:：]\d+(?:[\-–,，]\d+)*')
-SKIP_ANC={'sortq','clozebox','qa','reading','creed','fc','verb','co-gold','tbl','chip','mn','src','toc','gnav','nomk','legend','mermaid','tools','opt','ld','tabs'}
+SKIP_ANC={'cmap','stops','rtl','lmbar','ldlinks','tlm','sortq','clozebox','qa','reading','creed','fc','verb','co-gold','tbl','chip','mn','src','toc','gnav','nomk','legend','mermaid','tools','opt','ld','tabs'}
 def _skip(el):
     for p in el.parents:
         if p.name in ('a','h1','h2','h3','h4','script','style','svg','button','summary','table','blockquote','code','mark'): return True
         c=p.get('class') or []
         if any(x in SKIP_ANC or x.startswith('mk-') for x in c): return True
     return False
+HIST_ON=[True]
 def automark(soup):
     main=soup
     for blk in main.select('.pan p, .pan li, .card > p, .card li, .tl .card p, .co'):
         if _skip(blk) and not ('co' in (blk.get('class') or [])): continue
-        used=set(); cnt=[0]
+        used=set(); cnt=[0]; hc=[0]
         for tn in list(blk.find_all(string=True)):
             if not isinstance(tn,NavigableString) or _skip(tn): continue
             if tn.parent is not blk and any((x.startswith('mk-')) for x in (tn.parent.get('class') or [])): continue
             s=str(tn); out=[]; pos=0; changed=False
-            for m in sorted(list(GRE.finditer(s))+list(REFRE.finditer(s)),key=lambda m:m.start()):
+            hz=[('h',m) for m in HRE.finditer(s)] if HIST_ON[0] else []
+            for kind,m in sorted([('g',m) for m in GRE.finditer(s)]+[('r',m) for m in REFRE.finditer(s)]+hz,key=lambda x:(x[1].start(),x[0]!='g')):
                 if m.start()<pos: continue
                 w=m.group(0)
-                if REFRE.fullmatch(w): c='mk-ref'
+                if kind=='r': c='mk-ref'
+                elif kind=='h':
+                    if w in used or hc[0]>=3: continue
+                    c=HCL.get(w,'mk-t'); used.add(w); hc[0]+=1
                 else:
                     if w in used or cnt[0]>=4: continue
                     c=GCL[w]; used.add(w); cnt[0]+=1
@@ -174,18 +183,20 @@ def post(body):
     soup=BeautifulSoup(body,'html.parser')
     number(soup); automark(soup)
     return str(soup)
-LEGEND_ITEMS=[('<span class="mk-k">高亮</span>','核心词句'),('<span class="mk-b">粗体金</span>','重点'),('<span class="mk-u">蓝实线</span>','定义 / 术语'),('<span class="mk-w">橙波浪</span>','难点'),('<span class="mk-d">红虚线</span>','对比 / 错误立场'),('<span class="mk-r">红字</span>','警示'),('<span class="mk-ref">罗8:28</span>','经文')]
+LEGEND_ITEMS=[('<span class="mk-p">人物</span>','人物'),('<span class="mk-l">地点</span>','地点'),('<span class="mk-t">1563年</span>','年代'),('<span class="mk-k">高亮</span>','核心词句'),('<span class="mk-b">粗体金</span>','重点'),('<span class="mk-u">蓝实线</span>','定义 / 术语'),('<span class="mk-w">橙波浪</span>','难点'),('<span class="mk-d">红虚线</span>','对比 / 错误立场'),('<span class="mk-r">红字</span>','警示'),('<span class="mk-ref">罗8:28</span>','经文')]
 MKLV=[('① 核心层 · 先背这里',[('mk-k','荧光底 + 粗体','核心词句（答案主干，背诵首选）')]),
  ('② 重点层 · 有颜色的粗体',[('mk-b','金色粗体','重点概念 / 论题关键词'),('mk-g','绿色粗体','恩典 · 应许 · 安慰'),('mk-r','红色粗体','警示 · 审判 · 严重后果')]),
- ('③ 语义线 · 线型代表含义',[('mk-u','蓝色实线','定义 / 术语（盟约、称义…）'),('mk-w','橙色波浪线','难点：需要细想'),('mk-d','红色虚线','对比 / 错误立场（罗马教、抗辩派…）'),('mk-ref','经文药丸','圣经出处')])]
+ ('③ 语义线 · 线型代表含义',[('mk-u','蓝色实线','定义 / 术语（盟约、称义…）'),('mk-w','橙色波浪线','难点：需要细想'),('mk-d','红色虚线','对比 / 错误立场（罗马教、抗辩派…）'),('mk-bg','淡紫底纹','并列要点 / 结构词（三重职分、两部分…）')]),
+ ('④ 史地层 · 人 · 地 · 时',[('mk-p','紫色人物','历史人物（乌尔西努、加尔文…）'),('mk-l','青色点线','地点（海德堡、多特…）'),('mk-t','时间徽章','年代（1563年…）'),('mk-ref','经文药丸','圣经出处')])]
+CO_KINDS=[('co-core','核心','一句话论题'),('co-hard','难点','需要细想的地方'),('co-trap','易错','常见误解'),('co-gold','金句','原文逐字摘录'),('co-hook','记忆钩','一句口诀'),('co-bible','核心经文','原文脚注首条'),('co-hist','历史','背景与人物'),('co-geo','地理','地点与路线')]
 MKSEG='<span class="mkseg" role="radiogroup" aria-label="笔记标记"><button type="button" role="radio" aria-checked="false" data-mk-set="all">🖍️ 全部</button><button type="button" role="radio" aria-checked="false" data-mk-set="core">⭐ 仅核心</button><button type="button" role="radio" aria-checked="false" data-mk-set="off">🧽 关</button></span>'
 def legend_html(full=True):
     if not full:
         it=''.join(f'<span class="it"><span class="{c}">{l}</span><span class="muted small">{d.split("（")[0]}</span><b class="mkn" data-mkc="{c}"></b></span>' for _,rows in MKLV for c,l,d in rows)
         return f'<div class="legend nomk">{it}'+MKSEG+'<span class="small muted">(M 键循环)</span></div>'
-    lv=''.join(f'<div class="lv"><h5>{h}</h5>'+''.join(f'<div class="rw"><span class="s"><span class="{c}">{l}</span></span><span class="small">{esc(d)}</span></div>' for c,l,d in rows)+'</div>' for h,rows in MKLV)
-    co='<div class="grid g4" style="margin-top:10px">'+''.join(f'<div class="co {c} sample" style="margin:0"><b class="lab">{l}</b><span class="small">{d}</span></div>' for c,l,d in [('co-core','核心','一句话论题'),('co-hard','难点','需要细想的地方'),('co-trap','易错','常见误解'),('co-gold','金句','原文逐字摘录'),('co-hook','记忆钩','一句口诀'),('co-bible','核心经文','原文脚注首条')])+'</div>'
-    return f'<div class="mklg nomk">{lv}</div>{co}<div class="btns" style="margin-top:10px;align-items:center">'+MKSEG+'<span class="small muted">M 键循环：全部 → 仅核心（只留荧光核心词与经文） → 关</span></div><p class="small muted" style="margin:8px 0 0">规则：一种样式只表达一种含义；原文引文只加样式标签，文字一字不改（逐字校验 0 差异）；五套配色下颜色自动适配。</p>'
+    lv=''.join(f'<div class="lv"><h5>{h}</h5>'+''.join(f'<button type="button" class="rw" data-mkf="{c}" title="只突出这一种标记（再点取消）"><span class="s"><span class="{c}">{l}</span></span><span class="small">{esc(d)}</span><b class="mkn" data-mkc="{c}"></b></button>' for c,l,d in rows)+'</div>' for h,rows in MKLV)
+    co='<div class="grid g4" style="margin-top:10px">'+''.join(f'<div class="co {c} sample" style="margin:0"><b class="lab">{l}</b><span class="small">{d}</span></div>' for c,l,d in CO_KINDS)+'</div>'
+    return f'<div class="mklg nomk">{lv}</div>{co}<div class="btns" style="margin-top:10px;align-items:center">'+MKSEG+'<span class="small muted">M 键循环：全部 → 仅核心 → 关 · 点击图例任一行＝只聚焦这一种标记</span></div><p class="small muted" style="margin:8px 0 0">规则：一种样式只表达一种含义；原文引文只加样式标签，文字一字不改（逐字校验 0 差异）；五套配色下颜色自动适配。</p>'
 def callout(kind,label,html_):
     return f'<div class="co co-{kind} nolv"><b class="lab">{label}</b>{html_}</div>'
 def gnav(pre,path):
@@ -260,7 +271,7 @@ def page(path,title,body,desc='',head=''):
 <main id="main"><div class="wrap">{body}
 <footer class="foot">📚 信条、信经原文一字不改地引自 <a href="{CCI}/books/book-of-praise">基督教华人网络团契 ccifellowship.org《中国改革宗敬拜手册》(2015)</a>，版权归原出版委员会所有，此处仅作学习引用并逐条注明出处。解读部分为本站原创学习笔记（未经神学家审阅），持守欧陆改革宗三项联合信条。· <a href="{pre}sources.html">资料与说明</a> · <a href="{pre}changelog.html">版本 {VERSION} · {DATE}</a> · <a href="https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}">GitHub 源码</a></footer>
 </div></main></div>
-<div class="fab"><button class="ibtn" id="topBtn" title="回到顶部" aria-label="回到顶部">⬆</button></div>
+<nav class="fab navc" id="navc" aria-label="快捷导航"><div class="nv-items" id="nvItems"><button type="button" class="nb" data-nv="back" title="后退 ( [ )" aria-label="后退">←</button><button type="button" class="nb" data-nv="fwd" title="前进 ( ] )" aria-label="前进">→</button><a class="nb" href="{pre}index.html" data-nv="home" title="主页 (H)" aria-label="主页">⌂</a><button type="button" class="nb" id="topBtn" data-nv="top" title="到顶部 (G)" aria-label="到顶部">↑</button><button type="button" class="nb" data-nv="bottom" title="到底部 (Shift+G)" aria-label="到底部">↓</button><button type="button" class="nb" data-nv="help" title="快捷键 (?)" aria-label="快捷键说明">⌨</button></div><button type="button" class="nb nv-tg" id="nvTg" aria-expanded="false" aria-controls="nvItems" title="快捷导航 (N)" aria-label="快捷导航">🧭</button></nav>
 <script src="{pre}assets/js/app.js" defer data-root="{pre}"></script></body></html>'''
     fp=os.path.join(SITE,path); os.makedirs(os.path.dirname(fp),exist_ok=True)
     open(fp,'w').write(doc)

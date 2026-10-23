@@ -28,8 +28,22 @@ def gantt():
         o.append(f'<line x1="{X(yv):.0f}" x2="{X(yv):.0f}" y1="2" y2="136" style="stroke:var(--bd)"/><text x="{X(yv):.0f}" y="148" text-anchor="middle" style="fill:var(--muted);font-size:10px">{yv}</text>')
     o.append('</svg>'); return ''.join(o)
 his+=sec('timeline','⏳','时间线（1386–2015）：五个时期 · 点击圆点跳转','<div class="card reveal" style="margin-bottom:14px"><h3 id="tl-gantt">📊 五个时期一览（1650 年后轴线压缩）</h3><div class="chart mm">'+gantt()+'</div></div>'+timeline_html())
-his+=sec('geo','🗺️','地理：交互地图 + 地点卡片（与主日相连）','<div class="btns" style="margin-bottom:10px"><span class="small muted" style="align-self:center">路线开关：</span><button class="btn pri" data-route="u">🎓 乌尔西努求学</button><button class="btn pri" data-route="h">📜 要理问答北传</button><button class="btn pri" data-route="b">🛡️ 比利时信条之路</button><button class="btn pri" data-route="s">🍞 圣餐之争</button></div><div id="map" class="reveal"></div><p class="small muted">底图 © OpenStreetMap；圆形区域仅为示意。时间线的“时期”按钮会同步淡化地图上不属于该时期的地点。</p><h3 id="places">📍 地点卡片（21 处）</h3>'+places_html())
+import mapsvg, build_maps as BM
+_LP={'诺伊施塔特':'l','弗兰肯塔尔':'b','瓦朗谢讷':'b','图尔奈':'l','莱顿':'t','阿姆斯特丹':'r','多德雷赫特':'l','安特卫普':'r','韦瑟尔':'r','马尔堡':'r','赫博恩':'t','特里尔':'l','伦敦':'r','埃姆登':'r'}
+ERAY={'bg':'1386–1555','pf':'1556–1583','nl':'1561–1581','dt':'1609–1619','lg':'1622–'}
+HMAP=dict(id='hist',page='history',ico='🗺️',title='地理：交互地图 + 地点卡片',short='21 个地点',bbox=(-1.5,45.4,18.2,54.4),
+  places=[('p%d'%i,t.split(' ')[0],' '.join(t.split(' ')[1:]),lo,la,ERAY[e],d,EC[e][4:-1],_LP.get(t.split(' ')[0],'r'),e) for i,(la,lo,t,e,d,ls) in enumerate(PLACES)],
+  routes=[('u','🎓 乌尔西努求学','--intro','dash',['p6','p1','p3','p0'],'布雷斯劳 → 维滕堡 → 苏黎世 → 海德堡'),('h','📜 要理问答北传','--grat','solid',['p0','p16','p17','p19'],'海德堡 → 韦瑟尔 → 埃姆登 → 多特'),
+          ('b','🛡️ 比利时信条之路','--misery','dash',['p12','p14','p17','p19'],'图尔奈 → 安特卫普 → 埃姆登 → 多特'),('s','🍞 圣餐之争','--gold','dot',['p2','p3','p4','p0'],'马尔堡 → 苏黎世 / 日内瓦 → 海德堡')],
+  regions=[('选帝侯普法尔茨',8.2,49.35,70,'--deliv'),('北尼德兰',5.0,51.9,110,'--grat'),('南尼德兰',3.6,50.6,60,'--misery')],lds=[],culture=[],story=[],
+  inset=dict(bbox=(7.7,49.1,9.0,49.75),keys=['p0','p9','p10'],at='br',w=.26,label='海德堡周边'))
+_cm=mapsvg.concept(HMAP)
+_rtl='<div class="rtl" role="group" aria-label="路线开关">'+''.join(f'<button type="button" class="rtb on" data-rt="hist:{r[0]}" style="--c:var({r[2]})" aria-pressed="true" title="{esc(r[5])}"><i class="sw {r[3]}"></i>{esc(r[1])}</button>' for r in HMAP['routes'])+'<button type="button" class="rtb play" data-play="hist">▶ 播放路线</button></div>'
+his+=sec('geo','🗺️','地理：概念图 + 实时地图 + 地点卡片（与主日相连）',callout('geo','地理',md('**三条水流汇向一处**：瑞士的改革宗神学（苏黎世、日内瓦）、萨克森的路德宗传统（维滕堡）与尼德兰的难民教会，在莱茵河—内卡河交汇的==海德堡==相遇，又沿莱茵河北上，在==多特==汇合。'))+
+  f'<div id="map" class="mpair"><figure class="mcard cm reveal"><figcaption>🎨 概念示意图 <span class="small muted">· 动画路线 · 编号地点</span></figcaption>{_cm}</figure><figure class="mcard lv"><figcaption>🛰️ 实时交互地图 <span class="small muted">· 拖动 / 双指缩放 · 点击地点</span></figcaption>{BM.live_box(HMAP)}</figure></div>'+_rtl+
+  '<p class="small muted">时间线的“时期”按钮会同步淡化两幅地图上不属于该时期的地点；地点卡片的“在地图上查看”会让实时地图飞到该处。更多专题地图见 <a href="maps.html">🗺️ 历史地图集</a> 与 <a href="geo-bible.html">🏜️ 圣经地理</a>。</p>'+BM.mapdef(HMAP)+
+  '<h3 id="places">📍 地点卡片（21 处）</h3>'+places_html())
 his+=sec('people','👥','四、人物与图像',pp)
 his+=sec('culture','🏞️','区域文化：六个舞台',regions_html())
-his+='<script>(function(){var el=document.getElementById("map");function fail(){el.innerHTML="<p style=padding:20px>地图需联网加载 Leaflet / OpenStreetMap。</p>"}function go(){var l=document.createElement("link");l.rel="stylesheet";l.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(l);var sc=document.createElement("script");sc.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";sc.onerror=fail;sc.onload=function(){'+mapjs()+'};document.head.appendChild(sc)}if("IntersectionObserver" in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();go()}},{rootMargin:"600px"});io.observe(el)}else go()})()</script>'
-page('history.html','历史、地理与文化',his,'海德堡要理问答的时间线、故事线、地图与文化背景',head='<link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>')
+his+='<script>window.hcFly=function(i){window.hcHL&&hcHL("hist","p"+i,1)};window.hcMapEra=function(e){document.querySelectorAll("svg.cmap[data-cm=hist] .pm").forEach(function(g){g.classList.toggle("dim",e!=="all"&&g.dataset.era!==e)});dispatchEvent(new CustomEvent("hcera",{detail:{map:"hist",era:e}}))}</script>'+BM.MAPJS('')
+page('history.html','历史、地理与文化',his,'海德堡要理问答的时间线、故事线、地图与文化背景',head='')

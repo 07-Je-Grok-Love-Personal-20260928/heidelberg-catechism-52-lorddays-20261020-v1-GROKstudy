@@ -18,10 +18,12 @@ for t,v in T.items():
         for acc in ['intro','misery','deliv','grat','gold','hard','key','teal','mk-bold','mk-def','mk-warn','mk-ref','mk-grace']:
             if acc in v: r[f'{acc}/{surf}']=cr(v[acc],v[surf])
     for acc in ['intro','misery','deliv','grat','gold','hard','teal']: r[f'ink/{acc}']=cr(v['ink'],v[acc])
+    for surf in ['bg','card','card2']: r[f'focus/{surf}*']=cr(v['focus'],v[surf])
+    r['fg/sel']=cr(v['fg'],v['sel'])
     res[t]={k:round(x,2) for k,x in r.items()}
     for k,x in r.items():
-        lim=4.5
+        lim=3 if k.endswith('*') else 4.5
         if x<lim: fails.append((t,k,round(x,2)))
     print(t,'fg/card %.1f'%r['fg/card'],'muted/card %.1f'%r['muted/card'],'min accent/card %.2f'%min(x for k,x in r.items() if k.endswith('/card') and not k.startswith(('fg','muted'))),'min ink/accent %.2f'%min(x for k,x in r.items() if k.startswith('ink/')))
 print('FAILS',len(fails)); [print(' ',f) for f in fails]
-json.dump(res,open('contrast_v6.json','w'),indent=1)
+json.dump(res,open('contrast_v7.json','w'),indent=1)

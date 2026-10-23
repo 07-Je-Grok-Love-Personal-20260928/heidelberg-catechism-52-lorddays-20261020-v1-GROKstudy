@@ -122,6 +122,22 @@ angles=[('🏛️','历史视角','1563 年普法尔茨的政治与信仰处境�
 ('🏫','教育视角','“用于教导年轻人，也为牧师和教师提供教义指南”——教会、家庭、学校三位一体的盟约教育。','memory.html')]
 bib+=sec('angles','🔭','三、八个视角看同一部要理问答','<div class="grid">'+''.join(f'<a class="card lift reveal" href="{h}"><h3>{i} {t}</h3><p class="muted">{esc(d)}</p></a>' for i,t,d,h in angles)+'</div>')
 bib+=sec('core','💎','四、本质核心：一句话、三件事、一位基督','''<div class="card reveal"><p class="mn">“我的身体和灵魂都不属于我自己，而属于我信实的救主耶稣基督。”（第1问）</p><ol class="core"><li><b>罪</b>：我必须知道我的罪恶和愁苦有多么深重（第2问）。</li><li><b>恩</b>：我怎样才能得救，并脱离这一切的罪恶和愁苦——唯独藉着真心信靠耶稣基督（第60问）。</li><li><b>谢</b>：我当如何为这样的拯救而感谢神——以真归正、遵行十诫、恒切祷告。</li></ol><p>全书的中心不是一个概念，而是一位位格：<span class="key">耶稣基督，真神真人，唯一的中保</span>。要理问答的“安慰”是客观的（基督已成就）、个人的（“我”）、群体的（“我们的父”）、末世的（“阿们”）。</p></div>''')
+# ---- v7: covenant-chain statistics (from notes7.E) ----
+from notes7 import E as E7
+import collections as _co
+OTB='创出利民申书士得撒上撒下王上王下代上代下拉尼斯伯诗箴传歌赛耶哀结但何珥摩俄拿弥鸿哈番该亚玛'
+_OT=set('创 出 利 民 申 书 士 得 撒上 撒下 王上 王下 代上 代下 拉 尼 斯 伯 诗 箴 传 歌 赛 耶 哀 结 但 何 珥 摩 俄 拿 弥 鸿 哈 番 该 亚 玛'.split())
+def _books(r): return list(dict.fromkeys(re.findall(r'([一-龥]{1,2})\s?\d',r)))
+def _bars(cnt,col,top=10):
+    it=cnt.most_common(top); mx=it[0][1]
+    return ''.join(f'<div class="bst"><span class="small"><b>{esc(b)}</b></span><span class="t"><span class="barx" style="background:{col};width:{100*c/mx:.0f}%"></span></span><span class="pc small muted">{c}</span></div>' for b,c in it)
+_ot=_co.Counter(b for n in E7 for b in _books(E7[n]['ch'][0][1]))
+_nt=_co.Counter(b for n in E7 for b in _books(E7[n]['ch'][1][1]))
+_tot=_co.Counter(b for n in E7 for i in range(3) for b in _books(E7[n]['ch'][i][1]))
+_otn=sum(c for b,c in _tot.items() if b in _OT); _ntn=sum(c for b,c in _tot.items() if b not in _OT)
+bib+=sec('chainstat','🧬','圣约链统计：52 个“应许 → 成全 → 今天”从哪里来',f'''<p class="muted">每个主日页面都有一条三环“圣约链”（旧约应许 → 在基督里成全 → 今天的教会与我）。下面统计这 52 条链所引用的书卷（每主日每卷只计一次），看整本圣经如何汇聚到要理问答。</p>
+<div class="grid g2"><div class="card reveal"><h3>📜 旧约应许：前 10 卷</h3>{_bars(_ot,'var(--intro)')}</div><div class="card reveal"><h3>✝️ 基督成全：前 10 卷</h3>{_bars(_nt,'var(--misery)')}</div></div>
+<div class="card reveal" style="margin-top:14px"><h3>⚖️ 全部引用：旧约 {_otn} 次 · 新约 {_ntn} 次</h3><div class="ostrip" role="img" aria-label="旧约 {_otn} 新约 {_ntn}"><span style="flex:{_otn};background:var(--intro)">旧约 {_otn}</span><span style="flex:{_ntn};background:var(--grat)">新约 {_ntn}</span></div><p class="small muted" style="margin:8px 0 0">书卷缩写依和合本。统计为本站学习笔记的引用，并非要理问答原文的经文脚注。</p></div>''')
 page('bible.html','圣经神学与圣约神学',bib,'从整本圣经与圣约神学看海德堡要理问答')
 # ---------------- LORDDAYS
 lds=f'''<section class="hero reveal"><span class="chip">📅 52 主日 · 129 问</span><h1>52 主日总览</h1><p class="lead">已学完 <b id="progressCount" class="key">0</b> / 52</p><div style="height:10px;border-radius:10px;background:var(--card2);overflow:hidden"><div id="progressBar" style="height:100%;width:100%;transform:scaleX(0);transform-origin:0 50%;background:linear-gradient(90deg,var(--intro),var(--deliv),var(--grat));transition:transform 1s"></div></div>
@@ -130,6 +146,8 @@ lds=f'''<section class="hero reveal"><span class="chip">📅 52 主日 · 129 �
 lds+=sec('grid','🗂️','全部主日（按 17 个主题分组）',ldgrid_groups())
 rows=''.join(f'<tr><td><a href="ld/{ld["n"]:02d}.html">{LDI[ld["n"]]} 主日{ld["n"]}</a></td><td>Q{qrange(ld)[0]}–{qrange(ld)[1]}</td><td><span class="chip {part(ld["n"])[0]}">{part(ld["n"])[1]}</span></td><td>{esc(" › ".join(ld["crumbs"][1:]) or "—")}</td><td>{"、".join(str(x) for x in N[ld["n"]]["bc"]) or "—"}</td><td>{len(N[ld["n"]]["cd"]) or "—"}</td><td>{"、".join(str(x) for x in N[ld["n"]]["wsc"]) or "—"}</td></tr>' for ld in D['hc'])
 lds+=sec('heat','🔥','交叉引用热力图：哪些主日与其他信条联系最密',f'<div class="card reveal"><div class="chart mm">{xheat()}</div><p class="small muted" style="margin:6px 0 0">颜色越深＝本站为该主日列出的对照越多（比利时信条条数 / 多特信经段落 / 威斯敏斯特问数）；点击格子进入主日。</p></div>')
+_qr=''.join(f'<tr><td><a href="ld/{n:02d}.html">{LDI[n]} {n}</a></td><td><span class="chip {part(n)[0]}" style="font-size:11px">{part(n)[1]}</span> {esc(E7[n]["q"])}</td>'+''.join(f'<td class="small">{esc(E7[n]["ch"][i][1])}</td>' for i in range(3))+'</tr>' for n in range(1,53))
+lds+=sec('qchain','❓','52 个问题 · 圣约链一览',f'<p class="muted small">每个主日回答一个问题；右边三栏是该主日“圣约链”的经文：📜 旧约应许 → ✝️ 在基督里成全 → ⛪ 今天的教会与我（本站学习笔记）。</p><div class="tbl qct"><table><thead><tr><th>主日</th><th>本主日回答的问题</th><th>📜 应许</th><th>✝️ 成全</th><th>⛪ 今天</th></tr></thead><tbody>{_qr}</tbody></table></div>')
 lds+=sec('table','📊','总表：结构与信条对照',f'<div class="tbl"><table><thead><tr><th>主日</th><th>问答</th><th>部分</th><th>子目</th><th>比利时信条</th><th>多特</th><th>WSC</th></tr></thead><tbody>{rows}</tbody></table></div>')
 page('lorddays.html','52主日总览',lds,'海德堡要理问答52主日总览')
 print('pages part1 done')

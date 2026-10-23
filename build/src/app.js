@@ -22,7 +22,7 @@ ready(()=>{
  addEventListener('keydown',e=>{if(e.key==='Escape'&&thp?.classList.contains('open')){thp.classList.remove('open');thb.focus()}});
  /* ---------- v7: one scroll-state helper. During a scroll the ONLY work is a flag + timer; everything else waits for scrollend ---------- */
  const sky=$('.sky');const SC={on:false,t:0,q:[]};const HAS_END='onscrollend' in window;
- const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;root.classList.remove('scr');const nvc=document.getElementById('navc');if(nvc)nvc.classList.remove('dim');if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f())};
+ const scEnd=()=>{clearTimeout(SC.t);SC.t=0;if(!SC.on)return;SC.on=false;root.classList.remove('scr');const nvc=document.getElementById('navc');if(nvc)nvc.classList.remove('dim');if(sky&&!document.hidden)sky.classList.remove('paused');const q=SC.q;SC.q=[];q.forEach(f=>f());if(typeof schedPL==='function')setTimeout(schedPL,600)};
  const shield=document.createElement('div');shield.id='scrshield';shield.setAttribute('aria-hidden','true');document.body.appendChild(shield);
  const unshield=()=>root.classList.remove('scr');let px=-1,py=-1;shield.addEventListener('pointermove',e=>{if(px<0){px=e.clientX;py=e.clientY;return}if(Math.abs(e.clientX-px)+Math.abs(e.clientY-py)>4)unshield()},{passive:true});shield.addEventListener('pointerdown',unshield,{passive:true});
  const arm=d=>{clearTimeout(SC.t);SC.t=setTimeout(()=>{const q=performance.now()-SC.last;if(q<380)arm(400-q);else scEnd()},d)};
@@ -31,10 +31,12 @@ ready(()=>{
  const afterScroll=f=>{if(SC.on){if(!SC.q.includes(f))SC.q.push(f)}else f()};
  /* v9: idle pre-layout — render content-visibility sections one at a time while the reader is NOT scrolling, nearest-below first,
     so a scroll never has to lay out a fresh section mid-gesture (the main source of 40–90 ms frames at 6× CPU) */
- const preLay=()=>{const ss=[...document.querySelectorAll('main section.sec:not(.ncv)')];if(!ss.length)return;const vh=innerHeight;
-  let best=null,bd=1e9;for(const s of ss){const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}
-  best.classList.add('ncv');const next=()=>afterScroll(()=>idle(preLay));if('requestIdleCallback' in window)requestIdleCallback(next,{timeout:2000});else setTimeout(next,120)};
- addEventListener('load',()=>setTimeout(()=>afterScroll(()=>idle(preLay)),900),{once:true});
+ let PL=0;const preLay=()=>{PL=0;const vh=innerHeight;let best=null,bd=1e9;
+  for(const s of document.querySelectorAll('main section.sec:not(.ncv):not(.nopl)')){if(s.querySelector('svg.cmap,.mapbox,canvas')||s.querySelectorAll('svg').length>3){s.classList.add('nopl');continue}
+   const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}
+  if(!best)return;best.classList.add('ncv');schedPL()};
+ const schedPL=()=>{if(PL)return;PL=1;const next=()=>afterScroll(()=>idle(preLay));if('requestIdleCallback' in window)requestIdleCallback(next,{timeout:2000});else setTimeout(next,120)};
+addEventListener('load',()=>setTimeout(schedPL,900),{once:true});
  document.addEventListener('visibilitychange',()=>{if(sky)sky.classList.toggle('paused',document.hidden||SC.on)});
  /* ---------- marks toggle ---------- */
  const MKS=['all','core','off'],MKT={all:'🖍️ 标记：全部',core:'⭐ 标记：仅核心（荧光核心词 + 经文）',off:'🧽 标记：关（纯净阅读）'};

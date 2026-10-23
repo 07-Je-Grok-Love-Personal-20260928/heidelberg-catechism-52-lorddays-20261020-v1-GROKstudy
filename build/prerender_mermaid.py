@@ -4,7 +4,7 @@ import glob,re,json,os
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from common import SITE,HEXVAR
-MJS='/tmp/lh/node_modules/mermaid/dist/mermaid.min.js'
+MJS='/workspace/tools/node_modules/mermaid/dist/mermaid.min.js'
 PH={'#010101':'var(--card2)','#020202':'var(--fg)','#030303':'var(--bd)','#040404':'var(--muted)','#050505':'var(--card)','#060606':'var(--bg2)','#070707':'var(--card)'}
 TV=dict(fontFamily='PingFang SC, Microsoft YaHei, Noto Sans SC, sans-serif',primaryColor='#010101',primaryTextColor='#020202',primaryBorderColor='#030303',
         lineColor='#040404',secondaryColor='#050505',tertiaryColor='#060606',textColor='#020202',mainBkg='#010101',nodeBorder='#030303',

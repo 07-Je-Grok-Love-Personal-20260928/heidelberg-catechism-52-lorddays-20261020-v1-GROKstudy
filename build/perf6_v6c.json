@@ -1,0 +1,117 @@
+{
+ "desktop2x/index.html": {
+  "fps": 58.5,
+  "p95": 16.8,
+  "long50": 1,
+  "task_ms": 873,
+  "style_ms": 134,
+  "layout_ms": 97,
+  "script_ms": 29,
+  "paint_ms": 588,
+  "layers": null,
+  "dom": 1048,
+  "scrolled": 4834,
+  "pb": {
+   "UpdateLayoutTree": 128,
+   "PrePaint": 100,
+   "Layerize": 63,
+   "Layout": 95,
+   "Paint": 82,
+   "RasterTask": 117,
+   "Decode Image": 4,
+   "PaintImage": 0
+  }
+ },
+ "desktop2x/ld/01.html": {
+  "fps": 58.0,
+  "p95": 16.8,
+  "long50": 0,
+  "task_ms": 1295,
+  "style_ms": 188,
+  "layout_ms": 161,
+  "script_ms": 43,
+  "paint_ms": 951,
+  "layers": null,
+  "dom": 1023,
+  "scrolled": 5652,
+  "pb": {
+   "UpdateLayoutTree": 183,
+   "PrePaint": 119,
+   "Layerize": 114,
+   "RasterTask": 136,
+   "Decode Image": 4,
+   "Layout": 159,
+   "Paint": 235,
+   "PaintImage": 0
+  }
+ },
+ "desktop2x/texts/hc.html": {
+  "fps": 54.5,
+  "p95": 33.3,
+  "long50": 1,
+  "task_ms": 2213,
+  "style_ms": 308,
+  "layout_ms": 259,
+  "script_ms": 66,
+  "paint_ms": 1766,
+  "layers": null,
+  "dom": 3724,
+  "scrolled": 14400,
+  "pb": {
+   "UpdateLayoutTree": 303,
+   "PrePaint": 278,
+   "Layerize": 160,
+   "Paint": 438,
+   "PaintImage": 4,
+   "RasterTask": 324,
+   "Decode Image": 5,
+   "Layout": 255
+  }
+ },
+ "desktop2x/history.html": {
+  "fps": 57.5,
+  "p95": 16.8,
+  "long50": 2,
+  "task_ms": 1695,
+  "style_ms": 249,
+  "layout_ms": 79,
+  "script_ms": 156,
+  "paint_ms": 1434,
+  "layers": null,
+  "dom": 1133,
+  "scrolled": 10933,
+  "pb": {
+   "UpdateLayoutTree": 241,
+   "PrePaint": 151,
+   "Paint": 427,
+   "PaintImage": 5,
+   "Layerize": 125,
+   "RasterTask": 397,
+   "Decode Image": 12,
+   "Layout": 76
+  }
+ },
+ "desktop2x/memory.html": {
+  "fps": 58.7,
+  "p95": 16.8,
+  "long50": 0,
+  "task_ms": 952,
+  "style_ms": 150,
+  "layout_ms": 100,
+  "script_ms": 31,
+  "paint_ms": 751,
+  "layers": null,
+  "dom": 969,
+  "scrolled": 6938,
+  "pb": {
+   "UpdateLayoutTree": 148,
+   "PrePaint": 93,
+   "Layerize": 66,
+   "Paint": 168,
+   "PaintImage": 1,
+   "RasterTask": 171,
+   "Decode Image": 4,
+   "Layout": 100
+  }
+ }
+}

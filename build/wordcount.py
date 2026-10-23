@@ -2,7 +2,7 @@
 import sys,glob,os,re,json
 from bs4 import BeautifulSoup
 ROOT=sys.argv[1]; OUT=sys.argv[2] if len(sys.argv)>2 else None
-VERB='.qa .q, .qa .a, .qa .refs, .art, .creed, .reading, blockquote, .co-gold, .fc .b, script, style, svg, .mermaid, #ldgame, .tbl.actm'
+VERB='.qa .q, .qa .a, .qa .refs, .art, .creed, .reading, blockquote, .co-gold, .fc .b, script, style, svg, .mermaid, #ldgame, .tbl.actm, .mklgd, .legend, .legend-mini, .mkseg'
 def count(t):
     cjk=len(re.findall(r'[\u4e00-\u9fff]',t)); lat=len(re.findall(r'[A-Za-z]+',t)); return cjk+lat
 res={}

@@ -1,7 +1,7 @@
 import asyncio,sys,json
 from playwright.async_api import async_playwright
 BASE=sys.argv[1] if len(sys.argv)>1 else 'http://localhost:8765/'
-pages=['index.html','bible.html','history.html','lorddays.html','compare.html','memory.html','sources.html','search.html','changelog.html','texts/index.html','texts/hc.html','texts/bc.html','texts/cd.html','texts/creeds.html']+[f'ld/{n:02d}.html' for n in range(1,53)]
+pages=['index.html','bible.html','history.html','lorddays.html','compare.html','memory.html','sources.html','search.html','changelog.html','texts/index.html','texts/hc.html','texts/hc-1.html','texts/hc-2.html','texts/hc-3.html','texts/hc-4.html','texts/hc-5.html','texts/hc-all.html','texts/bc.html','texts/cd.html','texts/creeds.html']+[f'ld/{n:02d}.html' for n in range(1,53)]
 widths=[int(x) for x in sys.argv[2].split(',')] if len(sys.argv)>2 else [375,768,1024,1440]
 TH=sys.argv[3] if len(sys.argv)>3 else None
 JS='''()=>{const W=document.documentElement.clientWidth;const res={sw:document.documentElement.scrollWidth,W,off:[]};

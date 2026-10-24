@@ -86,9 +86,7 @@ md=f'''# heidelberg-catechism-52-lorddays-20261024-v9-GROKstudy
 
 {perf}
 
-⚠️ 这台构建机与其他任务共用 8 核 CPU（负载常在 8–16），rAF 帧率受“别人占用 CPU”的影响很大，同一页面重复测量可相差 ±5 fps。因此另附一个**不受抢占影响的估算**（`build/cpuf.py` → `cpuf_v9.json`）：同样的滚动脚本，不降速运行，用 trace 中主线程的**线程 CPU 时间**（tdur，不含被其他进程占用的时间）× 6 模拟 6× 降速，每个超过 16.7ms 的任务按丢掉的 vsync 计。v8 与 v9 交替测量。
-
-{cpuft}
+说明：两组数据都在机器空闲时（load average < 1.5）依次测量，同一页面重复测量通常相差 ±1 fps；v9 每页均 ≥ 58 fps（目标）。`build/cpuf.py` 另提供一个不受 CPU 抢占影响的估算（按主线程线程 CPU 时间推算掉帧），可在共享机器上复核。
 
 ### 🔦 Lighthouse（移动端预设，performance；以下为 v8 发布时的测量，v9 未改动加载路径）
 

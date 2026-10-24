@@ -746,3 +746,4 @@ main .mk-e{position:relative}main .mk-e:hover::after{content:"背诵关键字"}
 .tleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:10px}
 .tleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .cmap.go.done :is(.rt-l,.rt-g){animation:none!important}
+html.lite section.sec>h2::after{transition:none;transform:none}

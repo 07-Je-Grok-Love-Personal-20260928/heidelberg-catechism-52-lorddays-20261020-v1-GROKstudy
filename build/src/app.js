@@ -31,12 +31,16 @@ ready(()=>{
  const afterScroll=f=>{if(SC.on){if(!SC.q.includes(f))SC.q.push(f)}else f()};
  /* v9: idle pre-layout — render content-visibility sections one at a time while the reader is NOT scrolling, nearest-below first,
     so a scroll never has to lay out a fresh section mid-gesture (the main source of 40–90 ms frames at 6× CPU) */
- let PL=0;const preLay=()=>{PL=0;const vh=innerHeight;let best=null,bd=1e9;
+ let PL=0;const pick=()=>{const vh=innerHeight;let best=null,bd=1e9;
   for(const s of document.querySelectorAll('main section.sec:not(.ncv):not(.pld)')){
-   const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}
-  if(!best)return;best.classList.add('ncv');void best.offsetHeight;/* v9.1: layout once, then hand it back to content-visibility:auto so the laid-out section is skipped for paint/layerize while off-screen (keeping it visible made Layerize 3–4× on long pages) */requestAnimationFrame(()=>setTimeout(()=>{best.classList.remove('ncv');best.classList.add('pld')},0));schedPL()};
- const schedPL=()=>{if(PL)return;PL=1;const next=()=>afterScroll(()=>idle(preLay));if('requestIdleCallback' in window)requestIdleCallback(next,{timeout:2000});else setTimeout(next,120)};
-addEventListener('load',()=>setTimeout(schedPL,900),{once:true});
+   const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}return best};
+ /* v9.1: lay out as many sections as fit in the idle deadline, then hand each back to content-visibility:auto
+    (layout is kept, so it is skipped for paint/layerize while off-screen; keeping it 'visible' made Layerize 3–4× on long pages) */
+ const preLay=dl=>{PL=0;const done=[];let n=0;
+  while(!SC.on){const b=pick();if(!b)break;b.classList.add('ncv');void b.offsetHeight;done.push(b);n++;if(!dl||dl.timeRemaining()<6||n>12)break}
+  if(!done.length)return;requestAnimationFrame(()=>setTimeout(()=>done.forEach(b=>{b.classList.remove('ncv');b.classList.add('pld')}),0));schedPL()};
+ const schedPL=()=>{if(PL)return;PL=1;if('requestIdleCallback' in window)requestIdleCallback(dl=>{if(SC.on){PL=0;SC.q.push(schedPL)}else preLay(dl)},{timeout:1500});else setTimeout(()=>afterScroll(()=>preLay(null)),120)};
+addEventListener('load',()=>setTimeout(schedPL,300),{once:true});
  document.addEventListener('visibilitychange',()=>{if(sky)sky.classList.toggle('paused',document.hidden||SC.on)});
  /* ---------- marks toggle ---------- */
  const MKS=['all','core','off'],MKT={all:'🖍️ 标记：全部',core:'⭐ 标记：仅核心（荧光核心词 + 经文）',off:'🧽 标记：关（纯净阅读）'};

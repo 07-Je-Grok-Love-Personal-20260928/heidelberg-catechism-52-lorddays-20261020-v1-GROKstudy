@@ -70,7 +70,7 @@ img{max-width:100%;height:auto}
 html.anim .sky i{display:block;position:absolute;left:-6vw;top:-6vh;width:112vw;height:112vh;opacity:.5;will-change:transform;pointer-events:none;
  background:radial-gradient(38vmax 32vmax at 18% 16%,var(--sky1),transparent 70%),radial-gradient(40vmax 32vmax at 84% 86%,var(--sky2),transparent 70%);
  animation:drift 48s ease-in-out infinite alternate}
-.sky.paused i{animation-play-state:paused}
+html .sky.paused i{animation-play-state:paused} /* v9.1: must out-rank html.anim .sky i */
 @keyframes drift{from{transform:translate3d(-2.5vw,-2vh,0)}to{transform:translate3d(2.5vw,2.5vh,0)}}
 /* --- topbar (one of the few blurred elements) --- */
 .topbar{position:sticky;top:0;z-index:50;height:var(--top);display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg2);border-bottom:1px solid var(--bd)}

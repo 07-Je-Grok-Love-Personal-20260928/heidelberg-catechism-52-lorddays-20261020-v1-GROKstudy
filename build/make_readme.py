@@ -12,7 +12,7 @@ for prof in ['mobile','desktop2x']:
     for u6,u7,note in MAP:
         x,y=a.get(f'{prof}/{u6}'),b.get(f'{prof}/{u7}')
         if not x or not y: continue
-        rows.append(f"| {prof} · {u7}{note} | {x['fps']} → **{y['fps']}** | {x['p95']} → **{y['p95']}** | {x['long50']} → {y['long50']} | {pk(x,'task_ms')} → **{pk(y,'task_ms')}** | {pk(x,'paint_ms')} → **{pk(y,'paint_ms')}** | {x['dom']} → {y['dom']} |")
+        rows.append(f"| {prof} · {u7}{note} | {x['fps']} → **{y['fps']}**（{' / '.join(map(str,y.get('runs',[])))}） | {x['p95']} → **{y['p95']}** | {x['long50']} → {y['long50']} | {pk(x,'task_ms')} → **{pk(y,'task_ms')}** | {pk(x,'paint_ms')} → **{pk(y,'paint_ms')}** | {x['dom']} → {y['dom']} |")
 crow=[]
 for prof in ['mobile','desktop2x']:
     for u in PG:
@@ -25,6 +25,11 @@ def lht(f6,f7):
     for u6,u7,note in MAP:
         if u6 in A and u7 in B and u7!='maps.html':
             x,y=A[u6],B[u7]; out.append(f"| {u7}{note} | {x['score']} → **{y['score']}** | {x['tbt']} → **{y['tbt']}** | {x['cls']} → **{y['cls']}** | {x['lcp']} → {y['lcp']} | {x['fcp']} → {y['fcp']} |")
+    return '| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |\n|---|---|---|---|---|---|\n'+'\n'.join(out)
+def lh89():
+    A,B=J('lh_v8.json'),J('lh_v9.json');out=[]
+    for u in B:
+        if u in A: x,y=A[u],B[u];out.append(f"| {u} | {x['score']} → **{y['score']}** | {x['tbt']} → **{y['tbt']}** | {x['cls']} → **{y['cls']}** | {x['lcp']} → {y['lcp']} | {x['fcp']} → {y['fcp']} |")
     return '| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |\n|---|---|---|---|---|---|\n'+'\n'.join(out)
 def newp():
     B=J('lh_v8.json');return '| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |\n|---|---|---|---|---|---|\n'+'\n'.join(f"| {u} | {B[u]['score']} | {B[u]['tbt']} | {B[u]['cls']} | {B[u]['lcp']} | {B[u]['fcp']} |" for u in ['maps.html','geo-bible.html','marks.html'] if u in B)
@@ -82,25 +87,17 @@ md=f'''# heidelberg-catechism-52-lorddays-20261024-v9-GROKstudy
 
 ### ⚡ 流畅度对比（v8 → v9）
 
-测量方法：`build/perf6.py`，Playwright 无头 Chromium，CDP **6 倍 CPU 降速**；`mobile` = 375×812、DPR 3、触屏，`desktop2x` = 1440×900、DPR 2；加载 2.5 秒后，用 90 次滚轮（每次 160px，间隔 33ms）连续滚动，rAF 记录帧间隔。v8（`v8` 标签的 `site/`）与 v9 在同一台机器上测量（`perf6_v8_base.json` / `perf6_v9.json`）。“每 1000px”按滚动距离归一化。
+测量方法：`build/perf6.py`，Playwright 无头 Chromium，CDP **6 倍 CPU 降速**；`mobile` = 375×812、DPR 3、触屏，`desktop2x` = 1440×900、DPR 2；加载 2.5 秒后，用 90 次滚轮（每次 160px，间隔 33ms）连续滚动，rAF 记录帧间隔。v8（`v8` 标签的 `site/`）与 v9 在同一台机器上测量（`perf6_v8_base.json` 单次；`perf6_v9.json` 为 3 次完整测量的中位数，括号内为三次结果）。“每 1000px”按滚动距离归一化。
 
 {perf}
 
-说明：两组数据都在机器空闲时（load average < 1.5）依次测量，同一页面重复测量通常相差 ±1 fps；v9 每页均 ≥ 58 fps（目标）。`build/cpuf.py` 另提供一个不受 CPU 抢占影响的估算（按主线程线程 CPU 时间推算掉帧），可在共享机器上复核。
+说明：两组数据都在机器较空闲时（load average 约 1.5–3.5，构建机与其他任务共享）依次测量，同一页面重复测量相差可达 ±2–3 fps。v9 的 24 个“页面 × 设备”组合中，23 个中位数 ≥ 58 fps；**mobile · memory.html 中位数 57.5（三次 59.4 / 57.5 / 56.6），未稳定达到 58 的目标**。v8 同法测量有 15 个低于 58，最低 42.9（desktop lorddays）。`build/cpuf.py` 另提供一个不受 CPU 抢占影响的估算，可在共享机器上复核。
 
-### 🔦 Lighthouse（移动端预设，performance；以下为 v8 发布时的测量，v9 未改动加载路径）
+### 🔦 Lighthouse（移动端预设，performance；v8 → v9）
 
-本地（`build/lh.py`，模拟 4× CPU + 慢速 4G，同一本地服务器，每页 3 次取中位数；`lh_v7b.json` / `lh_v8.json`）：
+本地（`build/lh.py`，模拟 4× CPU + 慢速 4G，同一本地服务器，每页 3 次取中位数；`lh_v8.json` / `lh_v9.json`）。v9 修正了一处 CLS 回归（空闲预排版只处理视口以下的区块），8 个页面 CLS 全部为 0：
 
-{lht('lh_v7b.json','lh_v8.json')}
-
-v8 新页（本地，同上方法；`lh_v8.json`）：
-
-{newp()}
-
-线上 Netlify（v7 站 vs v8 站，同一会话连续测量；`lh_v7_netlify8.json` / `lh_v8_netlify.json`）：
-
-{lht('lh_v7_netlify8.json','lh_v8_netlify.json')}
+{lh89()}
 
 ### 📝 字数（v6 → v7，`build/wordcount.py`，只计解说文字：汉字 + 英文词；原文问答 / 信条 / 金句不计）
 

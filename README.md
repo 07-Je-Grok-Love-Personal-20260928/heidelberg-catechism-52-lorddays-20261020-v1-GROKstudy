@@ -1,20 +1,31 @@
-# heidelberg-catechism-52-lorddays-20261023-v8-GROKstudy
+# heidelberg-catechism-52-lorddays-20261024-v9-GROKstudy
 
 > 《海德堡要理问答》52 主日全景深度解析：简体中文深度学习网站，共 129 问，持守欧陆改革宗立场（三项联合信条 + 三大普世信经）。
 
-## 🌐 当前在线访问（v8）
+## 🌐 当前在线访问（v9）
 
 | 平台 | 链接 |
 |---|---|
 | GitHub Pages | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
-| Surge | https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh |
-| Netlify | https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.netlify.app |
+| Surge | https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.surge.sh |
+| Netlify | https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.netlify.app |
 
 📦 源码仓库：https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy
-🏷️ Release：[v8](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v8) · [v7](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v7) · [v6](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v6) · [v5](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v5) · [v4](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v4) · [v3](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v3) · [v2](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v2) · [v1](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v1)
+🏷️ Release：[v9](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v9) · [v8](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v8) · [v7](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v7) · [v6](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v6) · [v5](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v5) · [v4](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v4) · [v3](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v3) · [v2](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v2) · [v1](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v1)
 📝 更新记录页：`changelog.html`（站内顶栏版本徽章）
 
-## 🆕 更新说明（v8 · 2026-10-23）
+## 🆕 更新说明（v9 · 2026-10-24）
+
+- ☁️ 流畅度（重点）：逐帧剖析真实卡顿来源后对症处理——① 滚动期间放一层透明“滚动护罩”，静止的鼠标不再触发悬停样式与提示气泡的重算（替代 v8 对整个 main 切换 pointer-events 带来的整树样式重算）；② “滚动结束”改为 380 ms 真正静止后才算（scrollend 在滚轮两格之间也会触发），图表展开、路线描线等动画不会在手势中途启动；③ 滚动一开始就把正在播放的路线动画直接定格到终点；④ 空闲时按“离视口最近者优先”逐段预排版 content-visibility 区块（地图区块除外），快速滚动时不再临时排版整段；⑤ 背景云层漂移在滚动时暂停；⑥ 所有监听均为 passive，动画只用 transform / opacity。前后对比见 README 的 perf6 表。
+- 🎨 新增五套主题（共十套）：🌸 樱花粉霞 · 🍋 柠檬薄荷 · 🔥 暮光琥珀（深色）· 🌠 极光青紫（深色）· 🖋️ 水墨朱砂。选择器改为色板预览（底色 / 卡片 / “Aa” 字色 / 两个强调色），一键切换并带淡入过渡（尊重“减少动态效果”），自动保存，首屏绘制前应用（无闪烁）；十套主题的正文、弱化文字、强调色与荧光底全部通过 WCAG AA（contrast.py 0 失败）；地图、图表、标记颜色随主题变化（深色主题自动换深色底图）。
+- 🖍️ 笔记标记 3.0：荧光笔改为“马克笔”斜切笔触；重点粗体加柔和下辉光；定义 = 实线、难点 = 波浪线、对比 = 虚线、经文 = 双下划线，线粗与间距重新调校；新增“着重号”（字下圆点，用于要义里最该背的关键词：;;词;;）；提示框加渐变底色与图标圆章。M 键开关、三层图例照常。
+- ✒️ 中文排版：标点挤压（text-spacing-trim）、中西文自动间距（text-autospace）、标题均衡换行、段落避免孤字（text-wrap: pretty）、严格断行；正文行高 1.9、问答答句行长限制约 42 字；h4 加菱形引导符，标题层级更分明。
+- 📊 新图表：52 主日总览页新增“核心词分布”堆叠条形图（22 个教义词在三大部分中的出现次数，按原文统计）；每个主日新增“🔑 关键词 × 问答”矩阵（每个关键词在本主日各问答中出现几次，圆点大小 = 次数）。
+- ✂️ 内容提炼：解说与要义重复的句子判定门槛从 0.62 降到 0.55，主日页更紧凑；原文一字未动。
+- 🔬 v9 收尾剖析（逐帧 trace）：① 预排版改为“排版一次后交还 content-visibility:auto”——布局结果保留，离屏时仍跳过绘制与分层（此前一直保持可见，长页面的 Layerize 变为 3–4 倍，移动端地图集只有 53–54 fps）；预排版在空闲期限内成批完成。② 移动端（lite）标题下划线改为静态，不再用 transform 过渡（移动端地图集 Layerize 540 → 80 ms）。③ 修正背景云层“滚动时暂停”的选择器优先级（v8 起实际上从未暂停）。结果（6× CPU 降速，3 次测量取中位数）：24 个“页面 × 设备”组合中 23 个 ≥ 58 fps，移动端速记中心（memory）为 57.5；v8 同法测量 15 个低于 58，最低 42.9。
+- ✅ 校验：原文逐字 0 差异；和合本经文 0 差异；十套主题 × 375 / 768 / 1024 / 1440 四个宽度无横向溢出；v8 Playwright 测试与目录测试通过。
+
+<details><summary>v8 更新说明</summary>
 
 - 🗺️ 地图重做：去掉不稳定的 Leaflet / OSM CDN，改用站内自托管 MapLibre GL 4.7.1（assets/vendor，BSD-3）＋站内 Natural Earth 底图（assets/geo/base.json，公有领域）。在线瓦片按 Esri 街道图 → CARTO Voyager → OpenStreetMap 顺序并行探测、自动择优、出错自动切换；全部不可达时用站内主题底图（离线可用）；地图引擎或 WebGL 不可用时显示同一幅静态示意图，不会出现空白框。另有卫星图（Esri）与“主题底图”按钮。
 - 🎨 每个地图都是“概念示意图 + 实时交互地图”成对出现：示意图（构建时由 Natural Earth 投影生成的 SVG）带渐变陆海、河流、路线描边动画、沿路线移动的光点、编号脉冲标记、指北针、比例尺、密集地区的放大镜插图，标签自动避让；实时地图与之联动（点击地点 / 路线 / ▶ 播放 / 时期筛选两边同步）。
@@ -26,6 +37,8 @@
 - 🌈 配色更活泼：五套主题都加入陆地 / 海洋 / 河流 / 标记新色变量；卡片顶部渐变色条、标题图标渐变底；地图颜色随主题切换。
 - ⚡ 流畅度：实时地图只在进入视野时加载（同时最多 3 个，超出自动释放）；示意图动画只在可见时播放一次；地图引擎与底图按需加载并由 Service Worker 缓存；CLS 保持 0。v7 → v8 性能与 Lighthouse 对比见 README。
 - ✅ 校验：原文逐字 0 差异；经文引语与和合本 0 处不符（新增地图集与圣经地理页的引语）；全部页面 × 375 / 768 / 1024 / 1440 × 5 套主题无溢出；Playwright 测试：在线地图、瓦片全部被屏蔽、引擎被屏蔽、无 WebGL 四种情况，以及导航簇（桌面 / 手机）全部通过。
+
+</details>
 
 ### 🗺️ 地图来源与回退链（v8）
 
@@ -58,52 +71,52 @@
 
 </details>
 
-### ⚡ 流畅度对比（v7 → v8）
+### ⚡ 流畅度对比（v8 → v9）
 
-测量方法：`build/perf6.py`，Playwright 无头 Chromium，CDP **6 倍 CPU 降速**；`mobile` = 375×812、DPR 3、触屏，`desktop2x` = 1440×900、DPR 2。加载后用 rAF 记录连续滚动的帧时间，并用 DevTools trace 统计主线程任务与绘制。v7（`v7` 标签的 `site/`）与 v8 在**同一台机器、同一会话**中依次测量（`perf6_v7b.json` / `perf6_v8.json`）。“每 1000px”数值按滚动距离归一化。maps.html 是 v8 新页（左列为 v7 history.html，仅供参考）。
+测量方法：`build/perf6.py`，Playwright 无头 Chromium，CDP **6 倍 CPU 降速**；`mobile` = 375×812、DPR 3、触屏，`desktop2x` = 1440×900、DPR 2；加载 2.5 秒后，用 90 次滚轮（每次 160px，间隔 33ms）连续滚动，rAF 记录帧间隔。v8（`v8` 标签的 `site/`）与 v9 在同一台机器上测量（`perf6_v8_base.json` 单次；`perf6_v9.json` 为 3 次完整测量的中位数，括号内为三次结果）。“每 1000px”按滚动距离归一化。
 
 | 设备 · 页面 | 滚动 FPS | p95 帧 ms | 长任务(>50ms) | 主线程任务 ms / 1000px | 绘制 ms / 1000px | DOM |
 |---|---|---|---|---|---|---|
-| mobile · index.html | 56.8 → **58.1** | 16.8 → **16.8** | 3 → 1 | 152 → **120** | 87 → **85** | 1060 → 1097 |
-| mobile · ld/01.html | 56.9 → **58.5** | 16.8 → **16.8** | 1 → 1 | 155 → **116** | 92 → **83** | 1108 → 1278 |
-| mobile · ld/34.html | 57.2 → **58.1** | 16.8 → **16.8** | 2 → 2 | 141 → **111** | 85 → **81** | 1116 → 1262 |
-| mobile · texts/hc-2.html | 60.0 → **60.0** | 16.8 → **16.8** | 0 → 0 | 80 → **41** | 26 → **19** | 1113 → 1134 |
-| mobile · history.html（v8 双地图） | 56.2 → **57.8** | 16.8 → **16.8** | 2 → 2 | 151 → **129** | 102 → **102** | 1127 → 1380 |
-| mobile · memory.html | 51.3 → **58.7** | 33.4 → **16.8** | 5 → 1 | 199 → **101** | 104 → **76** | 973 → 1028 |
-| mobile · maps.html（v8 新页；左列为 v7 history） | 56.2 → **57.2** | 16.8 → **16.8** | 2 → 4 | 151 → **162** | 102 → **107** | 1127 → 2798 |
-| desktop2x · index.html | 57.4 → **58.5** | 16.8 → **16.8** | 2 → 1 | 232 → **188** | 136 → **131** | 1060 → 1097 |
-| desktop2x · ld/01.html | 57.1 → **56.7** | 16.8 → **16.8** | 2 → 2 | 201 → **217** | 131 → **164** | 1108 → 1278 |
-| desktop2x · ld/34.html | 57.4 → **56.6** | 16.8 → **16.8** | 1 → 1 | 195 → **180** | 113 → **129** | 1116 → 1262 |
-| desktop2x · texts/hc-2.html | 59.0 → **59.4** | 16.8 → **16.8** | 0 → 0 | 141 → **109** | 40 → **54** | 1113 → 1134 |
-| desktop2x · history.html（v8 双地图） | 54.7 → **56.6** | 33.3 → **16.8** | 3 → 2 | 204 → **239** | 139 → **195** | 1133 → 1380 |
-| desktop2x · memory.html | 58.3 → **57.8** | 16.8 → **16.8** | 0 → 2 | 198 → **180** | 98 → **133** | 973 → 1028 |
-| desktop2x · maps.html（v8 新页；左列为 v7 history） | 54.7 → **46.4** | 33.3 → **33.4** | 3 → 5 | 204 → **383** | 139 → **311** | 1133 → 2777 |
+| mobile · index.html | 57.7 → **58.8**（58.8 / 58.5 / 59.0） | 16.8 → **16.8** | 2 → 0 | 145 → **103** | 104 → **54** | 1097 → 1202 |
+| mobile · ld/01.html | 57.1 → **59.8**（60.0 / 59.8 / 59.8） | 16.8 → **16.7** | 4 → 0 | 150 → **89** | 110 → **54** | 1278 → 1376 |
+| mobile · ld/34.html | 57.4 → **59.2**（55.6 / 59.4 / 59.2） | 16.8 → **16.8** | 2 → 0 | 135 → **95** | 96 → **56** | 1262 → 1317 |
+| mobile · texts/hc-2.html | 58.7 → **60.0**（60.0 / 59.8 / 60.0） | 16.8 → **16.7** | 0 → 0 | 78 → **51** | 46 → **14** | 1134 → 1185 |
+| mobile · history.html | 57.0 → **58.1**（58.1 / 56.2 / 59.1） | 16.8 → **16.8** | 2 → 1 | 170 → **140** | 133 → **103** | 1380 → 1431 |
+| mobile · memory.html | 58.4 → **57.5**（59.4 / 57.5 / 56.6） | 16.8 → **16.8** | 1 → 2 | 111 → **112** | 88 → **81** | 1028 → 1084 |
+| mobile · maps.html | 57.6 → **59.6**（59.4 / 59.8 / 59.6） | 16.8 → **16.8** | 3 → 0 | 151 → **112** | 101 → **54** | 2798 → 2850 |
+| mobile · geo-bible.html | 58.4 → **60.0**（59.8 / 60.0 / 60.0） | 16.8 → **16.7** | 1 → 0 | 255 → **97** | 188 → **43** | 1460 → 1511 |
+| mobile · marks.html | 59.4 → **59.6**（60.0 / 59.0 / 59.6） | 16.7 → **16.7** | 0 → 0 | 127 → **117** | 86 → **51** | 666 → 722 |
+| mobile · compare.html | 58.3 → **59.8**（60.0 / 59.8 / 58.1） | 16.8 → **16.8** | 1 → 0 | 112 → **85** | 79 → **41** | 1256 → 1307 |
+| mobile · bible.html | 59.6 → **59.6**（59.6 / 60.0 / 58.5） | 16.8 → **16.8** | 0 → 0 | 114 → **127** | 86 → **80** | 1116 → 1167 |
+| mobile · lorddays.html | 58.1 → **59.2**（59.2 / 58.8 / 59.2） | 16.8 → **16.8** | 1 → 0 | 83 → **85** | 65 → **62** | 2426 → 2634 |
+| desktop2x · index.html | 57.0 → **59.6**（59.8 / 59.6 / 59.4） | 16.8 → **16.7** | 1 → 0 | 219 → **126** | 157 → **50** | 1097 → 1202 |
+| desktop2x · ld/01.html | 52.3 → **58.8**（58.1 / 59.4 / 58.8） | 33.3 → **16.8** | 7 → 0 | 314 → **136** | 238 → **56** | 1278 → 1376 |
+| desktop2x · ld/34.html | 56.8 → **58.8**（59.6 / 58.8 / 58.4） | 16.8 → **16.7** | 1 → 1 | 188 → **111** | 140 → **65** | 1262 → 1317 |
+| desktop2x · texts/hc-2.html | 59.6 → **59.8**（59.2 / 59.8 / 59.8） | 16.8 → **16.8** | 0 → 0 | 104 → **115** | 51 → **33** | 1134 → 1185 |
+| desktop2x · history.html | 57.4 → **58.1**（59.6 / 57.7 / 58.1） | 16.8 → **16.8** | 1 → 2 | 257 → **55** | 208 → **40** | 1380 → 1431 |
+| desktop2x · memory.html | 57.3 → **59.2**（59.2 / 59.2 / 59.6） | 16.8 → **16.7** | 3 → 1 | 174 → **90** | 132 → **47** | 1028 → 1084 |
+| desktop2x · maps.html | 53.1 → **59.8**（59.8 / 59.8 / 59.8） | 33.3 → **16.7** | 6 → 0 | 269 → **71** | 198 → **39** | 2777 → 2828 |
+| desktop2x · geo-bible.html | 58.5 → **59.6**（59.6 / 59.6 / 59.2） | 16.7 → **16.8** | 2 → 0 | 655 → **82** | 495 → **35** | 1460 → 1511 |
+| desktop2x · marks.html | 54.1 → **60.0**（58.8 / 60.0 / 60.0） | 16.8 → **16.7** | 5 → 0 | 415 → **113** | 242 → **40** | 666 → 722 |
+| desktop2x · compare.html | 57.1 → **59.8**（59.8 / 59.8 / 59.6） | 16.8 → **16.7** | 0 → 0 | 205 → **78** | 150 → **42** | 1256 → 1307 |
+| desktop2x · bible.html | 57.1 → **59.8**（59.8 / 59.8 / 59.6） | 16.8 → **16.8** | 2 → 0 | 198 → **87** | 161 → **34** | 1116 → 1167 |
+| desktop2x · lorddays.html | 42.9 → **59.4**（59.4 / 59.4 / 59.4） | 50.0 → **16.8** | 14 → 0 | 342 → **76** | 294 → **36** | 2426 → 2634 |
 
-### 🔦 Lighthouse（移动端预设，performance）
+说明：两组数据都在机器较空闲时（load average 约 1.5–3.5，构建机与其他任务共享）依次测量，同一页面重复测量相差可达 ±2–3 fps。v9 的 24 个“页面 × 设备”组合中，23 个中位数 ≥ 58 fps；**mobile · memory.html 中位数 57.5（三次 59.4 / 57.5 / 56.6），未稳定达到 58 的目标**。v8 同法测量有 15 个低于 58，最低 42.9（desktop lorddays）。`build/cpuf.py` 另提供一个不受 CPU 抢占影响的估算，可在共享机器上复核。
 
-本地（`build/lh.py`，模拟 4× CPU + 慢速 4G，同一本地服务器，每页 3 次取中位数；`lh_v7b.json` / `lh_v8.json`）：
+### 🔦 Lighthouse（移动端预设，performance；v8 → v9）
 
-| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |
-|---|---|---|---|---|---|
-| index.html | 99 → **99** | 0 → **0** | 0 → **0** | 1575 → 1680 | 1550 → 1659 |
-| ld/01.html | 99 → **99** | 0 → **0** | 0 → **0** | 1638 → 1748 | 1638 → 1748 |
-| ld/34.html | 99 → **99** | 0 → **0** | 0 → **0** | 1624 → 1731 | 1624 → 1731 |
-| history.html（v8 双地图） | 100 → **98** | 0 → **0** | 0 → **0** | 1537 → 1951 | 1537 → 1685 |
-| memory.html | 98 → **98** | 0 → **0** | 0 → **0** | 1978 → 1987 | 1944 → 1936 |
-
-v8 新页（本地，同上方法；`lh_v8.json`）：
-
-| 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |
-|---|---|---|---|---|---|
-| maps.html | 94 | 0 | 0 | 2551 | 2338 |
-| geo-bible.html | 98 | 0 | 0 | 1952 | 1730 |
-| marks.html | 100 | 0 | 0 | 1395 | 1395 |
-
-线上 Netlify（v7 站 vs v8 站，同一会话连续测量；`lh_v7_netlify8.json` / `lh_v8_netlify.json`）：
+本地（`build/lh.py`，模拟 4× CPU + 慢速 4G，同一本地服务器，每页 3 次取中位数；`lh_v8.json` / `lh_v9.json`）。v9 修正了一处 CLS 回归（空闲预排版只处理视口以下的区块），8 个页面 CLS 全部为 0：
 
 | 页面 | 分数 | TBT ms | CLS | LCP ms | FCP ms |
 |---|---|---|---|---|---|
-
+| index.html | 99 → **99** | 0 → **2** | 0 → **0** | 1680 → 1807 | 1659 → 1771 |
+| ld/01.html | 99 → **98** | 0 → **1** | 0 → **0** | 1748 → 1863 | 1748 → 1863 |
+| history.html | 98 → **98** | 0 → **43** | 0 → **0** | 1951 → 1952 | 1685 → 1944 |
+| memory.html | 98 → **96** | 0 → **20** | 0 → **0** | 1987 → 2213 | 1936 → 2158 |
+| maps.html | 94 → **92** | 0 → **0** | 0 → **0** | 2551 → 2768 | 2338 → 2567 |
+| geo-bible.html | 98 → **97** | 0 → **0** | 0 → **0** | 1952 → 2101 | 1730 → 1976 |
+| marks.html | 100 → **99** | 0 → **0** | 0 → **0** | 1395 → 1628 | 1395 → 1628 |
 
 ### 📝 字数（v6 → v7，`build/wordcount.py`，只计解说文字：汉字 + 英文词；原文问答 / 信条 / 金句不计）
 
@@ -118,6 +131,34 @@ v8 新页（本地，同上方法；`lh_v8.json`）：
 | compare.html | 2,786 | 2,786 | +0.0% |
 | memory.html | 8,503 | 8,514 | +0.1% |
 | 概览页合计 | 21,310 | 22,878 | +7.4% |
+
+### 🧪 v9 主题 / 标记 / 滚动测试（`build/v9_test.py`，Playwright）
+
+- ✅ picker has 10 themes (10)
+- ✅ every theme has a swatch preview (10)
+- ✅ click sets + saves theme night (bg #0b1020)
+- ✅ click sets + saves theme dawn (bg #f6f1e7)
+- ✅ click sets + saves theme forest (bg #08160f)
+- ✅ click sets + saves theme grape (bg #140c22)
+- ✅ click sets + saves theme ocean (bg #eaf4fa)
+- ✅ click sets + saves theme sakura (bg #fdf2f5)
+- ✅ click sets + saves theme citrus (bg #f4f9ec)
+- ✅ click sets + saves theme ember (bg #170d08)
+- ✅ click sets + saves theme aurora (bg #05161b)
+- ✅ click sets + saves theme sumi (bg #f4f2ec)
+- ✅ 10 distinct backgrounds (10)
+- ✅ saved theme applied before <body> is parsed (no flash): aurora
+- ✅ 着重号 marks on ld/01 (3)
+- ✅ mk-e has text-emphasis (dot)
+- ✅ keyword × Q&A matrix cells (3)
+- ✅ term-distribution chart bars (22)
+- ✅ during scroll: html.scr + shield shown ([True, 'block'])
+- ✅ after 900 ms quiet: scroll state cleared ([False, 'none'])
+- ✅ route diagrams in view play after settle (1)
+- ✅ click right after scrolling still reaches the button (theme picker opens)
+- ✅ no page errors []
+
+结果：23/23 通过
 
 ### 🧪 v8 地图与导航测试（`build/v8_test.py`，Playwright）
 
@@ -222,10 +263,10 @@ FAILS 0 []
 | 预取 | `<script type="speculationrules">`：悬停 moderate 预取 + 按下 conservative 预渲染；不支持时 pointerover / touchstart 兜底 |
 | 离线与秒开 | `site/sw.js`（构建哈希作为缓存名）：核心页预缓存 · 同源 stale-while-revalidate · CDN cache-first · 离线回退首页 · `?nosw` 关闭 |
 | 首屏 | 每页内联压缩 CSS（约 44 KB）；目录构建时生成；主题 / 标记状态在首屏绘制前由 head 脚本应用 |
-| 滚动 | 被动监听只设标志；目录高亮差异更新、scrollend 后执行；背景单层合成并在滚动中暂停 |
+| 滚动（v9） | 滚轮 / 触摸 / scroll 被动监听只记时间；380 ms 真正静止才算“滚动结束”；滚动中透明护罩挡住悬停重算、暂停 SMIL 与背景漂移、路线动画直接定格；图表展开与描线一律等到静止后；空闲时逐段预排版 content-visibility 区块 |
 | 初始化 | 标签、测验、卡片、播放器、键盘、SW 注册等放进 `requestIdleCallback` |
 
-## 🖍️ 标记图例（v8：四层 + 聚焦）
+## 🖍️ 标记图例（v9：标记 3.0）
 
 | 层级 | 样式 | 含义 | “仅核心”模式 |
 |---|---|---|---|
@@ -240,14 +281,15 @@ FAILS 0 []
 | ④ 史地层（v8） | 紫色粗体 | 人物 | 隐藏 |
 | ④ 史地层（v8） | 青色点线 | 地点 | 隐藏 |
 | ④ 史地层（v8） | 琥珀色胶囊 | 年代 | 隐藏 |
+| ① 核心层（v9） | 着重号（字下圆点） | 要义里最该背的关键词 | 保留 |
 | 附 | 经文药丸 | 圣经出处 | 保留 |
 | 提示框 | 💎核心 · ⚠️难点 · 🚫易错 · ✨金句（逐字原文） · 🪝记忆钩 · 📖核心经文 · 🏛️历史 · 🗺️地理（v8） | 每个主日与总览页 | 保留 |
 
 三态：🖍️ 全部 → ⭐ 仅核心 → 🧽 关（顶栏 🖍️ 或 M 键循环；图例中的分段按钮可直接选择；保存在 localStorage `hc-marks`）。v8：`marks.html` 是完整说明页；图例每一行可点击“聚焦”只突出这一种标记（Esc 取消）；桌面端悬停标记显示含义。主日页原文区的“本主日笔记标记”图例显示每种标记在本页出现的次数（构建时统计）。标记只包在样式层的 `<span>` 中，原文文字不改。
 
-## 🎨 配色主题
+## 🎨 配色主题（v9：十套）
 
-🌌 深夜星空 · 🌅 晨曦米白 · 🌲 翡翠森林 · 🍇 葡萄紫金 · 🌊 海洋蓝 —— 顶栏 🎨 切换，自动保存（`hc-theme`），首屏绘制前应用。v7 为每套主题加入焦点环、选中文字与滚动条颜色。`build/contrast.py` → `build/contrast_v7.json`：正文、弱化文字、强调色、标记色、色块标签全部 ≥ 4.5:1，焦点环 ≥ 3:1，**0 项不达 WCAG AA**。
+🌌 深夜星空 · 🌅 晨曦米白 · 🌲 翡翠森林 · 🍇 葡萄紫金 · 🌊 海洋蓝 · 🌸 樱花粉霞（v9）· 🍋 柠檬薄荷（v9）· 🔥 暮光琥珀（v9，深色）· 🌠 极光青紫（v9，深色）· 🖋️ 水墨朱砂（v9）—— 顶栏 🎨 打开色板预览，一键切换，自动保存（`hc-theme`），首屏绘制前应用（无闪烁）。`build/contrast.py` → `build/contrast_v9.json`（十套主题）：正文、弱化文字、强调色、标记色、色块标签全部 ≥ 4.5:1，焦点环 ≥ 3:1，**0 项不达 WCAG AA**。
 
 ## 📚 网站结构
 
@@ -276,7 +318,7 @@ FAILS 0 []
 - 全部信条与信经中文原文由程序抓取自 https://ccifellowship.org/books/book-of-praise （《中国改革宗敬拜手册》2015），未做任何文字改动。
 - `build/verify_verbatim.py`：站内 2,712 个原文块逐字比对 **0 处差异**；53 条“金句”均为原文的逐字子串（0 处差异）。
 - `build/check_cuv.py`（v7，v8 扩展到地图集与圣经地理）：学习笔记中带出处的经文引语 138 处，与信望爱 FHL 线上和合本（https://bible.fhl.net/ ，version=unv）逐条比对，**0 处不符**（修正 30 余处措辞 / 出处）。学习笔记中加引号的要理问答语句已与原文逐字对照。
-- `build/layout_check.py`（v8）：全部 73 个页面（含 52 主日、5 个分卷与 v8 新增的 maps / geo-bible / marks）× 375 / 768 / 1024 / 1440 四种宽度 × 🌌🌅🌲🍇🌊 五套主题，横向溢出与顶栏截断 **0 个问题**。
+- `build/layout_check.py`（v8）：全部 73 个页面（含 52 主日、5 个分卷与 v8 新增的 maps / geo-bible / marks）× 375 / 768 / 1024 / 1440 四种宽度 × 十套主题（v9），横向溢出与顶栏截断 **0 个问题**。
 - ccifellowship.org 未收录多特信经的“结论”部分，本站也未收录。威斯敏斯特小要理问答英文引文取自 opc.org。原文版权归原出版委员会，本站仅作学习引用。解读为学习笔记，未经神学家审阅；图标、分组与“圣约链”均为学习标签。
 
 ## 🛠️ 构建与部署
@@ -292,58 +334,67 @@ python3 build/perf6.py URL out.json     # 流畅度测量（6× CPU）
 python3 build/lh.py URL out.json 3      # Lighthouse
 git subtree push --prefix site origin gh-pages
 python3 build/v8_test.py URL OUTDIR     # v8 地图回退 + 导航簇测试
-surge site heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh
-netlify deploy --prod --dir site --site <v8-site-id>
+python3 build/v9_test.py URL OUTDIR     # v9 主题 / 标记 / 滚动测试
+python3 build/cpuf.py "URL_A|URL_B" desktop2x pages 1   # 不受抢占影响的帧率估算
+surge site heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.surge.sh
+netlify deploy --prod --dir site --site 40d3ffa4-a31e-4096-a168-0e7eefdc222f
 ```
 
 ## 🗂️ 版本历史
 
-### v8 · 2026-10-23 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v8)
+### v9 · 2026-10-24 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v9)
 | 平台 | 链接 |
 |---|---|
 | GitHub Pages | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
+| Surge | https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.surge.sh |
+| Netlify | https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.netlify.app |
+
+### v8 · 2026-10-23 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v8)
+| 平台 | 链接 |
+|---|---|
+| GitHub Pages（与 v9 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
 | Surge | https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh |
 | Netlify | https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.netlify.app |
 
 ### v7 · 2026-10-23 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v7)
 | 平台 | 链接 |
 |---|---|
-| GitHub Pages（与 v8 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
+| GitHub Pages（与 v9 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
 | Surge | https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.surge.sh |
 | Netlify | https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.netlify.app |
 
 ### v6 · 2026-10-21 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v6)
 | 平台 | 链接 |
 |---|---|
-| GitHub Pages（与 v8 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
+| GitHub Pages（与 v9 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
 | Surge | https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.surge.sh |
 | Netlify | https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.netlify.app |
 
 ### v5 · 2026-10-21 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v5)
 | 平台 | 链接 |
 |---|---|
-| GitHub Pages（与 v8 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
+| GitHub Pages（与 v9 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
 | Surge | https://heidelberg-catechism-52-lorddays-20261021-v5-grokstudy.surge.sh |
 | Netlify | https://heidelberg-catechism-52-lorddays-20261021-v5-grokstudy.netlify.app |
 
 ### v4 · 2026-10-21 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v4)
 | 平台 | 链接 |
 |---|---|
-| GitHub Pages（与 v8 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
+| GitHub Pages（与 v9 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
 | Surge | https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.surge.sh |
 | Netlify | https://heidelberg-catechism-52-lorddays-20261021-v4-grokser.netlify.app |
 
 ### v3 · 2026-10-20 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v3)
 | 平台 | 链接 |
 |---|---|
-| GitHub Pages（与 v8 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
+| GitHub Pages（与 v9 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
 | Surge | https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.surge.sh |
 | Netlify | https://heidelberg-catechism-52-lorddays-20261020-v3-grokser.netlify.app |
 
 ### v2 · 2026-10-20 · [Release](https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/v2)
 | 平台 | 链接 |
 |---|---|
-| GitHub Pages（与 v8 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
+| GitHub Pages（与 v9 同一地址，现显示最新版） | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
 | Surge | https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.surge.sh |
 | Netlify | https://heidelberg-catechism-52-lorddays-20261020-v2-grokser.netlify.app |
 

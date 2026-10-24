@@ -33,7 +33,7 @@ ready(()=>{
     so a scroll never has to lay out a fresh section mid-gesture (the main source of 40–90 ms frames at 6× CPU) */
  let PL=0;const pick=()=>{const vh=innerHeight;let best=null,bd=1e9;
   for(const s of document.querySelectorAll('main section.sec:not(.ncv):not(.pld)')){
-   const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}return best};
+   const r=s.getBoundingClientRect();/* only sections wholly below the viewport: laying out one on/above screen can shift visible content (CLS) */if(r.top<vh+40)continue;const d=r.top;if(d<bd){bd=d;best=s}}return best};
  /* v9.1: lay out as many sections as fit in the idle deadline, then hand each back to content-visibility:auto
     (layout is kept, so it is skipped for paint/layerize while off-screen; keeping it 'visible' made Layerize 3–4× on long pages) */
  const preLay=dl=>{PL=0;const done=[];let n=0;

@@ -48,12 +48,18 @@ def deleg_bars(m):
     o.append('</svg>'); return ''.join(o)
 def ref_dots(m):
     pts=[(1517,'维滕堡','--gold'),(1519,'苏黎世','--grat'),(1523,'斯特拉斯堡','--teal'),(1529,'巴塞尔','--teal'),(1529,'马尔堡','--misery'),(1536,'日内瓦','--grat'),(1550,'伦敦','--intro'),(1563,'海德堡','--deliv'),(1571,'埃姆登','--intro'),(1619,'多特','--grat')]
-    W=640;H=150;X=lambda y:30+(y-1510)*(W-60)/115
-    o=[f'<svg class="dots" viewBox="0 0 {W} {H}" role="img" aria-label="改教城市时间轴" style="width:100%;height:auto"><line x1="30" x2="{W-30}" y1="78" y2="78" style="stroke:var(--bd);stroke-width:3"/>']
-    for yv in range(1510,1630,20): o.append(f'<text x="{X(yv):.0f}" y="{H-6}" text-anchor="middle" style="fill:var(--muted);font-size:11px">{yv}</text><line x1="{X(yv):.0f}" x2="{X(yv):.0f}" y1="72" y2="84" style="stroke:var(--bd)"/>')
+    # v9: four label tiers (2 above, 2 below the axis), greedy placement so dense years (1517–1536) never overlap
+    W=640;H=196;AY=96;X=lambda y:30+(y-1510)*(W-60)/115
+    TI=[(60,46,-1),(136,150,1),(28,14,-1),(170,184,1)]  # (name y, year y, side)
+    o=[f'<svg class="dots" viewBox="0 0 {W} {H}" role="img" aria-label="改教城市时间轴" style="width:100%;height:auto"><line x1="30" x2="{W-30}" y1="{AY}" y2="{AY}" style="stroke:var(--bd);stroke-width:3"/>']
+    for yv in range(1510,1630,20): o.append(f'<text x="{X(yv):.0f}" y="{AY+18}" text-anchor="middle" style="fill:var(--muted);font-size:10.5px">{yv}</text><line x1="{X(yv):.0f}" x2="{X(yv):.0f}" y1="{AY-6}" y2="{AY+6}" style="stroke:var(--bd)"/>')
+    right=[-1e9]*4
     for i,(y,n,c) in enumerate(pts):
-        up=i%2==0; ty=46 if up else 116
-        o.append(f'<g class="dot" style="--i:{i}"><line x1="{X(y):.0f}" x2="{X(y):.0f}" y1="78" y2="{ty+(8 if up else -14)}" style="stroke:var({c});stroke-dasharray:2 3"/><circle cx="{X(y):.0f}" cy="78" r="7" style="fill:var({c})"/><text x="{X(y):.0f}" y="{ty}" text-anchor="middle" style="fill:var(--fg);font-size:12px;font-weight:800">{n}</text><text x="{X(y):.0f}" y="{ty+(-14 if up else 14)}" text-anchor="middle" style="fill:var({c});font-size:11px;font-weight:700">{y}</text></g>')
+        x=X(y);hw=max(12.5*len(n),30)/2+4
+        k=next((t for t in range(4) if right[t]<x-hw),min(range(4),key=lambda t:right[t]));right[k]=x+hw
+        ny,yy,sd=TI[k];ly=ny+8 if sd<0 else ny-13
+        o.append(f'<g class="dot" style="--i:{i}"><line x1="{x:.0f}" x2="{x:.0f}" y1="{AY}" y2="{ly}" style="stroke:var({c});stroke-dasharray:2 3"/><circle cx="{x:.0f}" cy="{AY}" r="7" style="fill:var({c})"/><text x="{x:.0f}" y="{ny}" text-anchor="middle" style="fill:var(--fg);font-size:12px;font-weight:800">{n}</text><text x="{x:.0f}" y="{yy}" text-anchor="middle" style="fill:var({c});font-size:11px;font-weight:700">{y}</text></g>')
+    if right[3]<-1e8: o[0]=o[0].replace(f'viewBox="0 0 {W} {H}"',f'viewBox="0 0 {W} 160"')
     o.append('</svg>'); return ''.join(o)
 def lanes_chart(maps):
     """Overview: one lane per map, year span of its story (history maps only)."""

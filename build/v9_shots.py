@@ -9,6 +9,7 @@ async def shot(pg,url,theme,path,sel=None,full=False,pre=None):
     await pg.goto(BASE+url+('&' if '?' in url else '?')+'nosw',wait_until='load');await pg.wait_for_timeout(1200)
     if pre: await pg.evaluate(pre);await pg.wait_for_timeout(1500)
     if sel:
+        await pg.add_style_tag(content='.topbar,#navc,.fab,.progress{visibility:hidden!important}')
         el=pg.locator(sel).first;await el.scroll_into_view_if_needed();await pg.wait_for_timeout(1400);await el.screenshot(path=path)
     else: await pg.screenshot(path=path,full_page=full)
     print('saved',path)
@@ -19,8 +20,8 @@ async def main():
         await pg.goto(BASE+'index.html?nosw')
         for t in TH: await shot(pg,'index.html',t,f'{OUT}/v9-theme-{t}.png')
         await shot(pg,'index.html','sakura',f'{OUT}/v9-theme-picker.png',pre="document.getElementById('thp').classList.add('open')")
-        await shot(pg,'ld/01.html','sumi',f'{OUT}/v9-marks-typography-sumi.png',sel='section:has(#text)'
-        await shot(pg,'ld/21.html','citrus',f'{OUT}/v9-marks-typography-citrus.png',sel='section:has(#essence)'
+        await shot(pg,'ld/01.html','sumi',f'{OUT}/v9-marks-typography-sumi.png',sel='section:has(#text)')
+        await shot(pg,'ld/21.html','citrus',f'{OUT}/v9-marks-typography-citrus.png',sel='section:has(#essence)')
         await shot(pg,'marks.html','ember',f'{OUT}/v9-marks-legend-ember.png',sel='main section.sec')
         await shot(pg,'lorddays.html','aurora',f'{OUT}/v9-chart-terms-aurora.png',sel='section:has(#terms)')
         await shot(pg,'ld/01.html','ocean',f'{OUT}/v9-chart-kw-matrix-ocean.png',sel='section:has(#ess-kwm)')

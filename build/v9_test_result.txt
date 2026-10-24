@@ -1,0 +1,25 @@
+- ✅ picker has 10 themes (10)
+- ✅ every theme has a swatch preview (10)
+- ✅ click sets + saves theme night (bg #0b1020)
+- ✅ click sets + saves theme dawn (bg #f6f1e7)
+- ✅ click sets + saves theme forest (bg #08160f)
+- ✅ click sets + saves theme grape (bg #140c22)
+- ✅ click sets + saves theme ocean (bg #eaf4fa)
+- ✅ click sets + saves theme sakura (bg #fdf2f5)
+- ✅ click sets + saves theme citrus (bg #f4f9ec)
+- ✅ click sets + saves theme ember (bg #170d08)
+- ✅ click sets + saves theme aurora (bg #05161b)
+- ✅ click sets + saves theme sumi (bg #f4f2ec)
+- ✅ 10 distinct backgrounds (10)
+- ✅ saved theme applied before <body> is parsed (no flash): aurora
+- ✅ 着重号 marks on ld/01 (3)
+- ✅ mk-e has text-emphasis (dot)
+- ✅ keyword × Q&A matrix cells (3)
+- ✅ term-distribution chart bars (22)
+- ✅ during scroll: html.scr + shield shown ([True, 'block'])
+- ✅ after 900 ms quiet: scroll state cleared ([False, 'none'])
+- ✅ route diagrams in view play after settle (1)
+- ✅ click right after scrolling still reaches the button (theme picker opens)
+- ✅ no page errors []
+
+结果：23/23 通过

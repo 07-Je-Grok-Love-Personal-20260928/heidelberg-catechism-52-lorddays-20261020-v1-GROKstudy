@@ -2,7 +2,11 @@
 import re,json,sys
 css=open('src/style.css').read()
 def block(sel):
-    i=css.index(sel); j=css.index('}',i); return dict(re.findall(r'--([\w-]+):(#[0-9a-fA-F]{6})',css[i:j]))
+    # v9: merge EVERY block with this selector (theme vars are split across v6 / v8 / v9 sections)
+    out={};i=css.find(sel)
+    while i>=0:
+        j=css.index('}',i); out.update(dict(re.findall(r'--([\w-]+):(#[0-9a-fA-F]{6})',css[i:j]))); i=css.find(sel,j)
+    return out
 base=block(':root{'); T={'night':base}
 for t in ['dawn','forest','grape','ocean','sakura','citrus','ember','aurora','sumi']: T[t]={**base,**block(f'html[data-theme={t}]')}
 def L(h):
@@ -15,7 +19,7 @@ for t,v in T.items():
     r={}
     for surf in ['bg','card','card2','bg2']:
         r[f'fg/{surf}']=cr(v['fg'],v[surf]); r[f'muted/{surf}']=cr(v['muted'],v[surf])
-        for acc in ['intro','misery','deliv','grat','gold','hard','key','teal','mk-bold','mk-def','mk-warn','mk-ref','mk-grace']:
+        for acc in ['intro','misery','deliv','grat','gold','hard','key','teal','mk-bold','mk-def','mk-warn','mk-ref','mk-grace','mk-hard','mk-con','mk-person','mk-loc','mk-time']:
             if acc in v: r[f'{acc}/{surf}']=cr(v[acc],v[surf])
     for acc in ['intro','misery','deliv','grat','gold','hard','teal']: r[f'ink/{acc}']=cr(v['ink'],v[acc])
     for surf in ['bg','card','card2']: r[f'focus/{surf}*']=cr(v['focus'],v[surf])
@@ -28,4 +32,4 @@ for t,v in T.items():
         if x<lim: fails.append((t,k,round(x,2)))
     print(t,'fg/card %.1f'%r['fg/card'],'muted/card %.1f'%r['muted/card'],'min accent/card %.2f'%min(x for k,x in r.items() if k.endswith('/card') and not k.startswith(('fg','muted'))),'min ink/accent %.2f'%min(x for k,x in r.items() if k.startswith('ink/')))
 print('FAILS',len(fails)); [print(' ',f) for f in fails]
-json.dump(res,open('contrast_v7.json','w'),indent=1)
+json.dump(res,open('contrast_v9.json','w'),indent=1)

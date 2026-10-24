@@ -36,7 +36,7 @@ V9T=open('v9_test_result.txt').read().strip() if os.path.exists('v9_test_result.
 V8T=open('v8_test_result.txt').read().strip() if os.path.exists('v8_test_result.txt') else ''
 REL='https://github.com/07-Je-Grok-Love-Personal-20260928/heidelberg-catechism-52-lorddays-GROKstudy/releases/tag/'
 L=lambda key:'\n'.join(f'| {t} | {u} |' for t,u in V[key])
-md=f'''# heidelberg-catechism-52-lorddays-20261023-v9-GROKstudy
+md=f'''# heidelberg-catechism-52-lorddays-20261024-v9-GROKstudy
 
 > 《海德堡要理问答》52 主日全景深度解析：简体中文深度学习网站，共 129 问，持守欧陆改革宗立场（三项联合信条 + 三大普世信经）。
 
@@ -45,8 +45,8 @@ md=f'''# heidelberg-catechism-52-lorddays-20261023-v9-GROKstudy
 | 平台 | 链接 |
 |---|---|
 | GitHub Pages | https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/ |
-| Surge | https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.surge.sh |
-| Netlify | https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.netlify.app |
+| Surge | https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.surge.sh |
+| Netlify | https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.netlify.app |
 
 📦 源码仓库：https://github.com/07-Je-Grok-Love-Personal-20260928/{REPO}
 🏷️ Release：[v9]({REL}v9) · [v8]({REL}v8) · [v7]({REL}v7) · [v6]({REL}v6) · [v5]({REL}v5) · [v4]({REL}v4) · [v3]({REL}v3) · [v2]({REL}v2) · [v1]({REL}v1)
@@ -202,7 +202,7 @@ git subtree push --prefix site origin gh-pages
 python3 build/v8_test.py URL OUTDIR     # v8 地图回退 + 导航簇测试
 python3 build/v9_test.py URL OUTDIR     # v9 主题 / 标记 / 滚动测试
 python3 build/cpuf.py "URL_A|URL_B" desktop2x pages 1   # 不受抢占影响的帧率估算
-surge site heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.surge.sh
+surge site heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.surge.sh
 netlify deploy --prod --dir site --site {open('netlify_v9_id.txt').read().strip() if __import__('os').path.exists('netlify_v9_id.txt') else '<v9-site-id>'}
 ```
 

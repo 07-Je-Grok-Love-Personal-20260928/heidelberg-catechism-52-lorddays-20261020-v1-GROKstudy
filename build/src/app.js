@@ -32,9 +32,9 @@ ready(()=>{
  /* v9: idle pre-layout — render content-visibility sections one at a time while the reader is NOT scrolling, nearest-below first,
     so a scroll never has to lay out a fresh section mid-gesture (the main source of 40–90 ms frames at 6× CPU) */
  let PL=0;const preLay=()=>{PL=0;const vh=innerHeight;let best=null,bd=1e9;
-  for(const s of document.querySelectorAll('main section.sec:not(.ncv)')){
+  for(const s of document.querySelectorAll('main section.sec:not(.ncv):not(.pld)')){
    const r=s.getBoundingClientRect();const d=r.top>=0?r.top:vh*3-r.bottom;if(d<bd){bd=d;best=s}}
-  if(!best)return;best.classList.add('ncv');schedPL()};
+  if(!best)return;best.classList.add('ncv');void best.offsetHeight;/* v9.1: layout once, then hand it back to content-visibility:auto so the laid-out section is skipped for paint/layerize while off-screen (keeping it visible made Layerize 3–4× on long pages) */requestAnimationFrame(()=>setTimeout(()=>{best.classList.remove('ncv');best.classList.add('pld')},0));schedPL()};
  const schedPL=()=>{if(PL)return;PL=1;const next=()=>afterScroll(()=>idle(preLay));if('requestIdleCallback' in window)requestIdleCallback(next,{timeout:2000});else setTimeout(next,120)};
 addEventListener('load',()=>setTimeout(schedPL,900),{once:true});
  document.addEventListener('visibilitychange',()=>{if(sky)sky.classList.toggle('paused',document.hidden||SC.on)});

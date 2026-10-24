@@ -34,7 +34,7 @@ v2changes=['📱 手机端圣约神学流程图改为竖排“盟约阶梯”，
 '🎨 主题在页面渲染前即应用（无闪烁）；表格首列不折行；打印样式优化。',
 '🏷️ 仓库更名为 heidelberg-catechism-52-lorddays-GROKstudy（保留全部历史），GitHub Pages 地址随之更新；全站只用相对路径。',
 '✅ 原文逐字校验仍为 0 处差异；375 / 768 / 1440 三种宽度的溢出检测重新跑过；截图全部重拍。']
-V9=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v9-grokstudy.netlify.app')]
+V9=[('GitHub Pages','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261024-v9-grokstudy.netlify.app')]
 V8=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v8-grokstudy.netlify.app')]
 V7=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261023-v7-grokstudy.netlify.app')]
 V6=[('GitHub Pages（与 v9 同一地址，现显示最新版）','https://07-je-grok-love-personal-20260928.github.io/heidelberg-catechism-52-lorddays-GROKstudy/'),('Surge','https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.surge.sh'),('Netlify','https://heidelberg-catechism-52-lorddays-20261021-v6-grokstudy.netlify.app')]

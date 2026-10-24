@@ -19,11 +19,11 @@ async def main():
         await pg.goto(BASE+'index.html?nosw')
         for t in TH: await shot(pg,'index.html',t,f'{OUT}/v9-theme-{t}.png')
         await shot(pg,'index.html','sakura',f'{OUT}/v9-theme-picker.png',pre="document.getElementById('thp').classList.add('open')")
-        await shot(pg,'ld/01.html','sumi',f'{OUT}/v9-marks-typography-sumi.png',sel='#text')
-        await shot(pg,'ld/21.html','citrus',f'{OUT}/v9-marks-typography-citrus.png',sel='#essence')
+        await shot(pg,'ld/01.html','sumi',f'{OUT}/v9-marks-typography-sumi.png',sel='section:has(#text)'
+        await shot(pg,'ld/21.html','citrus',f'{OUT}/v9-marks-typography-citrus.png',sel='section:has(#essence)'
         await shot(pg,'marks.html','ember',f'{OUT}/v9-marks-legend-ember.png',sel='main section.sec')
-        await shot(pg,'lorddays.html','aurora',f'{OUT}/v9-chart-terms-aurora.png',sel='#terms')
-        await shot(pg,'ld/01.html','ocean',f'{OUT}/v9-chart-kw-matrix-ocean.png',sel='#ess-kwm >> xpath=..')
+        await shot(pg,'lorddays.html','aurora',f'{OUT}/v9-chart-terms-aurora.png',sel='section:has(#terms)')
+        await shot(pg,'ld/01.html','ocean',f'{OUT}/v9-chart-kw-matrix-ocean.png',sel='section:has(#ess-kwm)')
         await shot(pg,'maps.html?maptest=local','ember',f'{OUT}/v9-map-ember.png',sel='main section.msec')
         await shot(pg,'maps.html?maptest=local','citrus',f'{OUT}/v9-map-citrus.png',sel='main section.msec')
         m=await b.new_context(viewport={'width':375,'height':812},device_scale_factor=2,is_mobile=True,has_touch=True);mp=await m.new_page()

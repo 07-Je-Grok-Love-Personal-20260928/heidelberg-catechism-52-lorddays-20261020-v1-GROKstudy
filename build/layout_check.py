@@ -24,7 +24,7 @@ async def main():
                 r=await pg.evaluate(JS)
                 if r['sw']>r['W'] or r['off'] or r['ov']:
                     issues+=1; print(w,u,json.dumps(r,ensure_ascii=False)[:600],flush=True)
-            await ctx.close()
+            await ctx.close();print('width',w,'done',TH,flush=True)
         print('issues',issues)
         await b.close()
 asyncio.run(main())

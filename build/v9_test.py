@@ -25,7 +25,7 @@ async def main():
         ok(len(bgs)==10,f'10 distinct backgrounds ({len(bgs)})')
         # persistence + no flash: theme attribute already set when first <body> parse happens
         await pg.evaluate("localStorage.setItem('hc-theme',JSON.stringify('aurora'))")
-        await c.add_init_script("document.addEventListener('readystatechange',()=>{if(document.readyState==='interactive')window.__t0=document.documentElement.dataset.theme},{once:true});new MutationObserver((m,o)=>{if(document.body){window.__tb=document.documentElement.dataset.theme;o.disconnect()}}).observe(document.documentElement,{childList:true,subtree:true})")
+        await c.add_init_script("document.addEventListener('readystatechange',()=>{if(document.readyState==='interactive')window.__t0=document.documentElement.dataset.theme},{once:true});new MutationObserver((m,o)=>{if(document.body){window.__tb=document.documentElement.dataset.theme;o.disconnect()}}).observe(document,{childList:true,subtree:true})")
         await pg.goto(BASE+'ld/01.html?nosw',wait_until='load')
         tb=await pg.evaluate('window.__tb');ok(tb=='aurora',f'saved theme applied before <body> is parsed (no flash): {tb}')
         ne=await pg.evaluate("document.querySelectorAll('.mk-e').length");ok(ne>0,f'着重号 marks on ld/01 ({ne})')
@@ -34,7 +34,7 @@ async def main():
         await pg.evaluate("document.getElementById('ess-kwm').scrollIntoView({block:'start'})");await pg.wait_for_timeout(900)
         await pg.locator('#ess-kwm').locator('xpath=..').screenshot(path=f'{SHOT}/v9-kw-matrix-aurora.png')
         await pg.goto(BASE+'lorddays.html?nosw',wait_until='load')
-        tb2=await pg.evaluate("document.querySelectorAll('#terms .tbar').length");ok(tb2>=20,f'term-distribution chart bars ({tb2})')
+        tb2=await pg.evaluate("document.getElementById('terms').parentElement.querySelectorAll('.tbar').length");ok(tb2>=20,f'term-distribution chart bars ({tb2})')
         # scroll state + click right after scroll
         await pg.goto(BASE+'maps.html?nosw',wait_until='load');await pg.wait_for_timeout(1500)
         await pg.mouse.move(700,450)
